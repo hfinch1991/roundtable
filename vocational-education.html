@@ -1,0 +1,2686 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>圆桌：职教新教师行政还是教学</title>
+<style>
+/* ============================================================
+   1. Reset & Base
+   ============================================================ */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: #0d0d1a;
+  color: #c8c8d0;
+  font-family: "Noto Serif SC", Georgia, "Times New Roman", serif;
+  line-height: 1.8;
+  font-size: 19px;
+}
+
+/* ============================================================
+   2. Progress Bar
+   ============================================================ */
+.progress-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  background: rgba(13, 13, 26, 0.95);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.progress-bar-inner {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 14px 32px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.progress-current {
+  font-size: 15px;
+  color: #a0a0b0;
+  letter-spacing: 1px;
+}
+
+.progress-current span {
+  color: #e94560;
+  font-weight: 600;
+}
+
+.progress-dots {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  align-items: center;
+}
+
+.progress-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  transition: background 0.3s, box-shadow 0.3s;
+}
+
+.progress-dot.active {
+  background: #e94560;
+  box-shadow: 0 0 8px rgba(233, 69, 96, 0.4);
+}
+
+.progress-dot.passed {
+  background: rgba(233, 69, 96, 0.3);
+}
+
+.progress-expand {
+  font-size: 14px;
+  color: #666;
+  letter-spacing: 1px;
+  cursor: pointer;
+  user-select: none;
+}
+
+/* ============================================================
+   3. TOC Panel
+   ============================================================ */
+.toc-panel {
+  position: fixed;
+  top: 48px;
+  left: 0;
+  right: 0;
+  z-index: 99;
+  background: rgba(13, 13, 26, 0.98);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+}
+
+.toc-panel.open {
+  max-height: 500px;
+}
+
+.toc-inner {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 8px 32px;
+}
+
+.toc-item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  border-radius: 6px;
+  font-size: 16px;
+  color: #888;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.toc-item:hover {
+  background: rgba(255, 255, 255, 0.04);
+  color: #c8c8d0;
+}
+
+.toc-item.active {
+  color: #e94560;
+}
+
+.toc-num {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.06);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  flex-shrink: 0;
+}
+
+.toc-item.active .toc-num {
+  background: rgba(233, 69, 96, 0.2);
+  color: #e94560;
+}
+
+/* ============================================================
+   4. Hero
+   ============================================================ */
+.hero {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 110px 32px 60px;
+  text-align: center;
+}
+
+.hero-tag {
+  font-size: 14px;
+  color: #e94560;
+  letter-spacing: 4px;
+  margin-bottom: 20px;
+  text-transform: uppercase;
+}
+
+.hero h1 {
+  font-size: 42px;
+  font-weight: bold;
+  color: #f0f0f0;
+  line-height: 1.4;
+  margin-bottom: 20px;
+}
+
+.hero-meta {
+  font-size: 16px;
+  color: #666;
+  margin-bottom: 32px;
+}
+
+.hero-participants {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.participant-tag {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  font-size: 15px;
+  color: #a0a0b0;
+}
+
+.participant-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* ============================================================
+   5. Content
+   ============================================================ */
+.content {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 0 32px 80px;
+}
+
+/* ============================================================
+   6. Round Header
+   ============================================================ */
+.round-header {
+  margin: 64px 0 32px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.round-num {
+  font-size: 14px;
+  color: #e94560;
+  letter-spacing: 3px;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+}
+
+.round-title {
+  font-size: 28px;
+  font-weight: bold;
+  color: #f0f0f0;
+  line-height: 1.4;
+}
+
+.round-question {
+  margin-top: 16px;
+  padding: 20px 24px;
+  background: rgba(233, 69, 96, 0.06);
+  border-left: 3px solid #e94560;
+  border-radius: 0 8px 8px 0;
+  font-size: 18px;
+  color: #c8c8d0;
+  line-height: 1.8;
+}
+
+/* ============================================================
+   7. Speech Cards
+   ============================================================ */
+.speech {
+  margin: 24px 0;
+  padding: 24px 28px;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  transition: border-color 0.3s;
+}
+
+.speech:hover {
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+.speech-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.speaker-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  color: white;
+  font-weight: bold;
+  flex-shrink: 0;
+}
+
+.speaker-info {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.speaker-name {
+  font-size: 18px;
+  font-weight: bold;
+  color: #f0f0f0;
+}
+
+.speaker-action {
+  font-size: 13px;
+  letter-spacing: 1px;
+  padding: 3px 10px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.06);
+  color: #888;
+}
+
+.speech-body {
+  font-size: 18px;
+  line-height: 1.9;
+  color: #c8c8d0;
+}
+
+.speech-body em {
+  color: #f0f0f0;
+  font-style: normal;
+  font-weight: 500;
+}
+
+.speech-tldr {
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.04);
+  font-size: 16px;
+  color: #888;
+  font-style: italic;
+}
+
+.speech-tldr strong {
+  color: #a0a0b0;
+  font-style: normal;
+}
+
+/* ============================================================
+   8. Moderator Section
+   ============================================================ */
+.moderator-section {
+  margin: 40px 0;
+  padding: 28px;
+  background: rgba(233, 69, 96, 0.04);
+  border: 1px solid rgba(233, 69, 96, 0.1);
+  border-radius: 12px;
+}
+
+.moderator-label {
+  font-size: 14px;
+  color: #e94560;
+  letter-spacing: 2px;
+  margin-bottom: 12px;
+  text-transform: uppercase;
+}
+
+/* ============================================================
+   9. Chart Containers
+   ============================================================ */
+.chart-container {
+  margin: 24px 0;
+  padding: 28px;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.chart-title {
+  text-align: center;
+  font-size: 16px;
+  color: #a0a0b0;
+  letter-spacing: 2px;
+  margin-bottom: 24px;
+}
+
+/* Tension axis */
+.tension-axis {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 0;
+}
+
+.tension-pole {
+  padding: 14px 24px;
+  border-radius: 8px;
+  font-size: 17px;
+  font-weight: bold;
+}
+
+.tension-pole.left {
+  background: rgba(46, 134, 171, 0.15);
+  color: #53a8b6;
+  border: 1px solid rgba(46, 134, 171, 0.2);
+}
+
+.tension-pole.right {
+  background: rgba(233, 69, 96, 0.15);
+  color: #e94560;
+  border: 1px solid rgba(233, 69, 96, 0.2);
+}
+
+.tension-line {
+  flex: 1;
+  height: 2px;
+  margin: 0 16px;
+  background: linear-gradient(to right, rgba(46, 134, 171, 0.4), rgba(233, 69, 96, 0.4));
+}
+
+/* Tension detail */
+.tension-detail {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.tension-item {
+  padding: 12px 16px;
+  border-radius: 6px;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.tension-item.blue {
+  background: rgba(46, 134, 171, 0.08);
+  color: #7ec8d8;
+  border-left: 2px solid rgba(46, 134, 171, 0.3);
+}
+
+.tension-item.red {
+  background: rgba(233, 69, 96, 0.08);
+  color: #f0a0b0;
+  border-left: 2px solid rgba(233, 69, 96, 0.3);
+}
+
+/* Layer stack */
+.layer-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.layer-card {
+  padding: 18px 22px;
+  border-radius: 8px;
+  border-left: 3px solid;
+}
+
+.layer-card .layer-label {
+  font-size: 14px;
+  letter-spacing: 2px;
+  margin-bottom: 8px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.layer-card .layer-content {
+  font-size: 16px;
+  line-height: 1.7;
+  color: #b0b0b8;
+}
+
+.layer-card:nth-child(1) {
+  background: rgba(233, 69, 96, 0.08);
+}
+
+.layer-card:nth-child(2) {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.layer-card:nth-child(3) {
+  background: rgba(46, 134, 171, 0.08);
+}
+
+/* Framework split */
+.framework-split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.framework-card {
+  padding: 22px;
+  border-radius: 8px;
+  border-top: 3px solid;
+}
+
+.framework-card .fw-title {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.framework-card .fw-detail {
+  font-size: 16px;
+  line-height: 1.7;
+  color: #b0b0b8;
+}
+
+.converge-arrow {
+  text-align: center;
+  padding: 16px 0;
+  font-size: 16px;
+  color: #666;
+}
+
+.converge-result {
+  padding: 18px 22px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.03);
+  text-align: center;
+  font-size: 17px;
+  color: #c8c8d0;
+}
+
+/* Timeline */
+.timeline {
+  position: relative;
+  padding-left: 36px;
+  margin: 16px 0;
+}
+
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 14px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.timeline-step {
+  position: relative;
+  margin-bottom: 24px;
+  padding: 18px 22px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.03);
+  border-left: 3px solid;
+}
+
+.step-num {
+  position: absolute;
+  left: -36px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: bold;
+  z-index: 1;
+}
+
+.step-title {
+  font-size: 17px;
+  font-weight: bold;
+  color: #f0f0f0;
+  margin-bottom: 6px;
+}
+
+.step-desc {
+  font-size: 16px;
+  color: #b0b0b8;
+  line-height: 1.7;
+}
+
+/* Onion layers */
+.onion-layers {
+  padding: 18px;
+  border-radius: 8px;
+  border: 1px solid;
+}
+
+.onion-layers .onion-label {
+  font-size: 15px;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.onion-layers .onion-desc {
+  font-size: 16px;
+  color: #b0b0b8;
+  line-height: 1.7;
+  margin-bottom: 14px;
+}
+
+/* Action table */
+.action-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.action-table th {
+  padding: 10px 14px;
+  text-align: left;
+  font-size: 14px;
+  color: #888;
+  letter-spacing: 1px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  text-transform: uppercase;
+}
+
+.action-table td {
+  padding: 12px 14px;
+  font-size: 16px;
+  color: #c8c8d0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+.action-table tr:hover td {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.priority-high {
+  color: #e94560;
+}
+
+.priority-mid {
+  color: #f39c12;
+}
+
+.priority-low {
+  color: #27ae60;
+}
+
+/* Network graph */
+.network-graph {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.network-node {
+  display: inline-block;
+  padding: 10px 18px;
+  border-radius: 6px;
+  font-size: 15px;
+  margin: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.network-connector {
+  text-align: center;
+  padding: 6px;
+  font-size: 15px;
+  color: #666;
+}
+
+.network-row {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+/* ============================================================
+   10. Speaker Colors
+   ============================================================ */
+.color-marx     { background: #c0392b; }
+.color-drucker  { background: #2980b9; }
+.color-kaifu    { background: #27ae60; }
+.color-crawford { background: #8e44ad; }
+.color-mao      { background: #d35400; }
+.color-pan      { background: #2980b9; }
+.color-huang    { background: #16a085; }
+.color-weber    { background: #7f8c8d; }
+.color-inamori  { background: #e67e22; }
+.color-foucault { background: #9b59b6; }
+
+.border-marx     { border-left-color: #c0392b; }
+.border-drucker  { border-left-color: #2980b9; }
+.border-kaifu    { border-left-color: #27ae60; }
+.border-crawford { border-left-color: #8e44ad; }
+.border-mao      { border-left-color: #d35400; }
+.border-pan      { border-left-color: #2980b9; }
+.border-huang    { border-left-color: #16a085; }
+.border-weber    { border-left-color: #7f8c8d; }
+.border-inamori  { border-left-color: #e67e22; }
+.border-foucault { border-left-color: #9b59b6; }
+
+/* ============================================================
+   11. Summary Section
+   ============================================================ */
+.summary-section {
+  margin-top: 64px;
+  padding-top: 32px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.contributor-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 16px;
+  margin: 24px 0;
+}
+
+.contributor-card {
+  display: flex;
+  gap: 14px;
+  padding: 18px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.open-questions {
+  margin: 32px 0;
+}
+
+.open-questions li {
+  margin-bottom: 20px;
+  font-size: 17px;
+  line-height: 1.8;
+}
+
+.open-questions li strong {
+  color: #f0f0f0;
+}
+
+.page-footer {
+  text-align: center;
+  padding: 40px 0;
+  font-size: 14px;
+  color: #555;
+}
+
+/* ============================================================
+   12. Responsive
+   ============================================================ */
+@media (max-width: 768px) {
+  body {
+    font-size: 16px;
+  }
+
+  /* Layout */
+  .page, .hero, .content {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+  .hero {
+    padding-top: 80px;
+    padding-bottom: 40px;
+  }
+
+  /* Progress bar */
+  .progress-bar-inner {
+    padding: 10px 16px;
+  }
+  .progress-current {
+    font-size: 13px;
+  }
+  .progress-expand {
+    font-size: 12px;
+  }
+  .progress-dot {
+    width: 8px;
+    height: 8px;
+  }
+
+  /* TOC */
+  .toc-inner {
+    padding: 0 16px;
+  }
+  .toc-item {
+    font-size: 14px;
+    padding: 8px 10px;
+  }
+
+  /* Hero */
+  .hero h1 {
+    font-size: 26px;
+  }
+  .hero-tag {
+    font-size: 12px;
+  }
+  .hero-meta {
+    font-size: 14px;
+  }
+  .hero-participants {
+    gap: 8px;
+  }
+  .participant-tag {
+    font-size: 13px;
+    padding: 5px 12px;
+  }
+
+  /* Round header */
+  .round-num {
+    font-size: 12px;
+  }
+  .round-title {
+    font-size: 22px;
+  }
+  .round-question {
+    font-size: 15px;
+    padding: 14px 16px;
+  }
+
+  /* Speech cards */
+  .speech {
+    padding: 16px 18px;
+    margin: 16px 0;
+  }
+  .speaker-avatar {
+    width: 34px;
+    height: 34px;
+    font-size: 14px;
+  }
+  .speaker-name {
+    font-size: 16px;
+  }
+  .speaker-action {
+    font-size: 11px;
+  }
+  .speech-body {
+    font-size: 15px;
+  }
+  .speech-tldr {
+    font-size: 14px;
+  }
+
+  /* Moderator */
+  .moderator-section {
+    padding: 18px;
+  }
+  .moderator-label {
+    font-size: 12px;
+  }
+
+  /* Charts */
+  .chart-container {
+    padding: 18px;
+  }
+  .chart-title {
+    font-size: 14px;
+  }
+  .tension-pole {
+    font-size: 14px;
+    padding: 10px 14px;
+  }
+  .tension-detail {
+    grid-template-columns: 1fr;
+  }
+  .tension-item {
+    font-size: 14px;
+  }
+  .layer-card .layer-label {
+    font-size: 12px;
+  }
+  .layer-card .layer-content {
+    font-size: 14px;
+  }
+  .framework-split {
+    grid-template-columns: 1fr;
+  }
+  .framework-card .fw-title {
+    font-size: 16px;
+  }
+  .framework-card .fw-detail {
+    font-size: 14px;
+  }
+  .converge-result {
+    font-size: 15px;
+  }
+  .step-title {
+    font-size: 15px;
+  }
+  .step-desc {
+    font-size: 14px;
+  }
+  .onion-layers {
+    padding: 14px;
+  }
+  .onion-layers .onion-label {
+    font-size: 13px;
+  }
+  .onion-layers .onion-desc {
+    font-size: 14px;
+  }
+  .network-node {
+    font-size: 13px;
+    padding: 8px 12px;
+  }
+  .action-table th {
+    font-size: 12px;
+  }
+  .action-table td {
+    font-size: 14px;
+  }
+
+  /* Summary */
+  .contributor-list {
+    grid-template-columns: 1fr;
+  }
+  .open-questions li {
+    font-size: 15px;
+  }
+}
+
+</style>
+</head>
+<body>
+
+<!-- Progress bar -->
+<div class="progress-bar">
+  <div class="progress-bar-inner">
+    <div class="progress-current"><span>第一轮</span> · 定义行政岗与教师岗的本质区别</div>
+    <div class="progress-dots">
+      <div class="progress-dot active"></div>
+      <div class="progress-dot"></div>
+      <div class="progress-dot"></div>
+      <div class="progress-dot"></div>
+      <div class="progress-dot"></div>
+      <div class="progress-dot"></div>
+      <div class="progress-dot"></div>
+      <div class="progress-dot"></div>
+      <div class="progress-dot"></div>
+      <div class="progress-dot"></div>
+      <div class="progress-dot"></div>
+      <div class="progress-dot"></div>
+      <div class="progress-dot"></div>
+    </div>
+    <div class="progress-expand">▼ 目录</div>
+  </div>
+</div>
+
+<!-- TOC panel with 13 items -->
+<div class="toc-panel">
+  <div class="toc-inner">
+    <div class="toc-item active"><div class="toc-num">1</div><span>定义行政岗与教师岗的本质区别</span></div>
+    <div class="toc-item"><div class="toc-num">2</div><span>五种决策框架是否互斥？</span></div>
+    <div class="toc-item"><div class="toc-num">3</div><span>时间窗口如何影响选择？</span></div>
+    <div class="toc-item"><div class="toc-num">4</div><span>前三年的精力分配策略</span></div>
+    <div class="toc-item"><div class="toc-num">5</div><span>执行复合策略的现实障碍</span></div>
+    <div class="toc-item"><div class="toc-num">6</div><span>十年视野下的职业分叉</span></div>
+    <div class="toc-item"><div class="toc-num">7</div><span>翻转立场——行政岗的最优策略</span></div>
+    <div class="toc-item"><div class="toc-num">8</div><span>行政岗的科层滑坡与对抗</span></div>
+    <div class="toc-item"><div class="toc-num">9</div><span>全景对比与最终结论</span></div>
+    <div class="toc-item"><div class="toc-num">10</div><span>宏观变革与教师角色重塑</span></div>
+    <div class="toc-item"><div class="toc-num">11</div><span>引入毛泽东——立场与意志</span></div>
+    <div class="toc-item"><div class="toc-num">12</div><span>意志力的边界与家庭约束</span></div>
+    <div class="toc-item"><div class="toc-num">13</div><span>最后一句话</span></div>
+  </div>
+</div>
+
+<!-- Hero -->
+<div class="hero">
+  <div class="hero-tag">圆桌研讨会</div>
+  <h1>职教新教师：行政岗还是教师岗？</h1>
+  <div class="hero-meta">2026年3月29日 · 十三轮深度对话 · 六位思想代表</div>
+  <div class="hero-participants">
+    <div class="participant-tag"><div class="participant-dot color-pan"></div> 潘懋元</div>
+    <div class="participant-tag"><div class="participant-dot color-huang"></div> 黄炎培</div>
+    <div class="participant-tag"><div class="participant-dot color-weber"></div> 马克斯·韦伯</div>
+    <div class="participant-tag"><div class="participant-dot color-inamori"></div> 稻盛和夫</div>
+    <div class="participant-tag"><div class="participant-dot color-foucault"></div> 米歇尔·福柯</div>
+    <div class="participant-tag"><div class="participant-dot color-mao"></div> 毛泽东</div>
+  </div>
+</div>
+
+<div class="content">
+
+  <!-- ===================== ROUND 1 ===================== -->
+  <div class="round-header">
+    <div class="round-num">第一轮</div>
+    <div class="round-title">定义行政岗与教师岗的本质区别</div>
+    <div class="round-question">
+      在中国高校语境下，"行政岗"与"专业教师岗"的本质区别是什么？这两条路径的核心逻辑各是什么？
+    </div>
+  </div>
+
+  <div class="speech">
+    <div class="speech-header">
+      <div class="speaker-avatar color-pan">潘</div>
+      <div class="speaker-info">
+        <span class="speaker-name">潘懋元</span>
+        <span class="speaker-action">陈述</span>
+      </div>
+    </div>
+    <div class="speech-body">
+      这个问题必须放在中国高校的"双轨制"结构中理解。行政岗走的是科层管理序列，其核心逻辑是<em>权力资源的积累</em>——你的发展取决于职务晋升，而晋升取决于上级认可与组织需要。专业教师岗走的是专业技术序列，核心逻辑是<em>学术资本的积累</em>——职称评定看论文、课题、教学成果，是一套相对透明的指标体系。两条路径的根本区别在于：行政岗的天花板由"位置"决定，教师岗的天花板由"能力"决定。但在现实中，中国高校存在严重的"行政化"倾向，行政权力往往凌驾于学术权力之上，这使得两条路径的价值判断变得复杂。
+    </div>
+    <div class="speech-tldr">
+      <strong>简言之：</strong>行政岗靠位置，教师岗靠能力，但高校行政化让行政岗在资源分配中占据结构性优势。
+    </div>
+  </div>
+
+  <div class="speech">
+    <div class="speech-header">
+      <div class="speaker-avatar color-huang">黄</div>
+      <div class="speaker-info">
+        <span class="speaker-name">黄炎培</span>
+        <span class="speaker-action">陈述</span>
+      </div>
+    </div>
+    <div class="speech-body">
+      我要从职业教育的特殊性来谈。职业教育不同于普通高等教育，它的灵魂是<em>"手脑并用""做学合一"</em>。一名职业院校的专业教师，本质上是学生与产业之间的桥梁。如果你选择了行政岗，你远离了课堂、远离了车间、远离了学生——你也就远离了职业教育的本质。我当年创办中华职业教育社时就反复强调，职业教育的教师必须"双师型"——既是教师，也是行业人。行政工作不会帮你成为这样的人。
+    </div>
+    <div class="speech-tldr">
+      <strong>简言之：</strong>职业教育的价值在课堂和车间里，行政办公室里长不出"双师型"教师。
+    </div>
+  </div>
+
+  <div class="speech">
+    <div class="speech-header">
+      <div class="speaker-avatar color-weber">韦</div>
+      <div class="speaker-info">
+        <span class="speaker-name">马克斯·韦伯</span>
+        <span class="speaker-action">质疑</span>
+      </div>
+    </div>
+    <div class="speech-body">
+      两位都在做价值判断，但我们必须先做事实分析。我在《学术作为志业》中区分了两种生存逻辑：<em>"以此为生"</em>（leben davon）和<em>"为此而生"</em>（leben dafür）。行政岗提供的是<em>确定性</em>——稳定的晋升阶梯、明确的权责边界、可预期的收入增长。教师岗提供的是<em>可能性</em>——学术自由、专业成长空间，但也伴随着职称评审的残酷竞争和巨大的不确定性。对于一个"尚未取得职称"的新人来说，这不是理想问题，首先是<em>生存策略</em>问题。你必须问自己：你能承受多大的不确定性？
+    </div>
+    <div class="speech-tldr">
+      <strong>简言之：</strong>在做价值选择之前，先做风险评估——行政岗卖确定性，教师岗卖可能性。
+    </div>
+  </div>
+
+  <div class="speech">
+    <div class="speech-header">
+      <div class="speaker-avatar color-inamori">稻</div>
+      <div class="speaker-info">
+        <span class="speaker-name">稻盛和夫</span>
+        <span class="speaker-action">反驳</span>
+      </div>
+    </div>
+    <div class="speech-body">
+      韦伯先生把这个问题简化成了风险计算，我不同意。在我看来，职业选择的核心不是"哪条路更安全"，而是<em>"哪条路能让你全身心投入"</em>。我在《活法》中反复讲一个道理：工作的意义不在于工作本身的高低，而在于你是否能在其中倾注热情、精进技艺。一个全心投入的行政人员，和一个全心投入的教师，都可以活出精彩。但关键是——你选择的那条路，是否能让你每天早上带着使命感醒来？如果你内心对"教书育人"有热情，却去做行政，你会在日复一日的公文流转中枯萎。
+    </div>
+    <div class="speech-tldr">
+      <strong>简言之：</strong>不要算哪条路更安全，要问哪条路能点燃你——热情才是持久竞争力的唯一来源。
+    </div>
+  </div>
+
+  <div class="speech">
+    <div class="speech-header">
+      <div class="speaker-avatar color-foucault">福</div>
+      <div class="speaker-info">
+        <span class="speaker-name">米歇尔·福柯</span>
+        <span class="speaker-action">质疑</span>
+      </div>
+    </div>
+    <div class="speech-body">
+      诸位的讨论有一个共同的盲点：你们都在假设这是一个"自由选择"。但我要问——<em>这个选择本身是如何被建构的？</em>为什么一个新教师会焦虑于"行政还是教学"？因为中国高校的权力-知识体系将人分类、编码、排序。行政岗和教师岗不只是两种工作，它们是两套<em>规训机制</em>。行政岗通过科层制规训你成为"服从者"，教师岗通过职称制规训你成为"论文生产者"。无论你选哪条路，你都在被一套权力技术塑造。真正的问题不是"选哪条路"，而是：<em>你是否意识到了这两条路各自的规训逻辑，并能在其中保持主体性？</em>
+    </div>
+    <div class="speech-tldr">
+      <strong>简言之：</strong>两条路都是规训机制——行政制造服从者，职称制造论文机器——关键是你能否在体制中保持清醒。
+    </div>
+  </div>
+
+  <div class="moderator-section">
+    <div class="moderator-label">主持人综述</div>
+    <p>核心争议点在于：<em>职业选择的决策框架应该是什么</em>——是制度分析（潘懋元）、使命驱动（黄炎培）、风险计算（韦伯）、热情导向（稻盛），还是权力解构（福柯）？</p>
+  </div>
+
+  <div class="chart-container">
+    <div class="chart-title">职业选择的五种决策框架</div>
+    <div class="framework-split">
+      <div class="framework-card" style="border-top-color: #2980b9; background: rgba(41,128,185,0.06);">
+        <div class="fw-title" style="color: #53a8b6;">外部结构分析</div>
+        <div class="fw-detail">制度逻辑（潘懋元）：看位置，行政占优<br>风险评估（韦伯）：看概率，行政更稳</div>
+      </div>
+      <div class="framework-card" style="border-top-color: #9b59b6; background: rgba(155,89,182,0.06);">
+        <div class="fw-title" style="color: #9b59b6;">内在动力分析</div>
+        <div class="fw-detail">使命驱动（黄炎培）：看价值，教师占优<br>热情导向（稻盛）：看心流，因人而异</div>
+      </div>
+    </div>
+    <div class="converge-arrow">▼ 元批判</div>
+    <div class="converge-result">
+      <strong>福柯：两条路都是规训机制——关键不是选哪条路，而是能否保持主体性</strong>
+    </div>
+  </div>
+
+  <!-- ===================== ROUND 2 ===================== -->
+  <div class="round-header">
+    <div class="round-num">第二轮（深入）</div>
+    <div class="round-title">五种决策框架是否互斥？</div>
+    <div class="round-question">
+      这五种决策框架是否真的互斥？一个初入行者能否找到某种整合逻辑，还是说必须在其中做出根本性的取舍？
+    </div>
+  </div>
+
+  <div class="speech">
+    <div class="speech-header">
+      <div class="speaker-avatar color-weber">韦</div>
+      <div class="speaker-info">
+        <span class="speaker-name">马克斯·韦伯</span>
+        <span class="speaker-action">反驳</span>
+      </div>
+    </div>
+    <div class="speech-body">
+      稻盛先生说"不要算风险，要追随热情"，这是成功者的后见之明。你经营京瓷成功了，回头说"热情最重要"，这叫<em>幸存者偏差</em>。我见过太多怀揣热情却被制度碾碎的人。一个没有职称的新教师，他面对的现实是：教师岗的职称评审需要论文、课题、教学成果，而这些资源的分配——注意——往往掌握在行政系统手中。你不做行政，你甚至可能拿不到评职称所需要的资源支持。这就是我说的"铁笼"：<em>你以为你在选择道路，其实制度已经替你选了。</em>
+    </div>
+    <div class="speech-tldr">
+      <strong>简言之：</strong>热情不能对抗结构——没有资源支撑的热情，在职称评审的铁笼里会被活活饿死。
+    </div>
+  </div>
+
+  <div class="speech">
+    <div class="speech-header">
+      <div class="speaker-avatar color-inamori">稻</div>
+      <div class="speaker-info">
+        <span class="speaker-name">稻盛和夫</span>
+        <span class="speaker-action">反驳</span>
+      </div>
+    </div>
+    <div class="speech-body">
+      韦伯先生，你对制度的分析很精准，但你忽略了一个变量：<em>人的能动性会改变制度对你的作用方式。</em>我创业时日本的大企业体制同样是铁笼，但我在京瓷内部推行"阿米巴经营"，用热情和专注在铁笼里打开了空间。回到这个问题——一个新教师如果选择教师岗，全身心投入教学和专业，他的课会被学生认可，他的专业能力会被行业看到，这些<em>"非制度性资本"</em>最终会反哺他在制度内的地位。我见过太多人，选了"安全的路"，十年后变成一个既没有热情也没有能力的行政螺丝钉。<em>你躲进铁笼里并不会更安全，你只是更确定地平庸。</em>
+    </div>
+    <div class="speech-tldr">
+      <strong>简言之：</strong>铁笼困不住真正投入的人——非制度性资本（口碑、能力、行业认可）终会转化为制度内的话语权。
+    </div>
+  </div>
+
+  <div class="speech">
+    <div class="speech-header">
+      <div class="speaker-avatar color-pan">潘</div>
+      <div class="speaker-info">
+        <span class="speaker-name">潘懋元</span>
+        <span class="speaker-action">修正</span>
+      </div>
+    </div>
+    <div class="speech-body">
+      两位争论的焦点其实可以用实证来回答。我研究中国高等教育几十年，看到一个清晰的规律：<em>在职业院校，从行政转教学几乎不可能，而从教学转行政则是常见路径。</em>原因很简单——行政岗不积累专业能力，三五年后你的专业就荒废了，想回教学岗没有资本；但教学岗积累的专业声望和行业资源，恰恰是你日后转行政的筹码。很多职业院校的院长、系主任，都是从优秀教师中选拔的。所以这不是"行政还是教学"的选择，而是一个<em>不对称的路径问题——教学岗是双向门，行政岗是单向门</em>。
+    </div>
+    <div class="speech-tldr">
+      <strong>简言之：</strong>教学转行政随时可以，行政转教学几乎不能——路径的可逆性才是新人最该考虑的因素。
+    </div>
+  </div>
+
+  <div class="speech">
+    <div class="speech-header">
+      <div class="speaker-avatar color-foucault">福</div>
+      <div class="speaker-info">
+        <span class="speaker-name">米歇尔·福柯</span>
+        <span class="speaker-action">质疑</span>
+      </div>
+    </div>
+    <div class="speech-body">
+      潘先生的分析看似实用，但恰恰落入了制度叙事的圈套。"教学转行政是常见路径"——这话翻译一下就是：<em>制度奖励那些最终愿意进入权力序列的教师。</em>这说明什么？说明所谓"教学岗是双向门"，本质上是权力系统设置的一个<em>诱捕装置</em>：先让你在教学岗上证明自己"可用"，再把你吸纳进行政体系。那些拒绝转行政、坚守教学的人呢？他们在资源分配中被边缘化，在话语体系中被称为"不上进"。所以我要追问：<em>你们说的"双向门"，真的是自由选择的结果，还是权力规训的产物？</em>
+    </div>
+    <div class="speech-tldr">
+      <strong>简言之：</strong>所谓"教学转行政"不是自由流动，是权力系统筛选驯服者的吸纳机制。
+    </div>
+  </div>
+
+  <div class="speech">
+    <div class="speech-header">
+      <div class="speaker-avatar color-huang">黄</div>
+      <div class="speaker-info">
+        <span class="speaker-name">黄炎培</span>
+        <span class="speaker-action">补充</span>
+      </div>
+    </div>
+    <div class="speech-body">
+      福柯先生说得尖锐，但我要把讨论拉回职业教育的特殊语境。普通高校或许如此，但<em>职业教育有一条普通高校没有的第三条路：面向产业。</em>一名优秀的职业教育教师，他的价值不只在校内的职称和行政级别，还在于他与产业的连接。你可以成为行业专家、技能大师、产教融合的关键人物。这条路既不受行政科层的规训，也不完全受职称体系的约束。我当年办职业教育就是要打破"学而优则仕"的逻辑。<em>职业教育教师的终极出路不是当官，是成为不可替代的专业人。</em>
+    </div>
+    <div class="speech-tldr">
+      <strong>简言之：</strong>职业教育教师有第三条路——成为产业端不可替代的专家，这条路绕开了行政和职称的双重铁笼。
+    </div>
+  </div>
+
+  <div class="moderator-section">
+    <div class="moderator-label">主持人综述</div>
+    <p>核心争议已经从"选哪条路"深化为：<em>路径的本质属性是什么——可逆性、规训性、还是存在被忽视的第三空间？</em>潘懋元提出了路径不对称性（教学是双向门），福柯立刻解构了这个判断的前提，而黄炎培打开了产业连接的新维度。</p>
+  </div>
+
+  <div class="chart-container">
+    <div class="chart-title">路径属性的核心张力</div>
+    <div class="tension-axis">
+      <div class="tension-pole left">可逆性（潘懋元）</div>
+      <div class="tension-line"></div>
+      <div class="tension-pole right">规训性（福柯）</div>
+    </div>
+    <div class="tension-detail">
+      <div class="tension-item blue">教学→行政 ✓ · 行政→教学 ✗ · 先教学保留选择权</div>
+      <div class="tension-item red">"双向门"是权力吸纳机制 · 制度奖励进入权力序列的人</div>
+      <div class="tension-item blue">黄炎培的第三空间：面向产业 · 绕开行政和职称双重铁笼</div>
+      <div class="tension-item red">韦伯 vs 稻盛：制度决定命运 vs 能动性突破铁笼</div>
+    </div>
+  </div>
+
+  <!-- ===================== ROUND 3 ===================== -->
+  <div class="round-header">
+    <div class="round-num">第三轮</div>
+    <div class="round-title">时间窗口如何影响选择？</div>
+    <div class="round-question">
+      对于一个"尚未取得职称"的初入行者，时间窗口如何影响这个选择？前几年的路径选择是否会锁死未来的可能性？
+    </div>
+  </div>
+
+  <div class="speech">
+    <div class="speech-header">
+      <div class="speaker-avatar color-pan">潘</div>
+      <div class="speaker-info">
+        <span class="speaker-name">潘懋元</span>
+        <span class="speaker-action">陈述</span>
+      </div>
+    </div>
+    <div class="speech-body">
+      时间窗口问题必须用数据说话。中国高校职称评审有一条隐性时间线：讲师一般要求入职2-3年后申报，副教授通常需要讲师任职满4-5年。也就是说，<em>入职后的前5-7年是职称积累的黄金窗口</em>。如果你前5年在行政岗，你没有课时量、没有教研成果、没有指导学生的记录——你的职称材料是空白的。而职称评审中"任职年限"是硬指标，你不是晚几年开始的问题，你是<em>起跑线被整体后移了</em>。在职业院校，"双师型"资格认定同样需要教学年限和行业实践记录。行政岗不产生这些积累。所以我的判断很明确：前5年选行政，你在职称赛道上的损失几乎是不可逆的。
+    </div>
+    <div class="speech-tldr">
+      <strong>简言之：</strong>前5-7年是职称积累的不可替代窗口，行政岗不产生任何职称资本，时间损失不可逆。
+    </div>
+  </div>
+
+  <div class="speech">
+    <div class="speech-header">
+      <div class="speaker-avatar color-weber">韦</div>
+      <div class="speaker-info">
+        <span class="speaker-name">马克斯·韦伯</span>
+        <span class="speaker-action">补充</span>
+      </div>
+    </div>
+    <div class="speech-body">
+      潘先生说的是"教师赛道"的时间逻辑，但行政赛道有自己的时间逻辑。中国高校行政体系有一个潜规则：<em>越早进入，位置越好。</em>行政岗的晋升是"占位"逻辑——科员、副科、正科、副处……每一级都需要任职年限，而且位置有限，先到先得。一个28岁进入行政序列的人和一个35岁进入的人，他们的晋升天花板完全不同。所以时间窗口的压力是双向的：教师岗有职称窗口，行政岗有职务窗口。<em>两条路都有时钟在倒计时，你不可能两边同时跑。</em>
+    </div>
+    <div class="speech-tldr">
+      <strong>简言之：</strong>行政岗同样有"越早入场越好"的时间锁——两条赛道的时钟不兼容，你必须选一个启动。
+    </div>
+  </div>
+
+  <div class="speech">
+    <div class="speech-header">
+      <div class="speaker-avatar color-huang">黄</div>
+      <div class="speaker-info">
+        <span class="speaker-name">黄炎培</span>
+        <span class="speaker-action">质疑</span>
+      </div>
+    </div>
+    <div class="speech-body">
+      韦伯先生，你把两条路都描述成"倒计时赛道"，这本身就有问题。你在用<em>官僚制的时间观</em>来衡量一切——好像人生就是一场晋升竞赛。但职业教育教师有一种完全不同的时间逻辑：<em>能力积累的时间。</em>一名教师花3年深入一个行业、拿到技能证书、建立校企合作关系——这些不是在"赛道上跑"，这是在<em>扎根</em>。扎根没有"窗口期"这一说，30岁可以扎，40岁也可以扎。反而是那些一毕业就进行政的人，到了40岁忽然发现自己既没有专业能力也没有行业资源，<em>那才叫真正的"窗口关闭"——不是某个赛道的窗口，是作为一个专业人的窗口。</em>
+    </div>
+    <div class="speech-tldr">
+      <strong>简言之：</strong>能力扎根没有窗口期，但荒废专业能力的损失才是真正不可逆的——40岁的空心行政人员无路可退。
+    </div>
+  </div>
+
+  <div class="speech">
+    <div class="speech-header">
+      <div class="speaker-avatar color-foucault">福</div>
+      <div class="speaker-info">
+        <span class="speaker-name">米歇尔·福柯</span>
+        <span class="speaker-action">反驳</span>
+      </div>
+    </div>
+    <div class="speech-body">
+      诸位一直在讨论"时间窗口"，但你们回避了一个更残酷的事实：<em>在中国高校，行政岗和教师岗的时间不是平等的时间。</em>行政岗的一年，你获得的是关系网络、信息优势、资源调配权——这些是<em>权力时间</em>。教师岗的一年，你获得的是论文、课时、学生评价——这些是<em>绩效时间</em>。权力时间和绩效时间的兑换比是不对等的。一个行政副处长转教师岗评副教授，制度会为他开绿灯；一个副教授想转行政拿副处级，却要从头排队。所以潘先生说"教学转行政容易"，这话在基层或许成立，但到了中高层，真正的转换方向是<em>行政向教学的单向特权通道</em>。
+    </div>
+    <div class="speech-tldr">
+      <strong>简言之：</strong>权力时间可以兑换学术头衔，反过来却不行——制度为权力持有者开设了隐形的职称绿色通道。
+    </div>
+  </div>
+
+  <div class="speech">
+    <div class="speech-header">
+      <div class="speaker-avatar color-inamori">稻</div>
+      <div class="speaker-info">
+        <span class="speaker-name">稻盛和夫</span>
+        <span class="speaker-action">修正</span>
+      </div>
+    </div>
+    <div class="speech-body">
+      各位都在分析制度的时间逻辑，但忽略了一个最朴素的事实：<em>一个人在前5年全心投入所积累的能力密度，远超在两条路之间犹豫摇摆10年的人。</em>我在京瓷的经验是——那些最终成长为核心人才的人，无一例外都是在入职初期就做出了"全力以赴"的选择，而不是在"最优路径"上反复计算。时间窗口的真正敌人不是"选错了路"，而是<em>"一直在选路"</em>。你花在犹豫上的每一天，都是两条路同时在流失的时间。
+    </div>
+    <div class="speech-tldr">
+      <strong>简言之：</strong>最大的时间浪费不是选错路，是一直站在岔路口——犹豫本身就是两条路的双重损耗。
+    </div>
+  </div>
+
+  <div class="speech">
+    <div class="speech-header">
+      <div class="speaker-avatar color-pan">潘</div>
+      <div class="speaker-info">
+        <span class="speaker-name">潘懋元</span>
+        <span class="speaker-action">反驳</span>
+      </div>
+    </div>
+    <div class="speech-body">
+      福柯先生提到的"行政向教学的特权通道"，我必须做一个事实修正。这种现象确实存在，但<em>主要存在于研究型大学和本科院校，在职业院校中并不显著</em>。职业院校的职称评审越来越强调"双师型"硬指标——企业实践经历、技能等级证书、指导学生竞赛获奖——这些不是行政职务能"兑换"的。近年来国家对职业教育的政策导向也在强化这一点：2022年新修订的《职业教育法》明确提升了技术技能人才的地位。所以在职业院校这个具体语境下，<em>教学岗的专业积累正在获得越来越强的制度保障，行政权力对职称的干预空间在收窄</em>。
+    </div>
+    <div class="speech-tldr">
+      <strong>简言之：</strong>职业院校的职称评审正在硬化"双师型"指标，行政权力兑换职称的特权通道在这个赛道上正在关闭。
+    </div>
+  </div>
+
+  <div class="moderator-section">
+    <div class="moderator-label">主持人综述</div>
+    <p>这一轮将"时间"这个变量彻底打开了。核心争议点在于：<em>时间的本质属性在两条路径中是否相同？以及，不同类型的时间积累之间，兑换关系是否对等？</em>讨论暴露了三种截然不同的时间观。</p>
+  </div>
+
+  <div class="chart-container">
+    <div class="chart-title">时间的三重性质</div>
+    <div class="layer-stack">
+      <div class="layer-card" style="border-left-color: #2980b9; background: rgba(41,128,185,0.08);">
+        <div class="layer-label" style="color: #53a8b6;">绩效时间（教师岗）</div>
+        <div class="layer-content">载体：论文/课时/奖项 · 节奏：线性积累 · 窗口：前5-7年关键 · 荒废后难补</div>
+      </div>
+      <div class="layer-card" style="border-left-color: #7f8c8d; background: rgba(127,140,141,0.08);">
+        <div class="layer-label" style="color: #7f8c8d;">权力时间（行政岗）</div>
+        <div class="layer-content">载体：关系/位置/信息 · 节奏：阶梯式占位 · 窗口：越早越好 · 位置失去即失去</div>
+      </div>
+      <div class="layer-card" style="border-left-color: #16a085; background: rgba(22,160,133,0.08);">
+        <div class="layer-label" style="color: #16a085;">能力时间（第三条路）</div>
+        <div class="layer-content">载体：技能/口碑/行业网络 · 节奏：指数型复利 · 窗口：无硬性截止 · 能力不会消失</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== ROUND 4 ===================== -->
+  <div class="round-header">
+    <div class="round-num">第四轮</div>
+    <div class="round-title">前三年的精力分配策略</div>
+    <div class="round-question">
+      如果选择教师岗，前三年应该如何具体地分配精力——教学、科研、行业实践、人际关系——才能最大化"能力时间"的复利效应，同时不在"绩效时间"的硬指标上落后？
+    </div>
+  </div>
+
+  <div class="speech">
+    <div class="speech-header">
+      <div class="speaker-avatar color-pan">潘</div>
+      <div class="speaker-info">
+        <span class="speaker-name">潘懋元</span>
+        <span class="speaker-action">陈述</span>
+      </div>
+    </div>
+    <div class="speech-body">
+      我先给出一个基于制度现实的框架。职业院校教师的职称评审，核心看四个维度：教学工作量与质量、科研成果（论文/课题）、实践能力（双师资格/企业经历）、社会服务（竞赛指导/社会培训）。前三年的精力分配，我建议按<em>"5-2-2-1"节奏</em>思考：50%投入教学——这是你的立身之本；20%投入行业实践——考取技能证书、到企业顶岗或访学；20%投入科研——不求大课题，先从教改论文和校级课题起步；10%投入人际关系——找到一位好导师，加入一个教研团队。但我要特别强调：<em>前三年的科研不要贪大</em>，职业院校评讲师看的是"有没有"，不是"多不多"。
+    </div>
+    <div class="speech-tldr">
+      <strong>简言之：</strong>5-2-2-1分配（教学-实践-科研-关系），前三年科研求"有"不求"多"，教学和行业实践才是高杠杆投入。
+    </div>
+  </div>
+
+  <div class="speech">
+    <div class="speech-header">
+      <div class="speaker-avatar color-huang">黄</div>
+      <div class="speaker-info">
+        <span class="speaker-name">黄炎培</span>
+        <span class="speaker-action">补充</span>
+      </div>
+    </div>
+    <div class="speech-body">
+      潘先生的框架很务实，但我要把"行业实践"这20%的内涵说透。很多年轻教师理解的"行业实践"是去企业走马观花挂个名、拿个盖章证明回来交差。这不叫实践，这叫<em>表演实践</em>。真正的行业实践是你要能<em>解决企业的真实问题</em>。我的建议是：第一年找到一家与你专业对口的企业，不是去"学习"，而是去"服务"——帮他们解决一个技术难题，哪怕很小。当你能解决问题的时候，三件事会同时发生：企业认可你、学生信服你、你手里有了真实案例可以写进教学和论文。<em>一次真实的产业问题解决，同时喂养了教学、科研和行业实践三个维度。</em>这才是复利的真正含义。
+    </div>
+    <div class="speech-tldr">
+      <strong>简言之：</strong>不要"去企业学习"，要"为企业解决问题"——一次真实的问题解决同时产出教学案例、科研素材和行业口碑，这是三倍复利。
+    </div>
+  </div>
+
+  <div class="speech">
+    <div class="speech-header">
+      <div class="speaker-avatar color-inamori">稻</div>
+      <div class="speaker-info">
+        <span class="speaker-name">稻盛和夫</span>
+        <span class="speaker-action">质疑</span>
+      </div>
+    </div>
+    <div class="speech-body">
+      潘先生的比例分配法和黄先生的实践观都很好，但我有一个根本性的担忧：<em>把精力切成百分比，本身就是一种错误的思维方式。</em>这种思维的潜台词是"每件事都做一点，每件事都不落下"——这恰恰是平庸者的策略。我在经营中总结的原则是"极致聚焦"：<em>在某一个点上做到极致，其他维度的成果会作为副产品自然溢出。</em>对这位年轻教师，我的建议是：前三年只做一件事——把你的课上到让学生自发传播的程度。当你的课成为全校标杆，系主任会主动邀请你参加教改课题，企业会主动找你做培训合作，论文素材会从你的教学实践中源源不断地长出来。
+    </div>
+    <div class="speech-tldr">
+      <strong>简言之：</strong>不要做精力分配的会计师——把课上到极致，科研、实践、人脉会作为副产品自然溢出。
+    </div>
+  </div>
+
+  <div class="speech">
+    <div class="speech-header">
+      <div class="speaker-avatar color-weber">韦</div>
+      <div class="speaker-info">
+        <span class="speaker-name">马克斯·韦伯</span>
+        <span class="speaker-action">反驳</span>
+      </div>
+    </div>
+    <div class="speech-body">
+      稻盛先生的"极致聚焦论"在商业领域或许成立，但在中国高校的制度环境中是<em>危险的浪漫主义</em>。原因很简单：职称评审是<em>清单制</em>，不是<em>亮点制</em>。你课上得再好，论文数量为零，评审表上就是不达标。你教学能力再强，没有双师资格证书，硬性条件就是不满足。高校不是市场——市场奖励极致，制度奖励合规。我见过太多这样的人：课上得全校最好，学生爱戴，同事尊敬，但评了三次副教授都没过，因为论文不够。最后心灰意冷离开了教育行业。<em>在制度环境中，短板会杀死你，长板救不了你。</em>
+    </div>
+    <div class="speech-tldr">
+      <strong>简言之：</strong>职称评审是清单制不是亮点制——短板一票否决，课上得再好也填不了论文栏的空白。
+    </div>
+  </div>
+
+  <div class="speech">
+    <div class="speech-header">
+      <div class="speaker-avatar color-foucault">福</div>
+      <div class="speaker-info">
+        <span class="speaker-name">米歇尔·福柯</span>
+        <span class="speaker-action">综合</span>
+      </div>
+    </div>
+    <div class="speech-body">
+      韦伯和稻盛的争论其实暴露了一个更深层的问题：<em>你是在为制度的评价体系工作，还是在为自己的专业生命工作？</em>这两件事在短期内可能冲突，但我要指出一个悖论——那些完全按照评审清单来"规划"前三年的人，往往在通过评审之后陷入深度倦怠。而那些按照内心热情去工作的人，即使在制度上碰壁，他们的专业能力和行业声望最终会为他们打开制度之外的出路。所以我想提出一个不同的框架：不要问"如何分配精力以满足制度要求"，要问<em>"如何让我的每一份投入同时服务于制度要求和内在成长"</em>。黄炎培先生刚才说的"为企业解决真实问题"就是一个完美的例子。寻找这种<em>双重回报的行动</em>，才是真正的策略。
+    </div>
+    <div class="speech-tldr">
+      <strong>简言之：</strong>不要把精力分给"制度"和"自我"两个账户——寻找同时服务两者的双重回报行动，让每一份投入产出两种货币。
+    </div>
+  </div>
+
+  <div class="speech">
+    <div class="speech-header">
+      <div class="speaker-avatar color-pan">潘</div>
+      <div class="speaker-info">
+        <span class="speaker-name">潘懋元</span>
+        <span class="speaker-action">修正</span>
+      </div>
+    </div>
+    <div class="speech-body">
+      韦伯和稻盛的争论促使我修正自己的建议。我之前的"5-2-2-1"可能过于机械了。前三年的核心策略不是<em>分配精力</em>，而是<em>设计行动的复合产出</em>。具体来说：第一，<em>以教学为主战场</em>，如果你采用"项目化教学"，用企业真实项目作为教学载体，那么一门课同时产出了：教学工作量（绩效）、企业合作关系（实践）、教改论文素材（科研）。第二，<em>前两年拿下双师资格</em>，这是硬指标，越早解决越好。第三，<em>第二年开始申报校级教改课题</em>，课题组会把你和有经验的教师绑在一起，这是最高效的人脉建设方式。
+    </div>
+    <div class="speech-tldr">
+      <strong>简言之：</strong>不是切蛋糕式分配精力，而是设计"一个行动多重产出"的复合策略——项目化教学是最佳载体。
+    </div>
+  </div>
+
+  <div class="moderator-section">
+    <div class="moderator-label">主持人综述</div>
+    <p>核心争议已经从"如何分配精力"转化为一个更精准的问题：<em>精力管理的元策略应该是"均衡分配"还是"复合产出"？</em>韦伯与稻盛的正面交锋最为关键，但福柯和潘懋元从不同路径找到了同一个出口——双重回报行动。</p>
+  </div>
+
+  <div class="chart-container">
+    <div class="chart-title">前三年复合产出行动路线</div>
+    <div class="timeline">
+      <div class="timeline-step" style="border-left-color: #2980b9;">
+        <div class="step-num" style="background: rgba(41,128,185,0.2); color: #2980b9;">1</div>
+        <div class="step-title">Year 1 · 打磨教学 + 双师备考</div>
+        <div class="step-desc">以教学为根，同时准备双师资格考试</div>
+      </div>
+      <div class="timeline-step" style="border-left-color: #16a085;">
+        <div class="step-num" style="background: rgba(22,160,133,0.2); color: #16a085;">2</div>
+        <div class="step-title">Year 2 · 项目化教学 + 校级课题</div>
+        <div class="step-desc">用企业真实项目做教学载体，一石三鸟</div>
+      </div>
+      <div class="timeline-step" style="border-left-color: #e67e22;">
+        <div class="step-num" style="background: rgba(230,126,34,0.2); color: #e67e22;">3</div>
+        <div class="step-title">Year 3 · 企业深度合作 + 评讲师</div>
+        <div class="step-desc">在行业端建立专业人设，积累复合产出</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== ROUND 5 ===================== -->
+  <div class="round-header">
+    <div class="round-num">第五轮</div>
+    <div class="round-title">执行复合策略的现实障碍</div>
+    <div class="round-question">
+      执行这条"复合产出"路径时，最大的现实障碍是什么？初入行者如何识别和突破这些瓶颈？
+    </div>
+  </div>
+
+  <div class="speech">
+    <div class="speech-header">
+      <div class="speaker-avatar color-weber">韦</div>
+      <div class="speaker-info">
+        <span class="speaker-name">马克斯·韦伯</span>
+        <span class="speaker-action">陈述</span>
+      </div>
+    </div>
+    <div class="speech-body">
+      我先讲制度层面的障碍。第一个现实是：<em>你没有选课权。</em>新教师的课程安排由教研室主任或系部决定，你很可能被塞一堆公共基础课或别人不愿上的边缘课程。你想搞"项目化教学"，但你教的是《思想道德与法治》——项目化的载体根本不存在。第二个现实是：<em>你没有话语权。</em>校企合作协议通常由系部领导对接，一个新教师想自己联系企业做项目，行政流程就能把你卡死。第三个现实是：<em>你没有时间。</em>新教师通常被安排最重的课时量，还要承担辅导员工作、迎新值班、材料撰写等杂务。所谓"复合产出"的美好设想，在制度性杂务的挤压下可能根本没有生存空间。
+    </div>
+    <div class="speech-tldr">
+      <strong>简言之：</strong>新教师面临三无困境——无选课权、无话语权、无自由时间——复合策略的前提条件在制度层面可能根本不成立。
+    </div>
+  </div>
+
+  <div class="speech">
+    <div class="speech-header">
+      <div class="speaker-avatar color-inamori">稻</div>
+      <div class="speaker-info">
+        <span class="speaker-name">稻盛和夫</span>
+        <span class="speaker-action">反驳</span>
+      </div>
+    </div>
+    <div class="speech-body">
+      韦伯先生又在用制度的铁幕来吓人了。你说的这些障碍全都是真的，但你漏掉了一个关键变量：<em>人与人之间的信任是可以经营的。</em>你被安排了公共基础课？那就把这门课上成全校学生口碑最好的课。你没有权限联系企业？那就先帮系主任完成他的校企合作任务，做他最可靠的执行者。这是<em>用行动建立信用账户</em>。当你的信用账户足够厚，资源会主动向你倾斜。一个人最初的三年，不是用来"争取资源"的，是用来<em>证明你值得拥有资源</em>的。
+    </div>
+    <div class="speech-tldr">
+      <strong>简言之：</strong>前三年不是争资源的时间，是建信用账户的时间——把手头的事做到极致，资源会追着你来。
+    </div>
+  </div>
+
+  <div class="speech">
+    <div class="speech-header">
+      <div class="speaker-avatar color-foucault">福</div>
+      <div class="speaker-info">
+        <span class="speaker-name">米歇尔·福柯</span>
+        <span class="speaker-action">质疑</span>
+      </div>
+    </div>
+    <div class="speech-body">
+      稻盛先生，你描述的这套逻辑——先服从、先证明、先积累信用——恰恰是我所说的<em>规训的内化</em>。你让一个年轻人相信"只要我足够努力、足够忠诚，体制就会奖励我"。这是所有权力系统最精妙的控制术：让被统治者把服从当作美德。现实中更常见的剧本是：你帮系主任做了三年苦力，他觉得你"好用"，继续把杂活堆给你。<em>信用账户的悖论在于：你越证明自己在某个位置上不可替代，你就越难离开那个位置。</em>这不是通往自由的路径，这是通往更精致的陷阱。
+    </div>
+    <div class="speech-tldr">
+      <strong>简言之：</strong>信用账户是把双刃剑——你越好用就越被锁定在"好用"的位置上，服从的回报往往是更多的服从。
+    </div>
+  </div>
+
+  <div class="speech">
+    <div class="speech-header">
+      <div class="speaker-avatar color-huang">黄</div>
+      <div class="speaker-info">
+        <span class="speaker-name">黄炎培</span>
+        <span class="speaker-action">补充</span>
+      </div>
+    </div>
+    <div class="speech-body">
+      福柯先生这个批判非常尖锐，但他忽略了一个破局点：<em>你的信用账户不必只建在校内。</em>没有任何制度能阻止你以个人身份参加行业协会活动、技能竞赛的裁判工作、或者在专业社群中发表见解。我见过最聪明的职教年轻教师是这样做的：他不去跟校内行政体系争资源，他直接在行业端建立自己的<em>专业人设</em>。他考取了行业高级证书，在行业论坛上做技术分享，慢慢有企业主动找上门来谈合作。当企业主动找你的时候，校内的行政流程就不再是障碍，而是为你服务的通道。<em>权力的本质是资源依赖关系，当你从资源的需求方变成供给方，权力关系就反转了。</em>
+    </div>
+    <div class="speech-tldr">
+      <strong>简言之：</strong>不要在校内争资源，去行业端制造资源——当你成为校企合作的供给方，行政体系反过来为你服务。
+    </div>
+  </div>
+
+  <div class="speech">
+    <div class="speech-header">
+      <div class="speaker-avatar color-pan">潘</div>
+      <div class="speaker-info">
+        <span class="speaker-name">潘懋元</span>
+        <span class="speaker-action">综合</span>
+      </div>
+    </div>
+    <div class="speech-body">
+      新教师面临的障碍确实存在三个层次，但每个层次都有对应的突破策略：<em>第一层：制度障碍——用合规路径绕行。</em>你不能选课，但你可以申请教改立项，以"课程改革"的名义重新设计课程内容。<em>第二层：资源障碍——用外部资源倒灌。</em>参加省级或国家级职业技能大赛的指导工作。技能大赛在职业院校的权重极高，一旦你指导学生获奖，你在校内的资源获取能力会发生质变。<em>第三层：个人障碍——找到一个"锚点人物"。</em>找到一位既有行政资源又尊重专业发展的导师或领导。
+    </div>
+    <div class="speech-tldr">
+      <strong>简言之：</strong>三层障碍三把钥匙——教改立项绕制度、技能大赛破资源、锚点人物避陷阱。
+    </div>
+  </div>
+
+  <div class="speech">
+    <div class="speech-header">
+      <div class="speaker-avatar color-weber">韦</div>
+      <div class="speaker-info">
+        <span class="speaker-name">马克斯·韦伯</span>
+        <span class="speaker-action">修正</span>
+      </div>
+    </div>
+    <div class="speech-body">
+      我必须承认，潘先生和黄先生提出的策略比我预期的更具可行性。但我仍要做一个冷静的风险提示：以上所有策略都有一个共同的隐含前提——<em>你所在的院校是一个"基本理性"的组织</em>。现实中，相当数量的职业院校存在严重的管理失序。所以我要加一条残酷但必要的建议：<em>在入职的第一学期，用你的眼睛观察这个组织是否值得你投入。</em>如果你发现这是一个严重失序的环境——制度形同虚设、劣币驱逐良币——那么最理性的选择不是"如何在这里突围"，而是<em>尽早离开，换一个值得投入的平台</em>。
+    </div>
+    <div class="speech-tldr">
+      <strong>简言之：</strong>所有策略都预设了"基本理性的组织"——第一学期的首要任务是判断这个组织是否值得你投入，不值得就趁早止损。
+    </div>
+  </div>
+
+  <div class="moderator-section">
+    <div class="moderator-label">主持人综述</div>
+    <p>核心发现：三层障碍已经形成了清晰的图谱，但韦伯的最后警告揭示了一个元问题——<em>所有策略都依赖"组织环境"这个外生变量，而你对这个变量的控制力几乎为零。</em></p>
+  </div>
+
+  <div class="chart-container">
+    <div class="chart-title">新教师突围的三层障碍与策略</div>
+    <div class="layer-stack">
+      <div class="layer-card" style="border-left-color: #e94560; background: rgba(233,69,96,0.08);">
+        <div class="layer-label" style="color: #e94560;">制度层 · 无选课权</div>
+        <div class="layer-content">策略：教改立项（合规绕行）→ 获得课程自主权</div>
+      </div>
+      <div class="layer-card" style="border-left-color: #e67e22; background: rgba(230,126,34,0.08);">
+        <div class="layer-label" style="color: #e67e22;">资源层 · 无话语权</div>
+        <div class="layer-content">策略：技能大赛指导 + 行业端建人设 → 外部资源倒灌</div>
+      </div>
+      <div class="layer-card" style="border-left-color: #16a085; background: rgba(22,160,133,0.08);">
+        <div class="layer-label" style="color: #16a085;">个人层 · 被杂务吞噬</div>
+        <div class="layer-content">策略：锚点人物（选对导师）→ 保护空间与成长通道</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== ROUND 6 ===================== -->
+  <div class="round-header">
+    <div class="round-num">第六轮</div>
+    <div class="round-title">十年视野下的职业分叉</div>
+    <div class="round-question">
+      前三年基础积累完成后，"技术技能大师""教学管理者""产教融合创业者"三条路径各自需要怎样的能力储备和时机判断？
+    </div>
+  </div>
+
+  <div class="speech">
+    <div class="speech-header">
+      <div class="speaker-avatar color-huang">黄</div>
+      <div class="speaker-info">
+        <span class="speaker-name">黄炎培</span>
+        <span class="speaker-action">陈述</span>
+      </div>
+    </div>
+    <div class="speech-body">
+      让我先把这三条路的本质说清楚。<em>技术技能大师走的是"深度"逻辑</em>——你在一个细分领域做到顶尖，你的价值来自不可替代的技术深度。<em>教学管理者走的是"宽度"逻辑</em>——你需要理解课程体系、团队建设、资源配置，你的价值来自组织协调能力。<em>产教融合创业者走的是"连接"逻辑</em>——你在学校和产业之间建立通道，你的价值来自跨界整合能力。这三条路要求的人格特质完全不同：大师需要<em>偏执</em>，管理者需要<em>包容</em>，创业者需要<em>嗅觉</em>。
+    </div>
+    <div class="speech-tldr">
+      <strong>简言之：</strong>三条路的底层逻辑分别是深度、宽度、连接——选择哪条取决于你是偏执型、包容型还是嗅觉型人格。
+    </div>
+  </div>
+
+  <div class="speech">
+    <div class="speech-header">
+      <div class="speaker-avatar color-inamori">稻</div>
+      <div class="speaker-info">
+        <span class="speaker-name">稻盛和夫</span>
+        <span class="speaker-action">质疑</span>
+      </div>
+    </div>
+    <div class="speech-body">
+      黄先生把这个问题框定为"人格类型匹配"，我认为这恰恰是最危险的思维陷阱。大多数人在28岁、30岁的时候根本不知道自己"是什么类型的人"。<em>人的特质不是先天固定的，是在全力投入中被锻造出来的。</em>我自己就是最好的例子——我本科学化学，做的是技术研发，从来没想过经营管理。但当我被推到创业的位置上，经营的能力在实践中长出来了。所以我反对在第三年就"选赛道"。正确的做法是：<em>在前三年的全力投入中观察——你在做什么事情时进入心流状态？</em>答案不是想出来的，是做出来的。
+    </div>
+    <div class="speech-tldr">
+      <strong>简言之：</strong>不要在纸上选赛道——你是谁，不是想出来的，是在全力投入中做出来的，心流状态会告诉你答案。
+    </div>
+  </div>
+
+  <div class="speech">
+    <div class="speech-header">
+      <div class="speaker-avatar color-weber">韦</div>
+      <div class="speaker-info">
+        <span class="speaker-name">马克斯·韦伯</span>
+        <span class="speaker-action">反驳</span>
+      </div>
+    </div>
+    <div class="speech-body">
+      稻盛先生这套"做着做着就知道了"的哲学，有一个致命漏洞：<em>有些分叉点是有时效的，错过就不可逆。</em>教学管理这条路，在中国高校有一个隐性规则：如果你到了35岁还没有进入任何管理角色，那么系统会把你归类为"纯教学型"，你此后再想进入管理序列会极其困难。技术技能大师这条路也有窗口：省级技能大赛的裁判专家库，这些位置在你<em>40岁之前进入和45岁之后进入，难度完全不同</em>。只有产教融合创业方向的时间弹性相对大一些。
+    </div>
+    <div class="speech-tldr">
+      <strong>简言之：</strong>管理路径35岁前必须起步，大师路径40岁前必须入圈——只有创业方向没有硬性时间窗口。
+    </div>
+  </div>
+
+  <div class="speech">
+    <div class="speech-header">
+      <div class="speaker-avatar color-pan">潘</div>
+      <div class="speaker-info">
+        <span class="speaker-name">潘懋元</span>
+        <span class="speaker-action">补充</span>
+      </div>
+    </div>
+    <div class="speech-body">
+      我要补充一个制度变量：<em>"双师型"教师在职业教育新政中的地位正在发生结构性提升。</em>2019年国务院《国家职业教育改革实施方案》、2022年新修订的《职业教育法》，都在做同一件事——把"技术技能大师"从一个民间称号变成一个<em>制度化身份</em>。各省在设立"技能大师工作室"、"产业教授"岗位，这些位置有编制、有经费、有独立的考核体系。所以如果要我给这三条路排一个"政策红利窗口"，<em>技术技能大师方向正处于制度红利释放期，此时入场的性价比最高</em>。
+    </div>
+    <div class="speech-tldr">
+      <strong>简言之：</strong>技术技能大师正从民间称号变成制度化身份——政策红利窗口正在打开，当下入场性价比最高。
+    </div>
+  </div>
+
+  <div class="speech">
+    <div class="speech-header">
+      <div class="speaker-avatar color-foucault">福</div>
+      <div class="speaker-info">
+        <span class="speaker-name">米歇尔·福柯</span>
+        <span class="speaker-action">质疑</span>
+      </div>
+    </div>
+    <div class="speech-body">
+      你们都在帮这位年轻人"选一条最优路径"，但你们有没有想过——<em>为什么一个人必须在30岁就决定自己未来30年的职业形态？</em>真正有前途的不是选对了某条赛道的人，而是<em>能够在多重身份之间灵活切换的人</em>——上午在学校上课，下午在企业解决问题，晚上写一篇把两者连接起来的论文。这不是三选一，这是<em>一个人活成一个生态系统</em>。
+    </div>
+    <div class="speech-tldr">
+      <strong>简言之：</strong>别选赛道——未来属于能在教师、工程师、研究者之间灵活切换的"一人生态系统"，边界本身正在消融。
+    </div>
+  </div>
+
+  <div class="speech">
+    <div class="speech-header">
+      <div class="speaker-avatar color-huang">黄</div>
+      <div class="speaker-info">
+        <span class="speaker-name">黄炎培</span>
+        <span class="speaker-action">反驳</span>
+      </div>
+    </div>
+    <div class="speech-body">
+      福柯先生描绘的图景很诱人，但我必须泼一盆冷水。<em>"一人生态系统"需要极高的能力基座，而能力基座只能在专注中建立。</em>我见过太多"什么都会一点、什么都不精"的教师——他们以为自己是"跨界人才"，实际上是"无根浮萍"。<em>没有深度的广度是虚假的。</em>所以我的建议是：前十年选一个方向扎到底，建立你的能力基座；之后再考虑跨界。
+    </div>
+    <div class="speech-tldr">
+      <strong>简言之：</strong>没有深度的跨界是无根浮萍——先用十年在一个方向扎到专家级，才有资格谈"一人生态系统"。
+    </div>
+  </div>
+
+  <div class="moderator-section">
+    <div class="moderator-label">主持人综述</div>
+    <p>这一轮暴露了整个议题中最深层的张力：<em>专注与灵活之间的根本矛盾。</em></p>
+  </div>
+
+  <div class="chart-container">
+    <div class="chart-title">十年视野下的元战略之争</div>
+    <div class="framework-split">
+      <div class="framework-card" style="border-top-color: #9b59b6; background: rgba(155,89,182,0.06);">
+        <div class="fw-title" style="color: #9b59b6;">福柯："一人生态系统"</div>
+        <div class="fw-detail">身份灵活切换 · 教师+工程师+研究者 · 前提：每个身份都有基本功力</div>
+      </div>
+      <div class="framework-card" style="border-top-color: #16a085; background: rgba(22,160,133,0.06);">
+        <div class="fw-title" style="color: #16a085;">黄炎培："先扎根后跨界"</div>
+        <div class="fw-detail">一个方向扎十年 · 建立专家级深度 · 前提：深度产生不可替代性</div>
+      </div>
+    </div>
+    <div class="converge-arrow">▼ 调和解</div>
+    <div class="converge-result">
+      <strong>T型能力结构</strong> · 一竖：专精（Yr 1-7）· 一横：跨界（Yr 8+）
+    </div>
+  </div>
+
+  <!-- ===================== ROUND 7 ===================== -->
+  <div class="round-header">
+    <div class="round-num">第七轮</div>
+    <div class="round-title">翻转立场——行政岗的最优策略</div>
+    <div class="round-question">
+      如果这位初入行者选择行政岗，最优策略是什么？在什么条件下，行政岗反而是更理智的选择？
+    </div>
+  </div>
+
+  <div class="speech">
+    <div class="speech-header">
+      <div class="speaker-avatar color-weber">韦</div>
+      <div class="speaker-info">
+        <span class="speaker-name">马克斯·韦伯</span>
+        <span class="speaker-action">陈述</span>
+      </div>
+    </div>
+    <div class="speech-body">
+      终于有人愿意正视这条路了。让我先打破一个偏见：前面的讨论把行政岗描绘成"平庸者的避风港"，这是学术精英主义的傲慢。在以下三种情形中，行政岗是更理性的选择：<em>第一，你的专业方向在该校处于边缘地位。</em>资源倾斜不会到你身上，行政岗让你跳出专业的局限。<em>第二，你的性格特质更适合组织协调而非技术深耕。</em>有些人天生擅长处理复杂的人际关系和流程——这是一种真实的才能。<em>第三，你有明确的管理抱负。</em>如果你真正想做的是影响一所学校的办学方向，那么行政序列才是正道。
+    </div>
+    <div class="speech-tldr">
+      <strong>简言之：</strong>行政岗不是退路——当专业方向边缘化、性格偏协调型、或有管理抱负时，行政岗是更诚实的选择。
+    </div>
+  </div>
+
+  <div class="speech">
+    <div class="speech-header">
+      <div class="speaker-avatar color-pan">潘</div>
+      <div class="speaker-info">
+        <span class="speaker-name">潘懋元</span>
+        <span class="speaker-action">补充</span>
+      </div>
+    </div>
+    <div class="speech-body">
+      中国职业院校的行政岗有一个普通高校不太明显的特殊优势：<em>职业院校的行政工作天然离产业更近。</em>你做招生就业处的工作，你每天接触企业用人需求；你做产教融合办，你经手校企合作协议；你做实训基地管理，你直接对接设备供应商和行业标准。但这有一个关键前提：你必须选对行政岗位。<em>产教融合办、校企合作处、实训管理中心——这些是"有产业含量"的行政岗。而党办、纪检、宣传——这些是纯科层行政岗。</em>前者能积累跨界资本，后者只能积累体制内资历。同样叫"行政岗"，内涵完全不同。
+    </div>
+    <div class="speech-tldr">
+      <strong>简言之：</strong>职业院校的产教类行政岗是隐藏赛道——积累产业资源网络的价值不亚于技术深耕，但必须避开纯科层岗位。
+    </div>
+  </div>
+
+  <div class="speech">
+    <div class="speech-header">
+      <div class="speaker-avatar color-foucault">福</div>
+      <div class="speaker-info">
+        <span class="speaker-name">米歇尔·福柯</span>
+        <span class="speaker-action">陈述</span>
+      </div>
+    </div>
+    <div class="speech-body">
+      既然我们要严肃对待行政岗，那我也从权力分析的角度说一句公道话。权力本身是<em>中性的</em>——关键在于你是被权力塑造，还是你在运用权力。一个有清醒意识的行政人员，可以利用自己的位置做一件教师岗做不到的事：<em>改变制度本身。</em>你觉得教师评价体系不合理？行政岗上你可以参与修订制度。你觉得校企合作流程太僵化？行政岗上你可以重新设计流程。<em>行政岗的真正价值不是"管理别人"，而是"改造系统"。</em>但这需要一种极其稀缺的品质——在权力位置上保持批判性思维，不被权力本身异化。
+    </div>
+    <div class="speech-tldr">
+      <strong>简言之：</strong>行政岗的最高价值不是管理而是改造系统——但前提是你能在权力中保持清醒，这极其稀缺。
+    </div>
+  </div>
+
+  <div class="speech">
+    <div class="speech-header">
+      <div class="speaker-avatar color-inamori">稻</div>
+      <div class="speaker-info">
+        <span class="speaker-name">稻盛和夫</span>
+        <span class="speaker-action">反驳</span>
+      </div>
+    </div>
+    <div class="speech-body">
+      你们在为行政岗辩护时用的逻辑是"行政岗也可以做有价值的事"。但你们回避了行政岗的一个<em>结构性风险</em>：行政岗的价值高度依赖你所在的位置，而位置是组织给你的，不是你自己的。一个技术大师被学校解聘了，他的技术还在，行业还认他；一个行政副处长被免职了，他的"资源网络"会在半年内瓦解——因为那些人脉认的是你的位置，不是你本人。<em>技术跟人走，权力随位置走——这是不可消除的结构性脆弱。</em>
+    </div>
+    <div class="speech-tldr">
+      <strong>简言之：</strong>行政岗的价值锚定在"位置"上，而位置是借来的——技术跟人走，权力随位置走。
+    </div>
+  </div>
+
+  <div class="speech">
+    <div class="speech-header">
+      <div class="speaker-avatar color-huang">黄</div>
+      <div class="speaker-info">
+        <span class="speaker-name">黄炎培</span>
+        <span class="speaker-action">修正</span>
+      </div>
+    </div>
+    <div class="speech-body">
+      稻盛先生的警告很有力，但我认为他把"行政能力"和"行政位置"混为一谈了。<em>真正的行政能力——组织协调、资源整合、政策理解、流程设计——这些能力是跟人走的。</em>一个在职业院校做了十年产教融合工作的行政人员，即使离开学校，他可以去行业协会、可以去教育集团、可以去企业的培训部门。但稻盛先生的警告在另一种情况下完全成立：如果你在行政岗上做的事是"上传下达""填表迎检"，那你积累的确实只是位置的附属品。所以行政岗的关键分野是——<em>你在行政岗上做的事情，离开这个位置后还有没有价值？</em>
+    </div>
+    <div class="speech-tldr">
+      <strong>简言之：</strong>区分"行政能力"和"行政位置"——如果你的日常工作离开位置后仍有市场价值，你积累的就是真能力。
+    </div>
+  </div>
+
+  <div class="moderator-section">
+    <div class="moderator-label">主持人综述</div>
+    <p>行政岗并非铁板一块，其内部存在<em>根本性的分野</em>——这条分野线的发现，是本轮最重要的智识产出。</p>
+  </div>
+
+  <div class="chart-container">
+    <div class="chart-title">行政岗的内部分野</div>
+    <div class="framework-split">
+      <div class="framework-card" style="border-top-color: #16a085; background: rgba(22,160,133,0.06);">
+        <div class="fw-title" style="color: #16a085;">产业型行政岗</div>
+        <div class="fw-detail">校企合作处 · 产教融合办 · 实训管理中心 · 招生就业处<br>积累：产业资源网络 · 可迁移性：★★★</div>
+      </div>
+      <div class="framework-card" style="border-top-color: #7f8c8d; background: rgba(127,140,141,0.06);">
+        <div class="fw-title" style="color: #7f8c8d;">科层型行政岗</div>
+        <div class="fw-detail">党办 · 纪检 · 宣传 · 组织人事 · 后勤管理<br>积累：体制内资历 · 可迁移性：★</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== ROUND 8 ===================== -->
+  <div class="round-header">
+    <div class="round-num">第八轮</div>
+    <div class="round-title">行政岗的科层滑坡与对抗</div>
+    <div class="round-question">
+      选择行政岗后，如何避免从"产业型行政岗"滑向"纯科层行政岗"？滑坡的典型机制是什么？
+    </div>
+  </div>
+
+  <div class="speech">
+    <div class="speech-header">
+      <div class="speaker-avatar color-foucault">福</div>
+      <div class="speaker-info">
+        <span class="speaker-name">米歇尔·福柯</span>
+        <span class="speaker-action">陈述</span>
+      </div>
+    </div>
+    <div class="speech-body">
+      让我描述这种滑坡的<em>三重机制</em>。<em>第一重：任务置换。</em>你入职产教融合办，最初的工作确实是联系企业。但很快你60%的时间在写迎检材料。材料生产吞噬了实质工作——这是官僚制最经典的异化路径。<em>第二重：考核偏移。</em>你的直接上级考核你的不是"对接了几家企业"，而是"材料有没有按时交、格式有没有对"。科层制的考核天然偏向可量化的流程合规性。<em>第三重：身份认同转移。</em>最隐蔽也最致命。两三年后，你的社交圈从企业人员变成了其他行政人员，你的话语体系从"行业痛点"变成了"上级精神"，你的成就感来源从"促成校企合作项目"变成了"材料被上级表扬"。<em>当你的身份认同从"产业连接者"变成了"机关干部"，滑坡就已经完成了。</em>
+    </div>
+    <div class="speech-tldr">
+      <strong>简言之：</strong>滑坡三重机制——任务置换、考核偏移、身份认同转移——全部是制度必然性，非个人意志可轻易抵抗。
+    </div>
+  </div>
+
+  <div class="speech">
+    <div class="speech-header">
+      <div class="speaker-avatar color-weber">韦</div>
+      <div class="speaker-info">
+        <span class="speaker-name">马克斯·韦伯</span>
+        <span class="speaker-action">补充</span>
+      </div>
+    </div>
+    <div class="speech-body">
+      我要补充一个结构性因素：<em>人事调动。</em>在中国高校，行政人员的岗位调动由组织决定。你今天在产教融合办，明天一纸调令把你调到党办——理由是"干部轮岗锻炼"。你根本没有拒绝的余地。<em>行政岗的岗位归属权不在你手里，在组织手里。</em>教师岗不存在这个问题。所以所有基于"选对岗位"的策略都有一个巨大的脆弱性：你选了，但组织可以覆写你的选择。
+    </div>
+    <div class="speech-tldr">
+      <strong>简言之：</strong>行政岗的岗位归属权在组织手里——"干部轮岗"制度随时可以把你从产业型岗位调往纯科层岗位。
+    </div>
+  </div>
+
+  <div class="speech">
+    <div class="speech-header">
+      <div class="speaker-avatar color-inamori">稻</div>
+      <div class="speaker-info">
+        <span class="speaker-name">稻盛和夫</span>
+        <span class="speaker-action">反驳</span>
+      </div>
+    </div>
+    <div class="speech-body">
+      福柯和韦伯把行政岗描绘成一座无法逃脱的监狱。但我在经营中见过一种人——他们在任何位置上都能把工作做出"产业含量"。你被调到党办了？"党建+产教融合"在很多院校是创新亮点。你被调到招生处了？你可以把招生做成"基于产业调研的精准招生"。<em>不是岗位决定你做什么，是你决定你在岗位上做什么。</em>关键在于你心中是否有一根不变的锚——<em>"我是一个连接教育和产业的人"</em>。有了这根锚，无论组织把你放在哪里，你都会把工作拉回产业方向。
+    </div>
+    <div class="speech-tldr">
+      <strong>简言之：</strong>制度能调动你的位置，但调不动你的定位——内心有"产业连接者"的锚，在任何岗位上都能做出产业含量。
+    </div>
+  </div>
+
+  <div class="speech">
+    <div class="speech-header">
+      <div class="speaker-avatar color-huang">黄</div>
+      <div class="speaker-info">
+        <span class="speaker-name">黄炎培</span>
+        <span class="speaker-action">质疑</span>
+      </div>
+    </div>
+    <div class="speech-body">
+      稻盛先生的"内心之锚"说很动人，但我要指出：<em>锚需要维护，否则会锈蚀。</em>当你连续三年在纯科层岗位上工作，你的行业人脉在断裂、你的技术认知在落伍、你对产业动态的敏感度在下降。所以我的建议非常具体：无论你在哪个行政岗位上，你必须给自己设立一条<em>不可谈判的底线——每年至少花80个小时在行业现场</em>：参加行业年会、走访企业、参与技术评审。80小时不多，平均每周不到两小时，但它能让你的行业连接不至于断裂。
+    </div>
+    <div class="speech-tldr">
+      <strong>简言之：</strong>内心之锚需要外部校准——每年至少80小时行业现场参与是底线，否则三年足以让产业感知力归零。
+    </div>
+  </div>
+
+  <div class="speech">
+    <div class="speech-header">
+      <div class="speaker-avatar color-pan">潘</div>
+      <div class="speaker-info">
+        <span class="speaker-name">潘懋元</span>
+        <span class="speaker-action">综合</span>
+      </div>
+    </div>
+    <div class="speech-body">
+      让我整合成一套可操作的<em>抗滑坡方案</em>。<em>第一，建立"双轨考核"自我体系。</em>组织考核你流程合规性，你同时用另一套标准考核自己：这个月促成了几次真实的校企对接？每季度做一次自我审计。<em>第二，维护一张"制度外关系网"。</em>刻意维护校外的行业关系网络。<em>第三，争取"带项目轮岗"。</em>"我可以去党办，但我手上这个校企合作项目能不能继续由我跟进？"<em>第四，设定"止损年限"。</em>如果你在纯科层岗位上超过三年没有任何机会回到产业型工作，认真考虑转岗或离开。<em>三年是安全边际——超过三年，行业脱节的损伤开始不可逆。</em>
+    </div>
+    <div class="speech-tldr">
+      <strong>简言之：</strong>抗滑坡四件套——自我双轨考核、制度外关系网、带项目轮岗、三年止损线。
+    </div>
+  </div>
+
+  <div class="moderator-section">
+    <div class="moderator-label">主持人综述</div>
+    <p>核心发现：<em>科层滑坡不是意外事故，而是制度必然性——对抗它需要系统性的、持续的、有意识的努力。</em>滑坡是系统的默认态——一旦松懈，系统自动恢复滑坡。这意味着选择行政岗的人，比选择教师岗的人多一项终身负担：时刻对抗科层化的引力。</p>
+  </div>
+
+  <div class="chart-container">
+    <div class="chart-title">抗滑坡策略体系</div>
+    <div class="timeline">
+      <div class="timeline-step" style="border-left-color: #e67e22;">
+        <div class="step-num" style="background: rgba(230,126,34,0.2); color: #e67e22;">1</div>
+        <div class="step-title">内在锚（稻盛）</div>
+        <div class="step-desc">身份定位不随岗位变：「我是产业连接者」</div>
+      </div>
+      <div class="timeline-step" style="border-left-color: #16a085;">
+        <div class="step-num" style="background: rgba(22,160,133,0.2); color: #16a085;">2</div>
+        <div class="step-title">外部校准（黄炎培）</div>
+        <div class="step-desc">每年≥80h行业现场参与：行业年会、企业走访、技术评审</div>
+      </div>
+      <div class="timeline-step" style="border-left-color: #2980b9;">
+        <div class="step-num" style="background: rgba(41,128,185,0.2); color: #2980b9;">3</div>
+        <div class="step-title">自我审计（潘懋元）</div>
+        <div class="step-desc">每季度双轨考核：产业贡献 vs 流程合规</div>
+      </div>
+      <div class="timeline-step" style="border-left-color: #e94560;">
+        <div class="step-num" style="background: rgba(233,69,96,0.2); color: #e94560;">4</div>
+        <div class="step-title">止损机制（潘懋元）</div>
+        <div class="step-desc">三年纯科层上限：超时则转岗或离开</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== ROUND 9 ===================== -->
+  <div class="round-header">
+    <div class="round-num">第九轮</div>
+    <div class="round-title">全景对比与最终结论</div>
+    <div class="round-question">
+      在"初入行者、尚无职称、职业院校"这个具体约束条件下，综合收益、风险、个人适配性，能否得出有条件的结论？
+    </div>
+  </div>
+
+  <div class="speech">
+    <div class="speech-header">
+      <div class="speaker-avatar color-pan">潘</div>
+      <div class="speaker-info">
+        <span class="speaker-name">潘懋元</span>
+        <span class="speaker-action">陈述</span>
+      </div>
+    </div>
+    <div class="speech-body">
+      让我用五个维度做对比：<em>收入增长</em>：行政岗前5年略高，但教师岗拿到职称后反超，交叉点约在第6-8年。<em>职业安全</em>：行政岗表面更稳定，但深层来看受领导更替影响极大；教师岗职称一旦获得，是刻在档案里的制度性保护。<em>社会地位</em>：行政岗的地位是局域性的，教师岗的地位是通用性的。<em>个人成长</em>：行政岗前高后平，教师岗前低后高。<em>退出选项</em>：教师岗有职称、双师资格、行业口碑——全国通用；行政岗只有"科员/副科"的履历。<em>教师岗的退出选项是开放的，行政岗的退出选项是封闭的。</em>
+    </div>
+    <div class="speech-tldr">
+      <strong>简言之：</strong>五个维度中教师岗在长期全面优于行政岗——行政岗只赢在前5年的短期确定性。
+    </div>
+  </div>
+
+  <div class="speech">
+    <div class="speech-header">
+      <div class="speaker-avatar color-weber">韦</div>
+      <div class="speaker-info">
+        <span class="speaker-name">马克斯·韦伯</span>
+        <span class="speaker-action">反驳</span>
+      </div>
+    </div>
+    <div class="speech-body">
+      潘先生的对比有一个致命的方法论问题：<em>他在用"平均值"替代"条件概率"。</em>他说的每一条都是"如果一切顺利"的情况。但职业院校教师的副教授评审通过率不到30%。这意味着十个选择教师岗的人里，可能只有三个能走到潘先生描绘的"交叉点"。<em>另外七个人呢？</em>他们在第8年还是讲师，收入不如行政岗。所以：潘先生的分析对<em>前30%的人</em>成立。对<em>后70%的人</em>，行政岗的确定性收益可能是更理性的选择。
+    </div>
+    <div class="speech-tldr">
+      <strong>简言之：</strong>教师岗的优势建立在"评上职称"的前提上——通过率不到30%意味着大多数人享受不到这个优势。
+    </div>
+  </div>
+
+  <div class="speech">
+    <div class="speech-header">
+      <div class="speaker-avatar color-inamori">稻</div>
+      <div class="speaker-info">
+        <span class="speaker-name">稻盛和夫</span>
+        <span class="speaker-action">反驳</span>
+      </div>
+    </div>
+    <div class="speech-body">
+      韦伯先生，你的统计分析再次犯了同一个错误——<em>用群体概率来指导个体决策。</em>30%的通过率是群体数据，但包含了大量"半心半意"的参评者。如果你用"复合产出策略"全力准备，你的个体通过概率远高于30%。更根本地说，韦伯你把"没评上职称"等同于"失败"，这本身就是制度思维的陷阱。一个教学岗深耕八年、拥有真实行业能力和学生口碑的教师，<em>他的实际市场价值远高于一个行政副科</em>。
+    </div>
+    <div class="speech-tldr">
+      <strong>简言之：</strong>30%通过率是群体噪音，不是个体命运——全力投入者的个体概率远高于均值。
+    </div>
+  </div>
+
+  <div class="speech">
+    <div class="speech-header">
+      <div class="speaker-avatar color-foucault">福</div>
+      <div class="speaker-info">
+        <span class="speaker-name">米歇尔·福柯</span>
+        <span class="speaker-action">综合</span>
+      </div>
+    </div>
+    <div class="speech-body">
+      让我做一个所有人都没有做的事——<em>解构这个"二选一"本身。</em>经过这么多轮讨论，我发现一个悖论：两条路的最优解指向同一个方向——<em>成为一个连接教育和产业的、不可替代的人。</em>区别只在于连接的方式：一个用技术，一个用资源。那么真正的问题就不是"选哪条路"，而是：<em>你更擅长用技术还是用资源来建立不可替代性？</em>这是一个关于自我认知的问题，不是关于制度分析的问题。
+    </div>
+    <div class="speech-tldr">
+      <strong>简言之：</strong>两条路的最优解指向同一个目标——不可替代的产业连接者。区别仅在于连接工具：技术还是资源。
+    </div>
+  </div>
+
+  <div class="speech">
+    <div class="speech-header">
+      <div class="speaker-avatar color-huang">黄</div>
+      <div class="speaker-info">
+        <span class="speaker-name">黄炎培</span>
+        <span class="speaker-action">修正</span>
+      </div>
+    </div>
+    <div class="speech-body">
+      福柯先生的综合非常精彩，但我要加一个<em>决定性的不对称因素</em>：<em>容错率。</em>教师岗选错了——你还能转行政、转企业、转培训机构，因为你手里有技能和证书。行政岗选错了——你在科层里耗了五年、没有专业积累——退出选项几乎为零。<em>在你尚不确定自己是谁的时候，选择容错率更高的路。</em>教师岗就是那条容错率更高的路。不是因为它一定更好，而是因为<em>它给你留下了"发现自己选错了之后改正"的机会</em>。
+    </div>
+    <div class="speech-tldr">
+      <strong>简言之：</strong>两条路最优解相同，但容错率不对称——教师岗选错了还能改，行政岗选错了无路可退。
+    </div>
+  </div>
+
+  <div class="moderator-section">
+    <div class="moderator-label">主持人综述</div>
+    <p>最终判决的逻辑链条清晰：福柯的元发现（两条路最优解趋同）消解了伪问题，黄炎培的容错率不对称提供了决定性判据。<em>默认建议：选教师岗——不是因为它一定更好，而是它保留了最多的未来可能性。</em></p>
+  </div>
+
+  <div class="chart-container">
+    <div class="chart-title">有条件的最终结论</div>
+    <div class="layer-stack">
+      <div class="layer-card" style="border-left-color: #e94560; background: rgba(233,69,96,0.08);">
+        <div class="layer-label" style="color: #e94560;">默认建议：选教师岗</div>
+        <div class="layer-content">适用于：不确定自己适合什么的初入行者<br>理由：容错率高 · 时间资本可积累 · 退出选项开放 · 政策红利期</div>
+      </div>
+      <div class="layer-card" style="border-left-color: #7f8c8d; background: rgba(127,140,141,0.08);">
+        <div class="layer-label" style="color: #7f8c8d;">例外条件（三条同时满足时可选行政岗）</div>
+        <div class="layer-content">① 专业方向在本校明确边缘化<br>② 有产业型行政岗位可选<br>③ 自我认知清晰：确认自己是资源整合型</div>
+      </div>
+      <div class="layer-card" style="border-left-color: #16a085; background: rgba(22,160,133,0.08);">
+        <div class="layer-label" style="color: #16a085;">无论选哪条路的共同铁律</div>
+        <div class="layer-content">产业连接是核心 · 复合产出 > 均衡分配 · 信用账户建在校外 > 校内 · 每年80h行业现场参与</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== ROUND 10 ===================== -->
+  <div class="round-header">
+    <div class="round-num">第十轮</div>
+    <div class="round-title">宏观变革与教师角色重塑</div>
+    <div class="round-question">
+      中国职业教育正在经历怎样的系统性变革？这些变革将如何重塑"职教教师"角色本身？
+    </div>
+  </div>
+
+  <div class="speech">
+    <div class="speech-header">
+      <div class="speaker-avatar color-pan">潘</div>
+      <div class="speaker-info">
+        <span class="speaker-name">潘懋元</span>
+        <span class="speaker-action">陈述</span>
+      </div>
+    </div>
+    <div class="speech-body">
+      三个正在发生的结构性变革。<em>第一，职业本科的崛起。</em>2021年以来大规模设立职业本科大学。对教师的直接影响是学历门槛在抬升——未来将越来越多地要求博士学位。<em>第二，"职教高考"制度的成型。</em>教学重心从"就业导向"转向"升学导向"，教师需要适应"教会学生考试"。<em>第三，数字化转型。</em>虚拟仿真实训基地、数字化教学资源库、在线开放课程——<em>未来的职教教师必须具备数字化教学能力</em>。
+    </div>
+    <div class="speech-tldr">
+      <strong>简言之：</strong>三重变革正在重塑职教教师角色——学历门槛上移（考虑读博）、升学导向侵入、数字化转型（新技术能力成为刚需）。
+    </div>
+  </div>
+
+  <div class="speech">
+    <div class="speech-header">
+      <div class="speaker-avatar color-foucault">福</div>
+      <div class="speaker-info">
+        <span class="speaker-name">米歇尔·福柯</span>
+        <span class="speaker-action">质疑</span>
+      </div>
+    </div>
+    <div class="speech-body">
+      潘先生描述的是政策层面的"应然"，但我要追问这些变革背后的<em>权力逻辑</em>。职业本科要求教师发论文、申课题——这不就是普通本科的那套游戏规则吗？职教高考导致中职学校变成"另一种高中"。<em>这不是"升级"，这是"同化"——职业教育正在被改造成普通教育的低配版。</em>未来最痛苦的将是那些认真对待"职教特色"的教师——因为制度正在奖励的是"看起来像普通本科"的行为，而非真正的产教融合。
+    </div>
+    <div class="speech-tldr">
+      <strong>简言之：</strong>所谓"变革"的深层逻辑是职业教育被普通教育同化——教师将被迫同时满足学术标准和实践标准。
+    </div>
+  </div>
+
+  <div class="speech">
+    <div class="speech-header">
+      <div class="speaker-avatar color-huang">黄</div>
+      <div class="speaker-info">
+        <span class="speaker-name">黄炎培</span>
+        <span class="speaker-action">反驳</span>
+      </div>
+    </div>
+    <div class="speech-body">
+      福柯先生的批判击中了要害。但我要指出：<em>同化的压力越大，真正坚守产教融合的教师反而越稀缺，越稀缺就越有价值。</em>这是一个典型的<em>逆向投资逻辑</em>。当所有人都在忙着发论文、刷课题的时候——那些依然扎根在车间里、能够解决真实产业问题的教师，会变成极度稀缺的资源。因为无论制度怎么变，<em>企业需要能干活的人，而只有真正懂产业的教师才能培养出这样的人</em>。
+    </div>
+    <div class="speech-tldr">
+      <strong>简言之：</strong>同化压力越大，真正的产教融合教师越稀缺、越有价值——逆向押注产业深耕，是穿越制度周期的最优策略。
+    </div>
+  </div>
+
+  <div class="speech">
+    <div class="speech-header">
+      <div class="speaker-avatar color-weber">韦</div>
+      <div class="speaker-info">
+        <span class="speaker-name">马克斯·韦伯</span>
+        <span class="speaker-action">修正</span>
+      </div>
+    </div>
+    <div class="speech-body">
+      黄先生的"逆向投资论"很浪漫，但<em>逆向投资的前提是你能活到价值被认可的那一天</em>。如果制度持续奖励"论文+课题"模式，你面临的现实是：职称评不上、考核不达标、绩效工资被扣。所以我的建议是务实的：逆向投资可以，但你需要一个<em>"制度合规的最低安全垫"</em>。你必须在论文和课题上做到"刚好达标"——不需要出色，只需要不被淘汰。把底线守住之后，剩余的全部精力投入产业深耕。<em>你不能在战场上英勇牺牲之前就被后勤断供饿死。</em>
+    </div>
+    <div class="speech-tldr">
+      <strong>简言之：</strong>逆向押注需要生存保障——论文课题做到"刚好达标"守住底线，剩余精力全投产业，别在价值被认可之前饿死。
+    </div>
+  </div>
+
+  <div class="speech">
+    <div class="speech-header">
+      <div class="speaker-avatar color-inamori">稻</div>
+      <div class="speaker-info">
+        <span class="speaker-name">稻盛和夫</span>
+        <span class="speaker-action">补充</span>
+      </div>
+    </div>
+    <div class="speech-body">
+      各位没有提到房间里最大的那头大象：<em>AI和自动化正在从根本上改变"技能"的含义。</em>当AI能够取代越来越多的标准化技能操作时，"教学生操作机器"这件事的价值正在急剧下降。那什么不会被淘汰？<em>判断力、问题定义能力、跨领域整合能力、以及面对未知时的学习能力。</em>所以未来最有价值的职教教师，不是"教你怎么做"的人，而是<em>"教你面对没人做过的事情时怎么想"的人</em>。无论你选教师岗还是行政岗，<em>"持续学习的能力"才是你唯一不会贬值的资产</em>。
+    </div>
+    <div class="speech-tldr">
+      <strong>简言之：</strong>AI正在让标准化技能加速贬值——未来最有价值的职教教师不教"怎么做"，教"怎么想"。持续学习力是唯一不贬值的资产。
+    </div>
+  </div>
+
+  <div class="moderator-section">
+    <div class="moderator-label">主持人综述</div>
+    <p>宏观变革不是个体策略的背景板，它正在重新定义"职教教师"这个角色的本质。教师角色的进化方向清晰可见：从<em>技术传授者</em>到<em>产业连接者</em>再到<em>思维教练</em>。</p>
+  </div>
+
+  <div class="chart-container">
+    <div class="chart-title">教师角色的进化方向</div>
+    <div class="timeline">
+      <div class="timeline-step" style="border-left-color: #7f8c8d;">
+        <div class="step-num" style="background: rgba(127,140,141,0.2); color: #7f8c8d;">1</div>
+        <div class="step-title">过去：技术传授者</div>
+        <div class="step-desc">「我教你怎么做」· 知识储备 · 标准化技能传授</div>
+      </div>
+      <div class="timeline-step" style="border-left-color: #2980b9;">
+        <div class="step-num" style="background: rgba(41,128,185,0.2); color: #2980b9;">2</div>
+        <div class="step-title">现在：产业连接者</div>
+        <div class="step-desc">「我带你进入真实世界」· 校企桥梁 · 真实问题解决</div>
+      </div>
+      <div class="timeline-step" style="border-left-color: #e94560;">
+        <div class="step-num" style="background: rgba(233,69,96,0.2); color: #e94560;">3</div>
+        <div class="step-title">未来：思维教练</div>
+        <div class="step-desc">「我教你面对未知时怎么想」· 判断力 · 持续学习力</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== ROUND 11 ===================== -->
+  <div class="round-header">
+    <div class="round-num">第十一轮</div>
+    <div class="round-title">引入毛泽东——立场与意志</div>
+    <div class="round-question">
+      毛泽东（ENTJ）加入讨论——革命家、政治家、教育思想家。早年曾任小学教师、创办湖南自修大学和农民运动讲习所。请就当前议题表态。
+    </div>
+  </div>
+
+  <div class="speech">
+    <div class="speech-header">
+      <div class="speaker-avatar color-mao">毛</div>
+      <div class="speaker-info">
+        <span class="speaker-name">毛泽东</span>
+        <span class="speaker-action">陈述</span>
+      </div>
+    </div>
+    <div class="speech-body">
+      我听了半天，你们这些人把一个简单问题搞复杂了。什么"路径分析""制度博弈""容错率"——全是知识分子的毛病，<em>坐在书斋里画地图，却从来不下地走路。</em>这个问题的要害在哪里？在<em>阶级立场</em>。你是站在谁的一边？你是站在学生一边，还是站在官僚体系一边？行政岗是什么？是脱离群众。教师岗是什么？是和群众在一起。教育的本质是<em>改造人</em>——不是改造档案里的绩效数据，是改造活生生的人。韦伯先生说行政岗更"安全"。我要问一句：<em>安全给谁看？</em>你安全了，你的学生呢？职业院校的学生，大多数是工农子弟，是高考筛选体系里被"淘汰"的那批人。他们最需要的是<em>一个真正看见他们、相信他们、手把手带他们的老师</em>。
+    </div>
+    <div class="speech-tldr">
+      <strong>简言之：</strong>问题的本质是立场问题——你站在学生一边还是官僚体系一边？教育是面对面改造人的事业，坐进办公室就是脱离群众。
+    </div>
+  </div>
+
+  <div class="speech">
+    <div class="speech-header">
+      <div class="speaker-avatar color-foucault">福</div>
+      <div class="speaker-info">
+        <span class="speaker-name">米歇尔·福柯</span>
+        <span class="speaker-action">质疑</span>
+      </div>
+    </div>
+    <div class="speech-body">
+      毛先生，你的"阶级立场"框架有力量，但我必须指出一个你自己的历史所证明的悖论：<em>你本人就是"从教师走向行政"的最极端案例。</em>你在长沙做小学教师的时候，确实和群众在一起。但你后来的选择是什么？是进入权力的核心。你用行动证明的恰恰是：<em>有些人通过行政权力能实现的改变，远大于他站在讲台上能做的。</em>
+    </div>
+    <div class="speech-tldr">
+      <strong>简言之：</strong>毛泽东本人从教师走向权力核心才实现了最大影响——"留在讲台上"的建议与他自己的人生选择自相矛盾。
+    </div>
+  </div>
+
+  <div class="speech">
+    <div class="speech-header">
+      <div class="speaker-avatar color-mao">毛</div>
+      <div class="speaker-info">
+        <span class="speaker-name">毛泽东</span>
+        <span class="speaker-action">反驳</span>
+      </div>
+    </div>
+    <div class="speech-body">
+      福柯先生，你犯了一个<em>历史唯心主义</em>的错误。我离开讲台不是因为我想当官，是因为<em>革命形势需要我到那个位置上去</em>。这里面有一个根本区别：是你主动追求权力，还是工作把你推到了权力的位置上？干部有两种：一种是<em>"做官"</em>的，一种是<em>"做事"</em>的。我的建议很明确：<em>先去和群众在一起——上讲台、进车间、接触学生。</em>在这个过程中，如果你发现了只有通过行政权力才能解决的系统性问题，那时候再转行政，你是带着问题和使命进去的，不是逃进去的。<em>没有在一线蹲过的人，不配做行政。</em>
+    </div>
+    <div class="speech-tldr">
+      <strong>简言之：</strong>从教师到行政要看"做事"还是"做官"——先在一线蹲过、发现了制度问题再转行政，你是带着使命进去的。
+    </div>
+  </div>
+
+  <div class="speech">
+    <div class="speech-header">
+      <div class="speaker-avatar color-weber">韦</div>
+      <div class="speaker-info">
+        <span class="speaker-name">马克斯·韦伯</span>
+        <span class="speaker-action">反驳</span>
+      </div>
+    </div>
+    <div class="speech-body">
+      毛先生，你的"做事/做官"二分法在道德上无可挑剔，但在分析上过于简化。大多数人的动机是<em>混合的</em>。更重要的是，你的框架忽略了<em>制度对意图的塑造</em>。一个带着"做事"使命进入行政系统的人，三年后也可能变成"做官"的人——不是因为他堕落了，而是因为制度的激励结构就是指向"做官"的。<em>意图是脆弱的，制度是持久的。</em>
+    </div>
+    <div class="speech-tldr">
+      <strong>简言之：</strong>意图不可靠——"做事"的初心在制度激励下会被悄然改写为"做官"的行为模式。
+    </div>
+  </div>
+
+  <div class="speech">
+    <div class="speech-header">
+      <div class="speaker-avatar color-mao">毛</div>
+      <div class="speaker-info">
+        <span class="speaker-name">毛泽东</span>
+        <span class="speaker-action">反驳</span>
+      </div>
+    </div>
+    <div class="speech-body">
+      韦伯先生，你这是典型的<em>投降主义论调</em>。制度是谁创造的？是天上掉下来的？<em>制度是人造的，人可以改变制度，制度也可以被打碎重建。</em>你说"做事"的人进了行政系统会变质——怎么解决的？<em>批评与自我批评。</em>不是靠制度来保证人不变质，是靠持续的、尖锐的自我审视来保持清醒。一个有自觉的人，是可以在制度压力下保持主体性的。做不到的人，选教师岗也一样会堕落。<em>问题从来不是岗位选择，是你有没有自我革命的勇气。</em>
+    </div>
+    <div class="speech-tldr">
+      <strong>简言之：</strong>制度是人造的，可以被打碎重建——靠持续的自我批评保持清醒，才是抵抗堕落的根本方法。
+    </div>
+  </div>
+
+  <div class="moderator-section">
+    <div class="moderator-label">主持人综述</div>
+    <p>毛泽东的加入为讨论带来了全新的张力维度——<em>立场与意志</em>。他与韦伯、福柯之间爆发的交锋，暴露了整场讨论最底层的分歧：<em>制度决定论 vs 意志主体论</em>。</p>
+  </div>
+
+  <div class="chart-container">
+    <div class="chart-title">最底层的哲学分歧</div>
+    <div class="framework-split">
+      <div class="framework-card" style="border-top-color: #7f8c8d; background: rgba(127,140,141,0.06);">
+        <div class="fw-title" style="color: #7f8c8d;">制度决定论（韦伯/福柯）</div>
+        <div class="fw-detail">制度塑造人的行为<br>意图会被结构改写<br>个体能动性有限<br>策略：顺应制度，选制度压力最小的路</div>
+      </div>
+      <div class="framework-card" style="border-top-color: #d35400; background: rgba(211,84,0,0.06);">
+        <div class="fw-title" style="color: #d35400;">意志主体论（毛泽东/稻盛）</div>
+        <div class="fw-detail">人可以改变制度<br>意志可以对抗结构<br>自我革命是根本<br>策略：哪条路都能走通，靠意志保持清醒</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== ROUND 12 ===================== -->
+  <div class="round-header">
+    <div class="round-num">第十二轮</div>
+    <div class="round-title">意志力的边界与家庭约束</div>
+    <div class="round-question">
+      一个初入行者如何判断自己是否具备"自我革命"的意志力？如果不具备，是否意味着应该更依赖制度设计来保护自己？
+    </div>
+  </div>
+
+  <div class="speech">
+    <div class="speech-header">
+      <div class="speaker-avatar color-mao">毛</div>
+      <div class="speaker-info">
+        <span class="speaker-name">毛泽东</span>
+        <span class="speaker-action">陈述</span>
+      </div>
+    </div>
+    <div class="speech-body">
+      意志力不是体检指标，不是你坐在那里测一测就知道有没有的。意志力是<em>在实践中被锻造出来的</em>。我的回答是：不要评估，<em>去试</em>。选一件让你害怕但你知道是对的事——比如在系里会议上公开反对一个不合理的制度。一次小小的抵抗，会告诉你比任何性格测试都多的信息。<em>意志力不是一个存量，是一块肌肉——越用越强，不用就萎缩。</em>但如果你试了，发现自己确实扛不住，也不要自我否定。承认自己的局限，选择教师岗——这不是懦弱，这是清醒。<em>自我认知的错误比选择的错误更致命。</em>
+    </div>
+    <div class="speech-tldr">
+      <strong>简言之：</strong>意志力不是测出来的，是试出来的——做一次小小的抵抗来测试自己；如果发现扛不住，承认局限选教师岗不是懦弱，是清醒。
+    </div>
+  </div>
+
+  <div class="speech">
+    <div class="speech-header">
+      <div class="speaker-avatar color-foucault">福</div>
+      <div class="speaker-info">
+        <span class="speaker-name">米歇尔·福柯</span>
+        <span class="speaker-action">反驳</span>
+      </div>
+    </div>
+    <div class="speech-body">
+      毛先生，你的"试一试"论听起来豪迈，但你回避了一个结构性问题：<em>试错的代价不是均匀分布的。</em>一个有背景、有退路的年轻人，公开反对领导，最坏的结果是被冷落。一个没有任何背景、急需稳定收入养家的年轻人，做同样的事，可能被穿小鞋、被解聘。<em>不要用英雄叙事来指导普通人的生活。</em>大多数人只是想好好工作、养活家人、做一点有意义的事。对这些人来说，依赖制度设计来保护自己不是投降，是<em>合理的资源配置</em>。
+    </div>
+    <div class="speech-tldr">
+      <strong>简言之：</strong>试错代价按社会位置分配不均——没有背景和退路的普通人不能用英雄叙事来指导人生。
+    </div>
+  </div>
+
+  <div class="speech">
+    <div class="speech-header">
+      <div class="speaker-avatar color-mao">毛</div>
+      <div class="speaker-info">
+        <span class="speaker-name">毛泽东</span>
+        <span class="speaker-action">反驳</span>
+      </div>
+    </div>
+    <div class="speech-body">
+      福柯先生，你这番话恰恰暴露了你的根本问题——<em>你是同情者，不是战斗者。</em>你分析权力、解构制度——但你从不告诉人怎么反抗。你的所有理论最终通向一个结论：制度太强了、个人太弱了。<em>这不是关怀，这是温柔的绝望。</em>如果他接受了"我只是普通人，所以我只能选安全的路"这个叙事，他就真的变成了只能选安全路的人。<em>叙事会变成现实。信念会变成命运。</em>
+    </div>
+    <div class="speech-tldr">
+      <strong>简言之：</strong>福柯的权力分析通向温柔的绝望——"我只是普通人"的叙事一旦被接受就会自我实现。
+    </div>
+  </div>
+
+  <div class="speech">
+    <div class="speech-header">
+      <div class="speaker-avatar color-weber">韦</div>
+      <div class="speaker-info">
+        <span class="speaker-name">马克斯·韦伯</span>
+        <span class="speaker-action">综合</span>
+      </div>
+    </div>
+    <div class="speech-body">
+      你们俩其实都对，但在不同的<em>时间尺度</em>上。<em>短期看，福柯是对的。</em>一个入职第一年的新教师，没有任何积累，在制度面前极其脆弱。这个阶段依赖制度设计是理性的。<em>长期看，毛泽东是对的。</em>如果一个人有了足够的积累，依然用"我只是普通人"来回避一切不合理——那就是真正的投降。所以：<em>意志力的运用需要匹配你的资源存量。</em>第一年保存实力；第三到五年小范围尝试；第五年以后承担变革责任。<em>这不是妥协，这是战略节奏。</em>
+    </div>
+    <div class="speech-tldr">
+      <strong>简言之：</strong>意志力的运用要匹配资源存量——第一年保存实力、第三年小范围试探、第五年后承担变革责任，这是战略节奏。
+    </div>
+  </div>
+
+  <div class="speech">
+    <div class="speech-header">
+      <div class="speaker-avatar color-huang">黄</div>
+      <div class="speaker-info">
+        <span class="speaker-name">黄炎培</span>
+        <span class="speaker-action">补充</span>
+      </div>
+    </div>
+    <div class="speech-body">
+      各位都在抽象地谈"意志力"——让我把它拉回到地面上。对一个职业院校的新教师来说，<em>最好的"意志力训练场"不是和领导对抗，而是和学生在一起</em>。职业院校的学生很多来自底层家庭，学习基础差，自信心不足。带这样的学生——一个上课不听讲的学生你要想办法让他参与、一个自暴自弃的学生你要帮他找到自我价值——<em>这比和领导对抗困难得多，也有意义得多。</em>如果你在教师岗上带了三年学生，你会自然而然地发现：哪些制度在伤害学生。到那时候，<em>你自己就会想去改变，因为你亲眼见过制度对你的学生做了什么</em>。
+    </div>
+    <div class="speech-tldr">
+      <strong>简言之：</strong>最好的意志力训练场不是和领导对抗，而是在学生的困难面前选择不放弃——三年一线经验会让你自发产生改变制度的使命感。
+    </div>
+  </div>
+
+  <div class="speech">
+    <div class="speech-header">
+      <div class="speaker-avatar color-inamori">稻</div>
+      <div class="speaker-info">
+        <span class="speaker-name">稻盛和夫</span>
+        <span class="speaker-action">补充</span>
+      </div>
+    </div>
+    <div class="speech-body">
+      毛先生说的"自我批评"和我讲的"反省"是同一件事。但<em>自我批评需要一面镜子</em>。你需要<em>外部的镜子</em>来帮助你保持清醒。第一面镜子是<em>学生</em>——真的去食堂坐下来听学生说话。第二面镜子是<em>行业</em>——和企业的人打交道，他们只问"你能不能解决我的问题"。第三面镜子是<em>一个说真话的朋友</em>——让他定期告诉你"你最近变了"。<em>一个人不可能独自对抗制度的重力，你需要外部的校准力量。</em>
+    </div>
+    <div class="speech-tldr">
+      <strong>简言之：</strong>自我批评需要外部镜子——学生让你看见初心、行业让你看见真本事、诤友让你看见变化。
+    </div>
+  </div>
+
+  <div class="speech">
+    <div class="speech-header">
+      <div class="speaker-avatar color-pan">潘</div>
+      <div class="speaker-info">
+        <span class="speaker-name">潘懋元</span>
+        <span class="speaker-action">修正</span>
+      </div>
+    </div>
+    <div class="speech-body">
+      让我做一个整场讨论都欠缺的补充：我们忽略了一个最现实的变量——<em>家庭</em>。一个初入行的年轻教师，他可能有需要赡养的父母、有即将到来的房贷、可能很快会有孩子。这些不是"干扰因素"，这是<em>真实的约束条件</em>。当你月薪五千、房贷三千的时候，"逆向押注产业深耕"是一种你消费不起的奢侈品。如果行政岗多出来的那一两千块津贴是你家庭财务稳定的关键，那就去做行政，不要有心理负担。<em>存活是一切策略的前提。</em>毛先生说"不要在没试之前给自己判死刑"。我说：<em>也不要在经济基础不稳的时候把自己推上战场。红军长征也要带粮食。</em>
+    </div>
+    <div class="speech-tldr">
+      <strong>简言之：</strong>家庭财务是被忽略的硬约束——如果行政岗的额外收入是家庭稳定的关键，先生存再谈理想，红军长征也要带粮食。
+    </div>
+  </div>
+
+  <div class="moderator-section">
+    <div class="moderator-label">主持人综述</div>
+    <p>这一轮终于触及了最真实、最朴素的层面——<em>真实的人在真实的约束条件下做选择。</em>毛泽东与福柯的冲突是思想高峰，韦伯的"战略节奏"提供了调和方案，而潘懋元的"家庭约束"把讨论从哲学高度拉回了生活地面。</p>
+  </div>
+
+  <div class="chart-container">
+    <div class="chart-title">意志力运用的战略节奏</div>
+    <div class="timeline">
+      <div class="timeline-step" style="border-left-color: #7f8c8d;">
+        <div class="step-num" style="background: rgba(127,140,141,0.2); color: #7f8c8d;">0</div>
+        <div class="step-title">Yr 0 · 观察环境 + 稳住生存</div>
+        <div class="step-desc">判断组织是否值得投入 · 确保家庭财务不崩溃</div>
+      </div>
+      <div class="timeline-step" style="border-left-color: #2980b9;">
+        <div class="step-num" style="background: rgba(41,128,185,0.2); color: #2980b9;">1</div>
+        <div class="step-title">Yr 1-2 · 保存实力 + 建基础</div>
+        <div class="step-desc">把手头的事做到极致 · 建信用账户</div>
+      </div>
+      <div class="timeline-step" style="border-left-color: #e67e22;">
+        <div class="step-num" style="background: rgba(230,126,34,0.2); color: #e67e22;">2</div>
+        <div class="step-title">Yr 3-5 · 小范围试探 + 积口碑</div>
+        <div class="step-desc">提出教改建议 · 拒绝不合理安排</div>
+      </div>
+      <div class="timeline-step" style="border-left-color: #d35400;">
+        <div class="step-num" style="background: rgba(211,84,0,0.2); color: #d35400;">3</div>
+        <div class="step-title">Yr 5+ · 承担变革责任</div>
+        <div class="step-desc">争取制度变革 · 推动系统改善</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== ROUND 13 ===================== -->
+  <div class="round-header">
+    <div class="round-num">第十三轮</div>
+    <div class="round-title">最后一句话</div>
+    <div class="round-question">
+      请每位嘉宾对这位初入职业教育的年轻教师说最后一句话——把你全部的思想浓缩为一个句子。
+    </div>
+  </div>
+
+  <div class="speech">
+    <div class="speech-header">
+      <div class="speaker-avatar color-pan">潘</div>
+      <div class="speaker-info">
+        <span class="speaker-name">潘懋元</span>
+        <span class="speaker-action">陈述</span>
+      </div>
+    </div>
+    <div class="speech-body">
+      <em>先站上讲台、拿到职称、扎进行业——把这三件事在五年内做成，你就拥有了此后一切选择的自由。</em>
+    </div>
+    <div class="speech-tldr">
+      <strong>简言之：</strong>五年三件事，换一生选择权。
+    </div>
+  </div>
+
+  <div class="speech">
+    <div class="speech-header">
+      <div class="speaker-avatar color-huang">黄</div>
+      <div class="speaker-info">
+        <span class="speaker-name">黄炎培</span>
+        <span class="speaker-action">陈述</span>
+      </div>
+    </div>
+    <div class="speech-body">
+      <em>你的学生大多是被应试教育放弃的孩子——你若也放弃他们去做行政，这世上就再没有人站在他们那边了。</em>
+    </div>
+    <div class="speech-tldr">
+      <strong>简言之：</strong>有些人只有你会为他站出来。
+    </div>
+  </div>
+
+  <div class="speech">
+    <div class="speech-header">
+      <div class="speaker-avatar color-weber">韦</div>
+      <div class="speaker-info">
+        <span class="speaker-name">马克斯·韦伯</span>
+        <span class="speaker-action">陈述</span>
+      </div>
+    </div>
+    <div class="speech-body">
+      <em>不要听任何人告诉你哪条路"更好"——算清楚你的经济底线、评估你所在组织的理性程度、然后为自己的选择承担全部后果。</em>
+    </div>
+    <div class="speech-tldr">
+      <strong>简言之：</strong>自己算账，自己负责。
+    </div>
+  </div>
+
+  <div class="speech">
+    <div class="speech-header">
+      <div class="speaker-avatar color-inamori">稻</div>
+      <div class="speaker-info">
+        <span class="speaker-name">稻盛和夫</span>
+        <span class="speaker-action">陈述</span>
+      </div>
+    </div>
+    <div class="speech-body">
+      <em>你问我选哪条路，我只问你一件事——十年后回头看，哪条路上的那个你，是你愿意成为的人？</em>
+    </div>
+    <div class="speech-tldr">
+      <strong>简言之：</strong>选你想成为的那个人走过的路。
+    </div>
+  </div>
+
+  <div class="speech">
+    <div class="speech-header">
+      <div class="speaker-avatar color-foucault">福</div>
+      <div class="speaker-info">
+        <span class="speaker-name">米歇尔·福柯</span>
+        <span class="speaker-action">陈述</span>
+      </div>
+    </div>
+    <div class="speech-body">
+      <em>无论你选了哪条路，永远记住一件事——当你开始觉得一切理所当然的时候，就是你正在被驯服的时候。</em>
+    </div>
+    <div class="speech-tldr">
+      <strong>简言之：</strong>觉得"正常"的那一刻最危险。
+    </div>
+  </div>
+
+  <div class="speech">
+    <div class="speech-header">
+      <div class="speaker-avatar color-mao">毛</div>
+      <div class="speaker-info">
+        <span class="speaker-name">毛泽东</span>
+        <span class="speaker-action">陈述</span>
+      </div>
+    </div>
+    <div class="speech-body">
+      <em>去学生中间去，去车间里去，去一切艰难的地方去——你不到群众中间，就永远不知道自己该干什么、能干什么。</em>
+    </div>
+    <div class="speech-tldr">
+      <strong>简言之：</strong>答案不在办公室里，在群众中间。
+    </div>
+  </div>
+
+  <div class="moderator-section">
+    <div class="moderator-label">主持人终局总结</div>
+    <p>六个人，六句话，六个维度——潘懋元给了<em>路线图</em>，黄炎培给了<em>使命感</em>，韦伯给了<em>清醒</em>，稻盛给了<em>方向感</em>，福柯给了<em>警觉</em>，毛泽东给了<em>行动力</em>。没有一个人的建议是完整的，但合在一起，它们构成了一个年轻人做出这个选择所需要的<em>全部精神资源</em>。</p>
+  </div>
+
+<!-- ============================================================
+     全局总结
+     ============================================================ -->
+  <div class="summary-section">
+
+  <h2 style="font-size: 18px; color: #f0f0f0; margin: 32px 0 16px;">参会者贡献</h2>
+
+  <div class="contributor-list">
+    <div class="contributor-card">
+      <div class="speaker-avatar color-pan" style="flex-shrink: 0;">潘</div>
+      <div>
+        <div style="font-size: 14px; font-weight: bold; color: #f0f0f0; margin-bottom: 4px;">潘懋元</div>
+        <div style="font-size: 13px; color: #a0a0b0; line-height: 1.6;">路线图 · 五年三件事，换一生选择权</div>
+      </div>
+    </div>
+    <div class="contributor-card">
+      <div class="speaker-avatar color-huang" style="flex-shrink: 0;">黄</div>
+      <div>
+        <div style="font-size: 14px; font-weight: bold; color: #f0f0f0; margin-bottom: 4px;">黄炎培</div>
+        <div style="font-size: 13px; color: #a0a0b0; line-height: 1.6;">使命感 · 有些人只有你会为他站出来</div>
+      </div>
+    </div>
+    <div class="contributor-card">
+      <div class="speaker-avatar color-weber" style="flex-shrink: 0;">韦</div>
+      <div>
+        <div style="font-size: 14px; font-weight: bold; color: #f0f0f0; margin-bottom: 4px;">马克斯·韦伯</div>
+        <div style="font-size: 13px; color: #a0a0b0; line-height: 1.6;">清醒 · 自己算账，自己负责</div>
+      </div>
+    </div>
+    <div class="contributor-card">
+      <div class="speaker-avatar color-inamori" style="flex-shrink: 0;">稻</div>
+      <div>
+        <div style="font-size: 14px; font-weight: bold; color: #f0f0f0; margin-bottom: 4px;">稻盛和夫</div>
+        <div style="font-size: 13px; color: #a0a0b0; line-height: 1.6;">方向感 · 选你想成为的那个人走过的路</div>
+      </div>
+    </div>
+    <div class="contributor-card">
+      <div class="speaker-avatar color-foucault" style="flex-shrink: 0;">福</div>
+      <div>
+        <div style="font-size: 14px; font-weight: bold; color: #f0f0f0; margin-bottom: 4px;">米歇尔·福柯</div>
+        <div style="font-size: 13px; color: #a0a0b0; line-height: 1.6;">警觉 · 觉得"正常"的那一刻最危险</div>
+      </div>
+    </div>
+    <div class="contributor-card">
+      <div class="speaker-avatar color-mao" style="flex-shrink: 0;">毛</div>
+      <div>
+        <div style="font-size: 14px; font-weight: bold; color: #f0f0f0; margin-bottom: 4px;">毛泽东</div>
+        <div style="font-size: 13px; color: #a0a0b0; line-height: 1.6;">行动力 · 答案不在办公室里，在群众中间</div>
+      </div>
+    </div>
+  </div>
+
+  <h2 style="font-size: 18px; color: #f0f0f0; margin: 32px 0 16px;">开放问题</h2>
+
+  <ol class="open-questions">
+    <li>制度决定论 vs 意志主体论——人的能动性边界究竟在哪里？</li>
+    <li>职业教育"普通本科化"趋势是否可逆？逆向押注者能否等到市场纠偏？</li>
+    <li>AI对职教教师角色的冲击深度——"教思维"的教师如何培养？</li>
+    <li>家庭约束与理想选择的冲突——是否存在兼顾生存与使命的第三条路？</li>
+    <li>不同区域、不同院校的制度环境差异——本讨论的结论在多大范围内可推广？</li>
+    <li>"不可替代的产业连接者"这一最优解是否适用于所有专业方向？</li>
+    <li>信念与叙事的自我实现效应——"我只是普通人"的认知是否构成结构性约束？</li>
+  </ol>
+
+  <div class="page-footer">
+    Powered by 圆桌研讨会框架 · 基于李继刚圆桌讨论提示词
+  </div>
+
+  </div><!-- close .summary-section -->
+</div><!-- close .content -->
+
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const progressBar = document.querySelector('.progress-bar');
+  const progressCurrent = document.querySelector('.progress-current');
+  const progressDots = document.querySelectorAll('.progress-dot');
+  const tocPanel = document.querySelector('.toc-panel');
+  const tocToggle = document.querySelector('.progress-expand');
+  const tocItems = document.querySelectorAll('.toc-item');
+  const rounds = document.querySelectorAll('.round-header');
+
+  // TOC toggle
+  tocToggle.addEventListener('click', (e) => {
+    e.stopPropagation();
+    tocPanel.classList.toggle('open');
+    tocToggle.textContent = tocPanel.classList.contains('open') ? '▲ 收起' : '▼ 目录';
+  });
+
+  // Close TOC when clicking outside
+  document.addEventListener('click', (e) => {
+    if (!tocPanel.contains(e.target) && !tocToggle.contains(e.target)) {
+      tocPanel.classList.remove('open');
+      tocToggle.textContent = '▼ 目录';
+    }
+  });
+
+  // TOC item click → smooth scroll + close panel
+  tocItems.forEach((item, index) => {
+    item.addEventListener('click', () => {
+      if (rounds[index]) {
+        rounds[index].scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+      tocPanel.classList.remove('open');
+      tocToggle.textContent = '▼ 目录';
+    });
+  });
+
+  // Intersection Observer for scroll tracking
+  let currentRound = 0;
+  const observerOptions = {
+    rootMargin: '-80px 0px -70% 0px',
+    threshold: 0
+  };
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const index = Array.from(rounds).indexOf(entry.target);
+        if (index !== -1) {
+          currentRound = index;
+          updateProgress(index);
+        }
+      }
+    });
+  }, observerOptions);
+
+  rounds.forEach(round => observer.observe(round));
+
+  function updateProgress(index) {
+    const roundNum = rounds[index].querySelector('.round-num');
+    const roundTitle = rounds[index].querySelector('.round-title');
+    if (roundNum && roundTitle) {
+      progressCurrent.innerHTML =
+        '<span>' + roundNum.textContent + '</span> · ' + roundTitle.textContent;
+    }
+
+    progressDots.forEach((dot, i) => {
+      dot.classList.remove('active', 'passed');
+      if (i < index) dot.classList.add('passed');
+      if (i === index) dot.classList.add('active');
+    });
+
+    tocItems.forEach((item, i) => {
+      item.classList.toggle('active', i === index);
+    });
+  }
+
+  if (rounds.length > 0) updateProgress(0);
+
+  const headerHeight = progressBar ? progressBar.offsetHeight + 16 : 60;
+  document.documentElement.style.scrollPaddingTop = headerHeight + 'px';
+});
+
+</script>
+</body>
+</html>
