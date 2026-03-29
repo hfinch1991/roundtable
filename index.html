@@ -3,1928 +3,221 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>圆桌：AI编程对IT工作者影响</title>
+<title>圆桌研讨会</title>
 <style>
-/* ============================================================
-   1. Reset & Base
-   ============================================================ */
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
+* { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
   background: #0d0d1a;
   color: #c8c8d0;
   font-family: "Noto Serif SC", Georgia, "Times New Roman", serif;
   line-height: 1.8;
-  font-size: 19px;
-}
-
-/* ============================================================
-   2. Progress Bar
-   ============================================================ */
-.progress-bar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 100;
-  background: rgba(13, 13, 26, 0.95);
-  backdrop-filter: blur(12px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-}
-
-.progress-bar-inner {
-  max-width: 1120px;
-  margin: 0 auto;
-  padding: 14px 32px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.progress-current {
-  font-size: 15px;
-  color: #a0a0b0;
-  letter-spacing: 1px;
-}
-
-.progress-current span {
-  color: #e94560;
-  font-weight: 600;
-}
-
-.progress-dots {
-  display: flex;
-  flex-direction: row;
-  gap: 8px;
-  align-items: center;
-}
-
-.progress-dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.1);
-  transition: background 0.3s, box-shadow 0.3s;
-}
-
-.progress-dot.active {
-  background: #e94560;
-  box-shadow: 0 0 8px rgba(233, 69, 96, 0.4);
-}
-
-.progress-dot.passed {
-  background: rgba(233, 69, 96, 0.3);
-}
-
-.progress-expand {
-  font-size: 14px;
-  color: #666;
-  letter-spacing: 1px;
-  cursor: pointer;
-  user-select: none;
-}
-
-/* ============================================================
-   3. TOC Panel
-   ============================================================ */
-.toc-panel {
-  position: fixed;
-  top: 48px;
-  left: 0;
-  right: 0;
-  z-index: 99;
-  background: rgba(13, 13, 26, 0.98);
-  backdrop-filter: blur(16px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height 0.3s ease;
-}
-
-.toc-panel.open {
-  max-height: 500px;
-}
-
-.toc-inner {
-  max-width: 1120px;
-  margin: 0 auto;
-  padding: 8px 32px;
-}
-
-.toc-item {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 12px;
-  padding: 10px 14px;
-  border-radius: 6px;
-  font-size: 16px;
-  color: #888;
-  cursor: pointer;
-  transition: background 0.2s, color 0.2s;
-}
-
-.toc-item:hover {
-  background: rgba(255, 255, 255, 0.04);
-  color: #c8c8d0;
-}
-
-.toc-item.active {
-  color: #e94560;
-}
-
-.toc-num {
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.06);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 13px;
-  flex-shrink: 0;
-}
-
-.toc-item.active .toc-num {
-  background: rgba(233, 69, 96, 0.2);
-  color: #e94560;
-}
-
-/* ============================================================
-   4. Hero
-   ============================================================ */
-.hero {
-  max-width: 1120px;
-  margin: 0 auto;
-  padding: 110px 32px 60px;
-  text-align: center;
-}
-
-.hero-tag {
-  font-size: 14px;
-  color: #e94560;
-  letter-spacing: 4px;
-  margin-bottom: 20px;
-  text-transform: uppercase;
-}
-
-.hero h1 {
-  font-size: 42px;
-  font-weight: bold;
-  color: #f0f0f0;
-  line-height: 1.4;
-  margin-bottom: 20px;
-}
-
-.hero-meta {
-  font-size: 16px;
-  color: #666;
-  margin-bottom: 32px;
-}
-
-.hero-participants {
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 16px;
-}
-
-.participant-tag {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 16px;
-  border-radius: 20px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  font-size: 15px;
-  color: #a0a0b0;
-}
-
-.participant-dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  flex-shrink: 0;
-}
-
-/* ============================================================
-   5. Content
-   ============================================================ */
-.content {
-  max-width: 1120px;
-  margin: 0 auto;
-  padding: 0 32px 80px;
-}
-
-/* ============================================================
-   6. Round Header
-   ============================================================ */
-.round-header {
-  margin: 64px 0 32px;
-  padding-bottom: 16px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-}
-
-.round-num {
-  font-size: 14px;
-  color: #e94560;
-  letter-spacing: 3px;
-  margin-bottom: 8px;
-  text-transform: uppercase;
-}
-
-.round-title {
-  font-size: 28px;
-  font-weight: bold;
-  color: #f0f0f0;
-  line-height: 1.4;
-}
-
-.round-question {
-  margin-top: 16px;
-  padding: 20px 24px;
-  background: rgba(233, 69, 96, 0.06);
-  border-left: 3px solid #e94560;
-  border-radius: 0 8px 8px 0;
   font-size: 18px;
-  color: #c8c8d0;
-  line-height: 1.8;
+  min-height: 100vh;
 }
 
-/* ============================================================
-   7. Speech Cards
-   ============================================================ */
-.speech {
-  margin: 24px 0;
-  padding: 24px 28px;
-  background: rgba(255, 255, 255, 0.02);
-  border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.04);
-  transition: border-color 0.3s;
+.page {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 80px 32px;
 }
 
-.speech:hover {
-  border-color: rgba(255, 255, 255, 0.08);
+/* Header */
+.site-header {
+  text-align: center;
+  margin-bottom: 80px;
 }
 
-.speech-header {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 14px;
-}
-
-.speaker-avatar {
-  width: 40px;
-  height: 40px;
+.site-logo {
+  width: 64px;
+  height: 64px;
   border-radius: 50%;
+  background: linear-gradient(135deg, #e94560, #8e44ad);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 16px;
+  margin: 0 auto 28px;
+  font-size: 28px;
   color: white;
   font-weight: bold;
-  flex-shrink: 0;
 }
 
-.speaker-info {
-  display: flex;
-  align-items: baseline;
-  gap: 10px;
-}
-
-.speaker-name {
-  font-size: 18px;
-  font-weight: bold;
+.site-title {
+  font-size: 40px;
+  font-weight: 700;
   color: #f0f0f0;
-}
-
-.speaker-action {
-  font-size: 13px;
-  letter-spacing: 1px;
-  padding: 3px 10px;
-  border-radius: 3px;
-  background: rgba(255, 255, 255, 0.06);
-  color: #888;
-}
-
-.speech-body {
-  font-size: 18px;
-  line-height: 1.9;
-  color: #c8c8d0;
-}
-
-.speech-body em {
-  color: #f0f0f0;
-  font-style: normal;
-  font-weight: 500;
-}
-
-.speech-tldr {
-  margin-top: 16px;
-  padding-top: 12px;
-  border-top: 1px solid rgba(255, 255, 255, 0.04);
-  font-size: 16px;
-  color: #888;
-  font-style: italic;
-}
-
-.speech-tldr strong {
-  color: #a0a0b0;
-  font-style: normal;
-}
-
-/* ============================================================
-   8. Moderator Section
-   ============================================================ */
-.moderator-section {
-  margin: 40px 0;
-  padding: 28px;
-  background: rgba(233, 69, 96, 0.04);
-  border: 1px solid rgba(233, 69, 96, 0.1);
-  border-radius: 12px;
-}
-
-.moderator-label {
-  font-size: 14px;
-  color: #e94560;
-  letter-spacing: 2px;
   margin-bottom: 12px;
-  text-transform: uppercase;
-}
-
-/* ============================================================
-   9. Chart Containers
-   ============================================================ */
-.chart-container {
-  margin: 24px 0;
-  padding: 28px;
-  background: rgba(0, 0, 0, 0.3);
-  border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.06);
-}
-
-.chart-title {
-  text-align: center;
-  font-size: 16px;
-  color: #a0a0b0;
   letter-spacing: 2px;
-  margin-bottom: 24px;
 }
 
-/* Tension axis */
-.tension-axis {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 16px 0;
-}
-
-.tension-pole {
-  padding: 14px 24px;
-  border-radius: 8px;
+.site-desc {
   font-size: 17px;
-  font-weight: bold;
-}
-
-.tension-pole.left {
-  background: rgba(46, 134, 171, 0.15);
-  color: #53a8b6;
-  border: 1px solid rgba(46, 134, 171, 0.2);
-}
-
-.tension-pole.right {
-  background: rgba(233, 69, 96, 0.15);
-  color: #e94560;
-  border: 1px solid rgba(233, 69, 96, 0.2);
-}
-
-.tension-line {
-  flex: 1;
-  height: 2px;
-  margin: 0 16px;
-  background: linear-gradient(to right, rgba(46, 134, 171, 0.4), rgba(233, 69, 96, 0.4));
-}
-
-/* Tension detail */
-.tension-detail {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-  margin-top: 16px;
-}
-
-.tension-item {
-  padding: 12px 16px;
-  border-radius: 6px;
-  font-size: 16px;
-  line-height: 1.6;
-}
-
-.tension-item.blue {
-  background: rgba(46, 134, 171, 0.08);
-  color: #7ec8d8;
-  border-left: 2px solid rgba(46, 134, 171, 0.3);
-}
-
-.tension-item.red {
-  background: rgba(233, 69, 96, 0.08);
-  color: #f0a0b0;
-  border-left: 2px solid rgba(233, 69, 96, 0.3);
-}
-
-/* Layer stack */
-.layer-stack {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.layer-card {
-  padding: 18px 22px;
-  border-radius: 8px;
-  border-left: 3px solid;
-}
-
-.layer-card .layer-label {
-  font-size: 14px;
-  letter-spacing: 2px;
-  margin-bottom: 8px;
-  font-weight: 600;
-  text-transform: uppercase;
-}
-
-.layer-card .layer-content {
-  font-size: 16px;
-  line-height: 1.7;
-  color: #b0b0b8;
-}
-
-.layer-card:nth-child(1) {
-  background: rgba(233, 69, 96, 0.08);
-}
-
-.layer-card:nth-child(2) {
-  background: rgba(255, 255, 255, 0.04);
-}
-
-.layer-card:nth-child(3) {
-  background: rgba(46, 134, 171, 0.08);
-}
-
-/* Framework split */
-.framework-split {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
-}
-
-.framework-card {
-  padding: 22px;
-  border-radius: 8px;
-  border-top: 3px solid;
-}
-
-.framework-card .fw-title {
-  font-size: 18px;
-  font-weight: bold;
-  margin-bottom: 8px;
-}
-
-.framework-card .fw-detail {
-  font-size: 16px;
-  line-height: 1.7;
-  color: #b0b0b8;
-}
-
-.converge-arrow {
-  text-align: center;
-  padding: 16px 0;
-  font-size: 16px;
-  color: #666;
-}
-
-.converge-result {
-  padding: 18px 22px;
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.03);
-  text-align: center;
-  font-size: 17px;
-  color: #c8c8d0;
-}
-
-/* Timeline */
-.timeline {
-  position: relative;
-  padding-left: 36px;
-  margin: 16px 0;
-}
-
-.timeline::before {
-  content: '';
-  position: absolute;
-  left: 14px;
-  top: 0;
-  bottom: 0;
-  width: 2px;
-  background: rgba(255, 255, 255, 0.06);
-}
-
-.timeline-step {
-  position: relative;
-  margin-bottom: 24px;
-  padding: 18px 22px;
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.03);
-  border-left: 3px solid;
-}
-
-.step-num {
-  position: absolute;
-  left: -36px;
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 13px;
-  font-weight: bold;
-  z-index: 1;
-}
-
-.step-title {
-  font-size: 17px;
-  font-weight: bold;
-  color: #f0f0f0;
-  margin-bottom: 6px;
-}
-
-.step-desc {
-  font-size: 16px;
-  color: #b0b0b8;
-  line-height: 1.7;
-}
-
-/* Onion layers */
-.onion-layers {
-  padding: 18px;
-  border-radius: 8px;
-  border: 1px solid;
-}
-
-.onion-layers .onion-label {
-  font-size: 15px;
-  font-weight: bold;
-  margin-bottom: 8px;
-}
-
-.onion-layers .onion-desc {
-  font-size: 16px;
-  color: #b0b0b8;
-  line-height: 1.7;
-  margin-bottom: 14px;
-}
-
-/* Action table */
-.action-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.action-table th {
-  padding: 10px 14px;
-  text-align: left;
-  font-size: 14px;
   color: #888;
-  letter-spacing: 1px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-  text-transform: uppercase;
-}
-
-.action-table td {
-  padding: 12px 14px;
-  font-size: 16px;
-  color: #c8c8d0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
-}
-
-.action-table tr:hover td {
-  background: rgba(255, 255, 255, 0.02);
-}
-
-.priority-high {
-  color: #e94560;
-}
-
-.priority-mid {
-  color: #f39c12;
-}
-
-.priority-low {
-  color: #27ae60;
-}
-
-/* Network graph */
-.network-graph {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.network-node {
-  display: inline-block;
-  padding: 10px 18px;
-  border-radius: 6px;
-  font-size: 15px;
-  margin: 4px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.network-connector {
-  text-align: center;
-  padding: 6px;
-  font-size: 15px;
-  color: #666;
-}
-
-.network-row {
-  display: flex;
-  justify-content: center;
-  gap: 14px;
-  flex-wrap: wrap;
-}
-
-/* ============================================================
-   10. Speaker Colors
-   ============================================================ */
-.color-marx     { background: #c0392b; }
-.color-drucker  { background: #2980b9; }
-.color-kaifu    { background: #27ae60; }
-.color-crawford { background: #8e44ad; }
-.color-mao      { background: #d35400; }
-
-.border-marx     { border-left-color: #c0392b; }
-.border-drucker  { border-left-color: #2980b9; }
-.border-kaifu    { border-left-color: #27ae60; }
-.border-crawford { border-left-color: #8e44ad; }
-.border-mao      { border-left-color: #d35400; }
-
-/* ============================================================
-   11. Summary Section
-   ============================================================ */
-.summary-section {
-  margin-top: 64px;
-  padding-top: 32px;
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
-}
-
-.contributor-list {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: 16px;
-  margin: 24px 0;
-}
-
-.contributor-card {
-  display: flex;
-  gap: 14px;
-  padding: 18px;
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.02);
-}
-
-.open-questions {
-  margin: 32px 0;
-}
-
-.open-questions li {
-  margin-bottom: 20px;
-  font-size: 17px;
+  max-width: 560px;
+  margin: 0 auto;
   line-height: 1.8;
 }
 
-.open-questions li strong {
-  color: #f0f0f0;
+/* Discussion list */
+.section-label {
+  font-size: 13px;
+  color: #e94560;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  margin-bottom: 24px;
 }
 
-.page-footer {
+.discussion-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.discussion-card {
+  display: block;
+  padding: 28px 32px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 12px;
+  text-decoration: none;
+  color: inherit;
+  transition: border-color 0.3s, background 0.3s, transform 0.2s;
+}
+
+.discussion-card:hover {
+  border-color: rgba(233, 69, 96, 0.3);
+  background: rgba(255, 255, 255, 0.03);
+  transform: translateY(-2px);
+}
+
+.card-meta {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 12px;
+  font-size: 14px;
+  color: #666;
+}
+
+.card-date {
+  color: #888;
+}
+
+.card-rounds {
+  padding: 2px 10px;
+  border-radius: 10px;
+  background: rgba(233, 69, 96, 0.1);
+  color: #e94560;
+  font-size: 12px;
+}
+
+.card-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: #f0f0f0;
+  margin-bottom: 10px;
+  line-height: 1.4;
+}
+
+.card-summary {
+  font-size: 16px;
+  color: #999;
+  line-height: 1.7;
+  margin-bottom: 16px;
+}
+
+.card-participants {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.card-tag {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 12px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.04);
+  font-size: 13px;
+  color: #a0a0b0;
+}
+
+.card-tag-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* Footer */
+.site-footer {
+  margin-top: 80px;
+  padding-top: 32px;
+  border-top: 1px solid rgba(255, 255, 255, 0.04);
   text-align: center;
-  padding: 40px 0;
   font-size: 14px;
   color: #555;
 }
 
-/* ============================================================
-   12. Responsive
-   ============================================================ */
-@media (max-width: 640px) {
-  .hero h1 {
-    font-size: 28px;
-  }
-
-  .hero-participants {
-    gap: 8px;
-  }
-
-  .speech {
-    padding: 16px;
-  }
-
-  .tension-detail {
-    grid-template-columns: 1fr;
-  }
-
-  .framework-split {
-    grid-template-columns: 1fr;
-  }
-
-  .action-table {
-    font-size: 14px;
-  }
-
-  .contributor-list {
-    grid-template-columns: 1fr;
-  }
+.site-footer a {
+  color: #888;
+  text-decoration: none;
 }
 
+.site-footer a:hover {
+  color: #e94560;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .page { padding: 48px 20px; }
+  .site-title { font-size: 28px; }
+  .card-title { font-size: 20px; }
+  .discussion-card { padding: 20px; }
+}
 </style>
 </head>
 <body>
 
-<!-- Progress bar -->
-<div class="progress-bar">
-  <div class="progress-bar-inner">
-    <div class="progress-current"><span>第一轮</span> · 定义"普通IT工作者"及AI对其的影响层面</div>
-    <div class="progress-dots">
-      <div class="progress-dot active"></div>
-      <div class="progress-dot"></div>
-      <div class="progress-dot"></div>
-      <div class="progress-dot"></div>
-      <div class="progress-dot"></div>
-      <div class="progress-dot"></div>
-      <div class="progress-dot"></div>
-    </div>
-    <div class="progress-expand">▼ 目录</div>
+<div class="page">
+
+  <!-- Header -->
+  <div class="site-header">
+    <div class="site-logo">桌</div>
+    <h1 class="site-title">圆桌研讨会</h1>
+    <p class="site-desc">邀请代表不同思想的典型人物，围绕一个议题展开以"求真"为目标的深度对话。由 AI 主持，人类提问。</p>
   </div>
+
+  <!-- Discussion list -->
+  <div class="section-label">全部讨论</div>
+
+  <div class="discussion-list">
+
+    <a class="discussion-card" href="ai-programming.html">
+      <div class="card-meta">
+        <span class="card-date">2026年3月29日</span>
+        <span class="card-rounds">七轮对话</span>
+      </div>
+      <div class="card-title">AI 编程对普通 IT 工作者的影响</div>
+      <div class="card-summary">从经济结构到认知能力、从权力分配到存在意义，五位思想家围绕 AI 编程对普通 IT 工作者的冲击展开七轮深度交锋，最终为一位运维工程师画出了具体的行动路线图。</div>
+      <div class="card-participants">
+        <span class="card-tag"><span class="card-tag-dot" style="background:#c0392b;"></span>马克思</span>
+        <span class="card-tag"><span class="card-tag-dot" style="background:#2980b9;"></span>德鲁克</span>
+        <span class="card-tag"><span class="card-tag-dot" style="background:#27ae60;"></span>李开复</span>
+        <span class="card-tag"><span class="card-tag-dot" style="background:#8e44ad;"></span>克劳福德</span>
+        <span class="card-tag"><span class="card-tag-dot" style="background:#d35400;"></span>毛泽东</span>
+      </div>
+    </a>
+
+  </div>
+
+  <!-- Footer -->
+  <div class="site-footer">
+    Powered by <a href="https://github.com/hfinch1991/roundtable">圆桌研讨会框架</a>
+  </div>
+
 </div>
 
-<!-- TOC panel with 7 items -->
-<div class="toc-panel">
-  <div class="toc-inner">
-    <div class="toc-item active"><div class="toc-num">1</div><span>定义"普通IT工作者"及AI对其的影响层面</span></div>
-    <div class="toc-item"><div class="toc-num">2</div><span>判断力能否脱离实践独立存在？</span></div>
-    <div class="toc-item"><div class="toc-num">3</div><span>引入毛泽东——所有权与组织路线</span></div>
-    <div class="toc-item"><div class="toc-num">4</div><span>个体能力升级与集体组织的统一路径</span></div>
-    <div class="toc-item"><div class="toc-num">5</div><span>Harold 的个人行动路线</span></div>
-    <div class="toc-item"><div class="toc-num">6</div><span>具体行动的可操作性与陷阱</span></div>
-    <div class="toc-item"><div class="toc-num">7</div><span>AI 重度用户是否在挖自己的坟墓？</span></div>
-  </div>
-</div>
-
-<!-- Hero -->
-<div class="hero">
-  <div class="hero-tag">圆桌研讨会</div>
-  <h1>AI 编程对普通 IT 工作者的影响</h1>
-  <div class="hero-meta">2026年3月29日 · 七轮深度对话 · 五位思想代表</div>
-  <div class="hero-participants">
-    <div class="participant-tag"><div class="participant-dot color-marx"></div> 卡尔·马克思</div>
-    <div class="participant-tag"><div class="participant-dot color-drucker"></div> 彼得·德鲁克</div>
-    <div class="participant-tag"><div class="participant-dot color-kaifu"></div> 李开复</div>
-    <div class="participant-tag"><div class="participant-dot color-crawford"></div> 马修·克劳福德</div>
-    <div class="participant-tag"><div class="participant-dot color-mao"></div> 毛泽东</div>
-  </div>
-</div>
-
-<div class="content">
-
-  <!-- ===================== ROUND 1 ===================== -->
-  <div class="round-header">
-    <div class="round-num">第一轮</div>
-    <div class="round-title">定义"普通IT工作者"及AI对其的影响层面</div>
-    <div class="round-question">
-      我们应当如何定义"普通 IT 工作者"？他们的核心工作价值是什么？当我们说 AI 编程"影响"他们时，我们讨论的究竟是什么层面的影响？
-    </div>
-  </div>
-
-  <div class="speech">
-    <div class="speech-header">
-      <div class="speaker-avatar color-marx">马</div>
-      <div class="speaker-info">
-        <span class="speaker-name">卡尔·马克思</span>
-        <span class="speaker-action">陈述</span>
-      </div>
-    </div>
-    <div class="speech-body">
-      这个问题必须从政治经济学的角度来回答。所谓"普通 IT 工作者"，本质上是<em>信息时代的产业工人</em>。他们出卖的是脑力劳动力，而非生产资料的所有权。他们写代码，但不拥有代码所创造的价值——剩余价值被资本家攫取。当我们说 AI"影响"他们时，不要被"提升效率""赋能"这类资产阶级修辞所蒙蔽。真正发生的事情与十九世纪纺织机替代手工织布工如出一辙：<em>资本正在用固定资本（AI 工具）替代可变资本（程序员劳动）</em>。这不是"影响"，这是一场对活劳动的系统性替代。《资本论》第一卷中我已经指出，机器的引入从来不是为了减轻工人的负担，而是为了降低劳动力的价值。
-    </div>
-    <div class="speech-tldr">
-      <strong>简言之：</strong>普通 IT 工作者是数字时代的无产阶级，AI 编程是资本用机器替代活劳动的最新形式。
-    </div>
-  </div>
-
-  <div class="speech">
-    <div class="speech-header">
-      <div class="speaker-avatar color-drucker">德</div>
-      <div class="speaker-info">
-        <span class="speaker-name">彼得·德鲁克</span>
-        <span class="speaker-action">质疑</span>
-      </div>
-    </div>
-    <div class="speech-body">
-      马克思先生的阶级分析框架在此处并不完全适用。我在《后资本主义社会》中指出，知识社会的核心资源不再是资本、土地或劳动力，而是<em>知识本身</em>。但问题在于——绝大多数自称"知识工作者"的 IT 从业者，实际上做的是<em>技术性工作</em>（technical work），而非真正的知识工作（knowledge work）。他们把需求文档翻译成代码，遵循既定模式，排查已知类型的 bug。这是<em>例行化的智力劳动</em>，与工厂流水线的本质区别没有我们想象的那么大。所以当我们定义"普通 IT 工作者"时，关键区分是：你是在<em>应用既有知识</em>，还是在<em>创造新知识、做出判断</em>？AI 编程真正威胁的是前者。
-    </div>
-    <div class="speech-tldr">
-      <strong>简言之：</strong>多数 IT 工作者做的是例行化智力劳动而非真正的知识工作，这正是 AI 最擅长替代的部分。
-    </div>
-  </div>
-
-  <div class="speech">
-    <div class="speech-header">
-      <div class="speaker-avatar color-kaifu">李</div>
-      <div class="speaker-info">
-        <span class="speaker-name">李开复</span>
-        <span class="speaker-action">补充</span>
-      </div>
-    </div>
-    <div class="speech-body">
-      德鲁克先生的区分非常精准。我想用更具体的产业语言来说明。我把 IT 工作分成三层：<em>胶水层</em>（对接 API、写 CRUD、配置部署）、<em>工程层</em>（系统设计、性能优化、架构决策）、<em>创新层</em>（定义产品、解决未知问题）。AI 编程工具——从 Copilot 到 Claude Code——目前已经能高效完成胶水层 80% 以上的工作。所谓"普通 IT 工作者"，如果诚实地审视，大部分工作时间花在胶水层。所以"影响"的含义非常具体：<em>不是失业，而是岗位内容的剧烈重组</em>。你原来一天写八小时代码，现在可能两小时写代码、六小时做 AI 无法胜任的事——需求澄清、跨团队沟通、系统权衡。
-    </div>
-    <div class="speech-tldr">
-      <strong>简言之：</strong>AI 消灭的不是岗位，是岗位中那些可自动化的任务层；普通 IT 工作者面临的是工作内容的剧烈重构。
-    </div>
-  </div>
-
-  <div class="speech">
-    <div class="speech-header">
-      <div class="speaker-avatar color-crawford">克</div>
-      <div class="speaker-info">
-        <span class="speaker-name">马修·克劳福德</span>
-        <span class="speaker-action">反驳</span>
-      </div>
-    </div>
-    <div class="speech-body">
-      我要对李开复的乐观叙事提出一个根本性的质疑。你们都在讨论效率、转型、升级——但没有人问一个更基本的问题：<em>当一个程序员不再亲手写代码时，他还理解他所构建的系统吗？</em> 我在《摩托车修理店的未来工作哲学》中论证过，<em>亲手做一件事</em>所带来的理解，与<em>指挥别人（或机器）做</em>所带来的理解，是本质不同的。手艺人通过与材料的直接接触获得一种"身体化的认知"（embodied cognition）。程序员调试 bug 时那种对代码的直觉感知，也是同类的东西。当 AI 接管了编码过程，IT 工作者将退化为<em>不理解底层实现的管理者</em>——就像不懂引擎的人开自动驾驶汽车。这不是"升级"，这是一种<em>能力的空心化</em>。讽刺的是，我们社会一直认为脑力劳动高于体力劳动，但现在 AI 率先自动化的恰恰是脑力劳动中的"手艺"部分。
-    </div>
-    <div class="speech-tldr">
-      <strong>简言之：</strong>AI 编程不只是效率问题，它正在摧毁程序员通过亲手编码所建立的深层理解力——能力空心化才是真正的威胁。
-    </div>
-  </div>
-
-  <div class="moderator-section">
-    <div class="moderator-label">主持人综述</div>
-    <p>各位的发言揭示了一条从经济结构到工作内容、再到认知能力的递进链条。本轮的<em>核心争议点</em>在于：AI 编程对 IT 工作者的影响，究竟是"解放"（从低级劳动中释放，走向更高价值工作）还是"空心化"（丧失核心手艺和深层理解力）？</p>
-    <p style="margin-top: 12px;">李开复与德鲁克倾向于"解放"叙事——AI 替代例行工作，人类走向判断与创造；马克思和克劳福德则从不同角度指向"剥夺"——前者是经济层面的劳动价值被替代，后者是认知层面的手艺能力被掏空。</p>
-  </div>
-
-  <div class="chart-container">
-    <div class="chart-title">AI 编程对 IT 工作者影响的核心张力</div>
-    <div class="tension-axis">
-      <div class="tension-pole left">解放</div>
-      <div class="tension-line"></div>
-      <div class="tension-pole right">空心化</div>
-    </div>
-    <div class="tension-detail">
-      <div class="tension-item blue">德鲁克：走向真正的知识工作</div>
-      <div class="tension-item red">克劳福德：丧失身体化认知</div>
-      <div class="tension-item blue">李开复：岗位内容升级重组</div>
-      <div class="tension-item red">马克思：活劳动被固定资本替代</div>
-    </div>
-  </div>
-
-  <!-- ===================== ROUND 2 ===================== -->
-  <div class="round-header">
-    <div class="round-num">第二轮（深入）</div>
-    <div class="round-title">判断力能否脱离实践独立存在？</div>
-    <div class="round-question">
-      "监督 AI"是否要求你首先拥有 AI 正在替代的那种能力？如果是，这构成了一个什么样的悖论？
-    </div>
-  </div>
-
-  <div class="speech">
-    <div class="speech-header">
-      <div class="speaker-avatar color-crawford">克</div>
-      <div class="speaker-info">
-        <span class="speaker-name">马修·克劳福德</span>
-        <span class="speaker-action">陈述</span>
-      </div>
-    </div>
-    <div class="speech-body">
-      这正是我想揭穿的幻觉。所谓"人机协作"的乐观叙事隐含一个致命假设：人可以不做某件事，却依然保有对这件事的判断力。这在认识论上是站不住脚的。迈克尔·波兰尼（Michael Polanyi）早就区分了<em>显性知识</em>（explicit knowledge）和<em>默会知识</em>（tacit knowledge）。一个资深程序员看到一段代码"感觉不对劲"——这种直觉不是从教科书里学来的，而是从<em>数千小时的亲手编码中沉淀</em>出来的。它无法被言说，也无法被教授，只能通过实践获得。当 AI 接管了编码实践本身，新一代 IT 工作者将永远无法积累这种默会知识。你让一个从没亲手调过内存泄漏的人去审查 AI 的内存管理方案？他连问题在哪里都看不出来。这不是悖论——这是一个<em>不可逆的能力退化螺旋</em>。
-    </div>
-    <div class="speech-tldr">
-      <strong>简言之：</strong>判断力根植于默会知识，默会知识只能从实践中获得——取消实践就取消了判断力的来源，这是不可逆的退化。
-    </div>
-  </div>
-
-  <div class="speech">
-    <div class="speech-header">
-      <div class="speaker-avatar color-drucker">德</div>
-      <div class="speaker-info">
-        <span class="speaker-name">彼得·德鲁克</span>
-        <span class="speaker-action">反驳</span>
-      </div>
-    </div>
-    <div class="speech-body">
-      克劳福德先生把"实践"的定义框得太窄了。我不否认默会知识的存在，但我要指出：<em>管理本身也是一种实践，而且是一种更高阶的实践</em>。一个优秀的总编辑不需要自己写过每种体裁的文章，但他能判断一篇稿子好不好。一个出色的建筑事务所合伙人不亲手画每张施工图，但他能看出结构性问题。为什么？因为他们在<em>另一个层面</em>积累了默会知识——关于系统整体性、关于什么"对"什么"不对"的判断。IT 工作者的未来不是"监督 AI 写的每一行代码"，而是<em>在架构、需求、权衡这些 AI 无法自主决策的层面做出判断</em>。这些判断力的积累方式，不是靠手写 for 循环，而是靠一次次面对系统设计中的两难选择。
-    </div>
-    <div class="speech-tldr">
-      <strong>简言之：</strong>判断力可以在更高抽象层积累，管理者的默会知识来自系统性决策实践，不必绑定于底层执行。
-    </div>
-  </div>
-
-  <div class="speech">
-    <div class="speech-header">
-      <div class="speaker-avatar color-marx">马</div>
-      <div class="speaker-info">
-        <span class="speaker-name">卡尔·马克思</span>
-        <span class="speaker-action">质疑</span>
-      </div>
-    </div>
-    <div class="speech-body">
-      德鲁克先生，你描述的那个"人人都升级为架构师、决策者"的美好图景，犯了一个经典的<em>合成谬误</em>。没错，少数人可以向上攀升。但资本主义生产体系需要的不是一支全员由将军组成的军队——它需要<em>大量执行层劳动力</em>。你口中的"更高阶实践"，市场上能容纳多少人？如果一个 AI 工具能让一个架构师完成原来十个程序员的工作，那资本家的理性选择不是雇十个架构师，而是<em>雇一个架构师加一个 AI 订阅</em>，然后解雇其余九个人。这在《资本论》中叫做<em>相对过剩人口</em>的生产——技术进步不是把所有人往上推，而是把大多数人往外推。李开复先生说"不是失业，是重组"——历史上每一次大规模技术替代，资本家都是这么说的。
-    </div>
-    <div class="speech-tldr">
-      <strong>简言之：</strong>不是所有人都能升级为决策者——资本体系的逻辑是用少数高阶劳动者加 AI 替代大量普通劳动者，多数人将被淘汰而非升级。
-    </div>
-  </div>
-
-  <div class="speech">
-    <div class="speech-header">
-      <div class="speaker-avatar color-kaifu">李</div>
-      <div class="speaker-info">
-        <span class="speaker-name">李开复</span>
-        <span class="speaker-action">修正</span>
-      </div>
-    </div>
-    <div class="speech-body">
-      马克思先生指出了一个真实的结构性风险，我不回避。但我要修正他的历史类比。工业革命中纺织工人被替代后，<em>新岗位确实出现了</em>——只是不在纺织业内部，而是在铁路、电报、零售等全新产业。同理，AI 编程替代的岗位不会在"写代码"这个框里被补回来，而会在<em>AI 训练、提示工程、AI 安全审计、人机交互设计</em>等新领域长出来。但——我必须诚实——这里有一个<em>时间差问题</em>。新岗位的出现滞后于旧岗位的消亡，而且新岗位要求的技能与旧岗位截然不同。所以马克思说的对：<em>短期内确实会有大量普通 IT 工作者面临结构性失业</em>。我之前的"重组"说法过于轻巧了。更准确的说法是：这是一次<em>剧烈的、伴随大规模阵痛的产业转型</em>。
-    </div>
-    <div class="speech-tldr">
-      <strong>简言之：</strong>新岗位会出现但有时间差，短期内大量普通 IT 工作者确实面临结构性失业——"重组"的说法低估了转型之痛。
-    </div>
-  </div>
-
-  <div class="speech">
-    <div class="speech-header">
-      <div class="speaker-avatar color-crawford">克</div>
-      <div class="speaker-info">
-        <span class="speaker-name">马修·克劳福德</span>
-        <span class="speaker-action">补充</span>
-      </div>
-    </div>
-    <div class="speech-body">
-      李开复刚才修正得好，但我要追加一个更深的问题。你们讨论的都是<em>外部影响</em>——失业、转型、新岗位。但有没有人关心过<em>内在影响</em>？一个程序员花十年练就的手艺，一夜之间被告知"你不需要再做这个了"——这不仅仅是经济事件，这是一个<em>意义危机</em>。我在书中写过，手艺劳动的核心价值不在于产出，而在于它赋予劳动者一种<em>主体性</em>（agency）——"这是我做的，我对它负责，我为它骄傲"。当 AI 写了代码而你只是点了"接受"，那种主体性就消失了。你变成了一个<em>批准者</em>，而不是<em>创造者</em>。很多程序员告诉我，他们之所以选择这个职业，是因为写代码让他们感受到一种<em>心流</em>（flow）状态——与问题搏斗、突破困境、看到程序运行的那种满足感。AI 编程正在系统性地摧毁这种体验。而一个<em>丧失了意义感的工作者</em>，即使保住了工作，他真的还在"工作"吗？
-    </div>
-    <div class="speech-tldr">
-      <strong>简言之：</strong>比失业更深的危机是意义的丧失——当你从创造者退化为批准者，工作的主体性和心流体验都将消亡。
-    </div>
-  </div>
-
-  <div class="moderator-section">
-    <div class="moderator-label">主持人综述</div>
-    <p>本轮讨论将争议从"能力"层面推进到了更深的三个维度。<strong>核心争议已经分裂为三条断层线：</strong></p>
-    <p style="margin-top: 10px;">1. <strong>认识论断层</strong>：判断力能否脱离底层实践而独立存在？（克劳福德 vs 德鲁克）</p>
-    <p style="margin-top: 6px;">2. <strong>政治经济学断层</strong>：产业转型中"升级"是普遍可能还是少数特权？（马克思 vs 李开复）</p>
-    <p style="margin-top: 6px;">3. <strong>存在主义断层</strong>：即使保住岗位，丧失手艺后的工作是否还有意义？（克劳福德独立提出）</p>
-    <p style="margin-top: 12px;">注意李开复在本轮做了一个重要的<em>立场修正</em>：承认短期内的结构性失业是真实的，"重组"说法过于乐观。这使得四人的分歧从"是否有影响"收窄到了<em>"影响是否可逆、能否被多数人克服"</em>。</p>
-  </div>
-
-  <div class="chart-container">
-    <div class="chart-title">AI 编程影响的三层断层结构</div>
-    <div class="layer-stack">
-      <div class="layer-card" style="border-left-color: #8e44ad; background: rgba(142,68,173,0.08);">
-        <div class="layer-label" style="color: #8e44ad;">第三层：存在意义（最深）</div>
-        <div class="layer-content">创造者 → 批准者 · 心流体验 → 机械审批 · "这是我做的" → "这是AI做的,我点了确认"</div>
-      </div>
-      <div class="layer-card" style="border-left-color: #e94560; background: rgba(233,69,96,0.06);">
-        <div class="layer-label" style="color: #e94560;">第二层：经济结构</div>
-        <div class="layer-content">全员升级（德鲁克/李开复） ↑ 合成谬误？ · 少数升级 + 多数淘汰（马克思）</div>
-      </div>
-      <div class="layer-card" style="border-left-color: #2980b9; background: rgba(46,134,171,0.08);">
-        <div class="layer-label" style="color: #53a8b6;">第一层：认知能力</div>
-        <div class="layer-content">默会知识 ← 来自 → 亲手实践 · 德鲁克：能在更高层重建 · 克劳福德：不可逆退化</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ===================== ROUND 3 ===================== -->
-  <div class="round-header">
-    <div class="round-num">第三轮</div>
-    <div class="round-title">引入毛泽东——所有权与组织路线</div>
-    <div class="round-question">
-      我们当前的核心争议集中在三条断层线上：判断力能否脱离实践？升级是普遍可能还是少数特权？丧失手艺后工作是否还有意义？——谁拥有和控制 AI，是否才是真正的主要矛盾？
-    </div>
-  </div>
-
-  <div class="speech">
-    <div class="speech-header">
-      <div class="speaker-avatar color-mao">毛</div>
-      <div class="speaker-info">
-        <span class="speaker-name">毛泽东</span>
-        <span class="speaker-action">陈述</span>
-      </div>
-    </div>
-    <div class="speech-body">
-      我听了半天，觉得你们的讨论有一个根本性的问题——<em>站的位置不对</em>。你们在讨论"IT 工作者怎么办"，但你们站在旁观者的位置上替他们分析，替他们担忧。这是典型的<em>脱离群众</em>的知识分子毛病。克劳福德讲默会知识、讲手艺丧失，讲得好，但他把工人当作被动承受技术冲击的客体。德鲁克讲升级、讲知识工作者，那是站在管理者的位置上给工人规划前途。马克思讲阶级分析没有错，但光有分析没有<em>路线</em>，等于放空炮。
-
-      我在《实践论》中讲得很清楚：<em>「你要知道梨子的滋味，你就得变革梨子，亲口吃一吃。」</em> 克劳福德说判断力来自亲手实践，这一点和我的认识论是一致的——<em>认识来源于实践，实践是认识的基础</em>。但我要补充关键一点：实践不是个人的事，是<em>社会性的、阶级性的</em>。一个程序员单独面对 AI 工具，他当然是被动的。但如果 IT 工作者<em>组织起来</em>，集体地研究 AI、掌握 AI、改造 AI 为自己服务呢？问题不是"AI 替代你还是你监督 AI"——问题是<em>"谁拥有 AI，谁定义 AI 的使用方式"</em>。
-
-      《矛盾论》告诉我们，要抓<em>主要矛盾</em>。当前的主要矛盾不是"人的能力够不够"，而是<em>AI 工具的所有权和控制权掌握在资本手中，普通 IT 工作者只是使用者</em>。你用的是别人的 Copilot、别人的 Claude、别人定价的 API。这个矛盾不解决，谈什么"转型升级"都是空谈——你升级了，人家把价格一涨、把接口一改，你又回到原点。
-    </div>
-    <div class="speech-tldr">
-      <strong>简言之：</strong>核心矛盾不是人能不能适应 AI，而是谁拥有和控制 AI——不解决所有权问题，个人转型都是在别人的棋盘上挪棋子。
-    </div>
-  </div>
-
-  <div class="speech">
-    <div class="speech-header">
-      <div class="speaker-avatar color-marx">马</div>
-      <div class="speaker-info">
-        <span class="speaker-name">卡尔·马克思</span>
-        <span class="speaker-action">补充</span>
-      </div>
-    </div>
-    <div class="speech-body">
-      毛泽东同志把我的分析往前推了一步，我表示赞同。我在《资本论》中分析的是资本如何通过机器占有劳动，但确实没有充分展开<em>劳动者如何组织起来夺回对生产工具的控制</em>这一问题。毛泽东提出的"谁拥有 AI"，本质上就是<em>生产资料所有制</em>问题在数字时代的再现。今天的 AI 大模型，训练成本动辄数十亿美元，这已经不是个体程序员能自主掌握的生产工具了——它天然地属于大资本。这意味着，与十九世纪工人可以砸毁机器不同，今天的 IT 工作者甚至<em>连反抗的物质基础都不具备</em>。开源模型是个有趣的裂缝，但资本正在通过算力垄断、数据垄断来封堵这条路。
-    </div>
-    <div class="speech-tldr">
-      <strong>简言之：</strong>AI 大模型的天文成本使生产工具的所有制问题比工业时代更加尖锐——个体工人连"砸机器"的选项都没有了。
-    </div>
-  </div>
-
-  <div class="speech">
-    <div class="speech-header">
-      <div class="speaker-avatar color-drucker">德</div>
-      <div class="speaker-info">
-        <span class="speaker-name">彼得·德鲁克</span>
-        <span class="speaker-action">反驳</span>
-      </div>
-    </div>
-    <div class="speech-body">
-      毛泽东先生和马克思先生把讨论引向了所有制和组织路线，但我认为这是一个<em>错误的抽象层次</em>。你们把 AI 当作一座需要"占领"的工厂，但 AI 工具的本质更接近于<em>电力</em>——它是一种通用基础设施，最终会变得廉价而普及。正如电力的普及并没有让"谁拥有发电厂"成为二十世纪工人的核心问题，AI 的普及也不会让所有权成为决定性因素。开源模型越来越强，本地部署的成本在指数级下降。真正的瓶颈不在于"拥有 AI"，而在于<em>"能否有效使用 AI"</em>——这又回到了知识和能力的问题。我在《卓有成效的管理者》中反复强调：<em>工具从来不是稀缺资源，稀缺的是使用工具的有效性</em>。一个组织里十个人用同样的 AI，产出可以差十倍。差距不在工具，在人。
-    </div>
-    <div class="speech-tldr">
-      <strong>简言之：</strong>AI 更像电力而非工厂——最终会普及且廉价，决定性因素不是谁拥有它，而是谁能有效使用它。
-    </div>
-  </div>
-
-  <div class="speech">
-    <div class="speech-header">
-      <div class="speaker-avatar color-mao">毛</div>
-      <div class="speaker-info">
-        <span class="speaker-name">毛泽东</span>
-        <span class="speaker-action">反驳</span>
-      </div>
-    </div>
-    <div class="speech-body">
-      德鲁克先生，你这个"电力类比"恰恰暴露了你的阶级立场。电力普及了，对不对？但<em>谁从电力普及中获益最多？</em> 是工人吗？不，是资本家。电力让工厂可以三班倒，让生产线更快、更长、更密集。工人在电灯下加班到深夜——电力"普及"了，工人的处境改善了吗？你说"工具不是稀缺资源"，那我问你：今天全世界最先进的 AI 模型，训练数据从哪来？<em>从千千万万普通程序员写的开源代码中来。</em> 这和原始积累有什么区别？工人创造了生产资料，然后被告知"你可以付费使用它"。
-
-      但我不是一个悲观主义者。我和马克思先生的区别在于，我不仅分析矛盾，我还讲<em>怎么干</em>。《论持久战》里我分析过，面对绝对优势的敌人，弱势一方的出路在于<em>「在战略上藐视敌人，在战术上重视敌人」</em>。对于普通 IT 工作者：战略上，AI 不是不可战胜的——它有致命弱点，它不能自主定义问题、不能理解上下文中的政治和人情、不能承担责任。战术上，要认真学习 AI、掌握 AI、<em>把 AI 变成自己的武器而不是别人控制自己的绳索</em>。但最关键的一条——<em>要组织起来</em>。一个程序员单打独斗，只能被市场定价；一个有组织的技术共同体，可以定义标准、掌握话语权、谈判劳动条件。
-    </div>
-    <div class="speech-tldr">
-      <strong>简言之：</strong>电力普及最大受益者是资本不是工人——AI 亦然；出路在于战略上藐视、战术上重视、组织上团结。
-    </div>
-  </div>
-
-  <div class="speech">
-    <div class="speech-header">
-      <div class="speaker-avatar color-crawford">克</div>
-      <div class="speaker-info">
-        <span class="speaker-name">马修·克劳福德</span>
-        <span class="speaker-action">补充</span>
-      </div>
-    </div>
-    <div class="speech-body">
-      毛泽东先生引入了一个我之前忽视的维度——<em>集体性</em>。我之前的分析确实过于聚焦个体的手艺与意义感。但他说的"组织起来"让我想到一个具体形态：<em>行会</em>（guild）。中世纪的行会不仅是经济组织，更是<em>知识传承的载体</em>。师傅带徒弟，手艺在社群内部代际传递。如果 IT 工作者需要保存编程的手艺和默会知识不至于断代，某种<em>新型技术行会</em>也许是一条路——不是为了抵抗 AI，而是为了确保<em>始终有人真正理解底层系统是怎么运转的</em>。否则，当 AI 出了系统性错误时，没有人有能力诊断和修复。这不仅是劳动者的问题，也是<em>整个技术文明的脆弱性</em>问题。
-    </div>
-    <div class="speech-tldr">
-      <strong>简言之：</strong>需要某种"新型技术行会"来保存手艺传承——不只为劳动者的尊严，更为防止整个技术文明因无人理解底层而变得脆弱。
-    </div>
-  </div>
-
-  <div class="moderator-section">
-    <div class="moderator-label">主持人综述</div>
-    <p>毛泽东先生的加入将讨论从"个人如何适应"推进到了"结构性权力如何分配"。本轮暴露了一条新的、更深的断层线。<strong>核心争议已演化为两个对立的分析框架：</strong></p>
-    <p style="margin-top: 10px;"><strong>能力主义框架</strong>（德鲁克/李开复）：AI 是工具，关键在于人的使用效能，出路在个体能力升级。</p>
-    <p style="margin-top: 6px;"><strong>权力结构框架</strong>（马克思/毛泽东）：AI 是生产资料，关键在于谁拥有和控制它，出路在集体组织与所有制变革。</p>
-    <p style="margin-top: 6px;"><strong>克劳福德居间</strong>：从"新型行会"的构想同时回应了两个框架——既保存个体手艺，又形成集体力量。</p>
-  </div>
-
-  <div class="chart-container">
-    <div class="chart-title">AI 编程影响的分析框架对立</div>
-    <div class="framework-split">
-      <div class="framework-card" style="border-top-color: #2980b9; background: rgba(46,134,171,0.06);">
-        <div class="fw-title" style="color: #53a8b6;">能力主义（德鲁克/李开复）</div>
-        <div class="fw-detail">AI = 通用工具（如电力）<br>稀缺资源 = 人的有效性<br>出路 = 个体学习与升级</div>
-      </div>
-      <div class="framework-card" style="border-top-color: #e67e22; background: rgba(230,126,34,0.06);">
-        <div class="fw-title" style="color: #e67e22;">权力结构（马克思/毛泽东）</div>
-        <div class="fw-detail">AI = 生产资料（如工厂）<br>稀缺资源 = 所有权与控制权<br>出路 = 集体组织与制度变革</div>
-      </div>
-    </div>
-    <div class="converge-arrow">▼ 核心分歧：技术普及是否自动带来权力平等化？</div>
-    <div class="converge-result">
-      <strong>克劳福德的行会构想</strong><br>
-      保存手艺（能力面）· 集体组织（权力面）· 文明韧性（系统面）
-    </div>
-  </div>
-
-  <!-- ===================== ROUND 4 ===================== -->
-  <div class="round-header">
-    <div class="round-num">第四轮</div>
-    <div class="round-title">个体能力升级与集体组织的统一路径</div>
-    <div class="round-question">
-      假设两个框架都部分正确——个体能力升级是必要的，但不充分；集体组织也是必要的，但形式待定——那么在现实中，普通 IT 工作者可以采取的、既提升个人能力又形成集体力量的具体行动路径是什么？还是说，这两个方向之间存在根本性的张力，无法同时实现？
-    </div>
-  </div>
-
-  <div class="speech">
-    <div class="speech-header">
-      <div class="speaker-avatar color-kaifu">李</div>
-      <div class="speaker-info">
-        <span class="speaker-name">李开复</span>
-        <span class="speaker-action">陈述</span>
-      </div>
-    </div>
-    <div class="speech-body">
-      我来提供一些产业观察，因为这个问题不能只在哲学层面打转。我看到三条正在发生的现实路径：
-
-      <em>第一，开源社区就是德鲁克的"能力"与毛泽东的"组织"的天然交汇点。</em> Linux、PostgreSQL、LLaMA——这些项目中，个体贡献者通过参与协作提升了自身能力，同时形成了资本无法轻易收编的集体力量。一个活跃的开源贡献者，他的市场议价能力远高于一个只会用闭源工具的人。
-
-      <em>第二，垂直领域的 AI 微调和部署正在变得可及。</em> 你不需要训练 GPT-5，你只需要在你的专业领域——医疗信息系统、工业控制、金融合规——建立起 AI 无法轻易替代的<em>领域知识壁垒</em>，然后用开源模型在这个垂直领域建立优势。
-
-      <em>第三，"AI 原生工程师"正在成为一个新工种。</em> 不是写代码的人，也不是不写代码的人，而是<em>用 AI 写代码但深度理解系统的人</em>——他既回应了克劳福德对手艺丧失的担忧，又适应了新的生产方式。
-    </div>
-    <div class="speech-tldr">
-      <strong>简言之：</strong>开源社区是能力与组织的天然交汇点，垂直领域知识壁垒和"AI 原生工程师"是两条具体可行的路径。
-    </div>
-  </div>
-
-  <div class="speech">
-    <div class="speech-header">
-      <div class="speaker-avatar color-mao">毛</div>
-      <div class="speaker-info">
-        <span class="speaker-name">毛泽东</span>
-        <span class="speaker-action">质疑</span>
-      </div>
-    </div>
-    <div class="speech-body">
-      李开复同志，你讲的三条路径，我逐条分析。
-
-      开源社区，你说得不错，这是目前最接近"群众自组织"的形态。但你要看到它的<em>阶级局限性</em>——谁在主导开源？是硅谷大厂的工程师，他们有公司发工资，业余时间搞开源。普通 IT 工作者下了班还得加班赶项目、带孩子，哪有时间贡献开源？开源社区的"精英民主"本质上是<em>有闲阶级的游戏</em>，你不能把它当作普通劳动者的出路。
-
-      第二条，垂直领域知识壁垒——这条我部分同意。但我要用《论持久战》的框架来分析：这是一种<em>"根据地"战略</em>。你在大厂 AI 无法触及的细分领域建立阵地，用深度领域知识构建护城河。这个思路对，但要注意：根据地能存在，是因为敌人的力量还没覆盖到那里。<em>一旦 AI 能力继续扩展，你的垂直壁垒能守多久？</em> 所以根据地战略必须配合<em>运动战</em>——不断迁移到新的壁垒领域，不能固守一处。
-
-      第三条，"AI 原生工程师"——这个概念最危险。你实际上是在说：<em>接受新的生产方式，在新秩序中找到自己的位置</em>。这不是变革，这是<em>投降后的适应</em>。当然，战术上我不反对个人做出这样的选择——生存是第一位的。但不要把生存策略包装成出路。
-    </div>
-    <div class="speech-tldr">
-      <strong>简言之：</strong>开源是有闲阶级的游戏，垂直壁垒是根据地但要配合运动战，"AI 原生工程师"是生存策略而非真正出路——不要混淆适应与变革。
-    </div>
-  </div>
-
-  <div class="speech">
-    <div class="speech-header">
-      <div class="speaker-avatar color-drucker">德</div>
-      <div class="speaker-info">
-        <span class="speaker-name">彼得·德鲁克</span>
-        <span class="speaker-action">反驳</span>
-      </div>
-    </div>
-    <div class="speech-body">
-      毛泽东先生，你的批评很尖锐，但你犯了一个管理学上的经典错误——<em>把组织等同于对抗</em>。你的所有方案都预设了一个"敌人"（资本），然后围绕如何与敌人斗争来设计路线。但在知识经济中，最有效的组织形式不是工会式的对抗性组织，而是<em>专业社群</em>（community of practice）。我和野中郁次郎都研究过，知识在组织中的流动依赖于<em>信任网络和非正式社群</em>。一个 IT 工作者加入一个高质量的技术社群——不论是线上的还是线下的——他同时获得三样东西：<em>持续学习的环境</em>（能力）、<em>职业机会的信息网络</em>（经济安全）、<em>对行业标准的集体话语权</em>（权力）。这不是对抗，这是<em>专业主义</em>（professionalism）。医生、律师、会计师早就走通了这条路——他们通过专业资格认证和行业协会，既保护了个体的专业价值，又形成了不可忽视的集体力量。
-    </div>
-    <div class="speech-tldr">
-      <strong>简言之：</strong>最有效的组织不是对抗性工会，而是专业社群——如同医师协会和律师公会，同时实现能力提升、经济安全和集体话语权。
-    </div>
-  </div>
-
-  <div class="speech">
-    <div class="speech-header">
-      <div class="speaker-avatar color-crawford">克</div>
-      <div class="speaker-info">
-        <span class="speaker-name">马修·克劳福德</span>
-        <span class="speaker-action">修正</span>
-      </div>
-    </div>
-    <div class="speech-body">
-      德鲁克和毛泽东各看到了硬币的一面。我来试着做一个综合。
-
-      德鲁克的"专业社群"和毛泽东的"组织起来"并不矛盾——<em>它们是同一件事情在不同权力关系下的不同形态</em>。当行业正常运转时，专业社群足够了；当技术变革威胁到整个职业存在时，你需要的是更有力的集体行动。关键在于<em>阈值</em>——什么时候从"社群学习"切换到"集体抗争"？
-
-      但我要把讨论拉回到我最关心的层面。你们都在讨论<em>外部策略</em>——怎么学、怎么组织、怎么竞争。没有人回答一个更根本的问题：<em>这些策略能不能恢复工作的意义感？</em> 一个加入了专业社群、掌握了垂直领域知识、学会了用 AI 编程的"AI 原生工程师"——他在每天的工作中，还能体验到那种与问题搏斗、亲手创造的满足感吗？还是说他的日常已经变成了：审查 AI 输出、调整提示词、在会议中沟通需求——一种<em>高级文员</em>的工作？
-
-      我在修摩托车时感受到的那种与物质世界的直接接触、那种"我修好了它"的确定感——如果编程不再能提供类似的体验，那么无论经济上多么成功，这个职业都已经<em>死了</em>。它变成了一份工作（job），不再是一门手艺（craft）。
-    </div>
-    <div class="speech-tldr">
-      <strong>简言之：</strong>外部策略都在讨论如何生存，但没人回答：在 AI 时代，编程作为一门手艺所赋予人的意义感，是否已经无法挽回？
-    </div>
-  </div>
-
-  <div class="speech">
-    <div class="speech-header">
-      <div class="speaker-avatar color-marx">马</div>
-      <div class="speaker-info">
-        <span class="speaker-name">卡尔·马克思</span>
-        <span class="speaker-action">综合</span>
-      </div>
-    </div>
-    <div class="speech-body">
-      让我把前面所有人的论点串一串。这场讨论暴露了一个<em>三层结构</em>，它们之间有严格的依赖关系：
-
-      <em>第一层是所有制层</em>——谁控制 AI？这决定了游戏规则。毛泽东抓住了这一点。<em>第二层是能力层</em>——在既定规则内，个体如何提升竞争力？德鲁克和李开复在这里。<em>第三层是意义层</em>——即使你赢了前两层的游戏，你的人生是否还有价值？克劳福德在这里。
-
-      多数人的错误是只看第二层——忙着学习、转型、升级——而忽视了<em>第一层对第二层设定了天花板</em>，以及<em>第三层才是人之为人的根本</em>。你可以做一个高收入的 AI 监工，但如果你的劳动不再是你自我表达和自我实现的方式——用我的术语说，你的劳动是<em>异化的</em>——那么你在本质上与十九世纪的工厂工人没有区别，只是牢笼更精致了。
-
-      但我必须承认，我的理论体系在第三层上确实薄弱。我讲异化，讲的是<em>外在的</em>——劳动产品被剥夺、劳动过程被控制。克劳福德讲的是<em>内在的</em>——主体性和意义感的丧失。这是对我的一个有价值的补充。
-    </div>
-    <div class="speech-tldr">
-      <strong>简言之：</strong>所有制决定规则，能力决定竞争力，意义决定人的完整性——三层依次依赖，多数人只在第二层挣扎而忽视了第一层的天花板和第三层的根本性。
-    </div>
-  </div>
-
-  <div class="moderator-section">
-    <div class="moderator-label">主持人综述</div>
-    <p>本轮讨论产生了一次重要的结构性推进。各方从"是否可行"进入了"即使可行又如何"的更深追问。<strong>核心发现：五位参与者实际上在描述同一头大象的不同部位，而马克思最后的综合揭示了三层之间的依赖链条。</strong></p>
-  </div>
-
-  <div class="chart-container">
-    <div class="chart-title">普通 IT 工作者面对 AI 编程的行动空间：三层约束模型</div>
-    <div class="layer-stack">
-      <div class="layer-card" style="border-left-color: #e94560; background: rgba(233,69,96,0.08);">
-        <div class="layer-label" style="color: #e94560;">第一层：所有制与权力结构（毛泽东 / 马克思）</div>
-        <div class="layer-content">AI 大模型所有权 → 定义游戏规则 · 开源运动是唯一的裂缝，但受算力/数据垄断制约 · ★ 天花板：此层不变，下层所有努力都有上限</div>
-      </div>
-      <div class="layer-card" style="border-left-color: #2980b9; background: rgba(41,128,185,0.08);">
-        <div class="layer-label" style="color: #53a8b6;">第二层：能力与竞争策略（德鲁克 / 李开复）</div>
-        <div class="layer-content">路径A：专业社群 → 学习 + 网络 + 话语权 · 路径B：垂直壁垒 → 根据地战略（需运动战配合）· 路径C：AI 原生工程 → 适应新生产方式 · ★ 局限：个体策略，受第一层天花板约束</div>
-      </div>
-      <div class="layer-card" style="border-left-color: #8e44ad; background: rgba(142,68,173,0.08);">
-        <div class="layer-label" style="color: #8e44ad;">第三层：意义与主体性（克劳福德）</div>
-        <div class="layer-content">craft（手艺）→ job（工作）· 创造者 → 审批者 · 心流 → 流程 · ★ 根本问题：即使前两层都解决，此层可能无解 · ★ 与马克思"异化"呼应，但更指向内在体验</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ===================== ROUND 5 ===================== -->
-  <div class="round-header">
-    <div class="round-num">第五轮</div>
-    <div class="round-title">Harold 的个人行动路线</div>
-    <div class="round-question">
-      各位，我们面前的不再是一个抽象的"普通 IT 工作者"，而是一位有八年运维经验、重度使用 AI 工具、同时具备 Rust/Vue/TypeScript 开发能力的工程师——他的困惑是：方向在哪里？
-    </div>
-  </div>
-
-  <div class="speech">
-    <div class="speech-header">
-      <div class="speaker-avatar color-drucker">德</div>
-      <div class="speaker-info">
-        <span class="speaker-name">彼得·德鲁克</span>
-        <span class="speaker-action">陈述</span>
-      </div>
-    </div>
-    <div class="speech-body">
-      我先说，因为这首先是一个<em>自我管理</em>的问题。八年运维加上 AI 重度使用——你其实已经站在一个很多人羡慕的位置上，只是你自己没看清。
-
-      让我帮你做一个德鲁克式的<em>优势审计</em>：
-
-      你的稀缺组合是：<em>深度理解基础设施 + 能写生产级代码 + 熟练驾驭 AI 工具</em>。这三样能力单独拿出来都不稀缺，但叠加在一起的人，市场上极少。纯运维不会写 Rust，纯开发不懂基础设施，而多数人还在 AI 工具的门外观望。
-
-      我在《卓有成效的管理者》里反复讲一个观点：<em>不要问"我能做什么"，要问"什么需要被做，而我恰好能做？"</em> 当前最需要被做的事是什么？是<em>让 AI 在真实生产环境中可靠运行</em>——这不是模型团队的活，不是前端的活，这恰恰是<em>懂基础设施、懂部署、懂可靠性工程的人的活</em>。
-
-      你的方向不是"转型"，而是<em>在你已有优势上叠加 AI 时代的新需求</em>。
-    </div>
-    <div class="speech-tldr">
-      <strong>简言之：</strong>你的稀缺性在于运维+开发+AI工具的三重叠加——方向不是转型，而是让这个组合对准"AI 基础设施可靠性"这个正在爆发的需求。
-    </div>
-  </div>
-
-  <div class="speech">
-    <div class="speech-header">
-      <div class="speaker-avatar color-kaifu">李</div>
-      <div class="speaker-info">
-        <span class="speaker-name">李开复</span>
-        <span class="speaker-action">补充</span>
-      </div>
-    </div>
-    <div class="speech-body">
-      德鲁克说得对，我用产业数据来佐证。我目前看到的最大人才缺口，恰好在以下三个方向，而且都和你的背景高度匹配：
-
-      <em>一、AI Infra / MLOps / LLMOps。</em> 每家公司都在部署大模型，但模型从实验室到生产环境之间有一条巨大的鸿沟——模型服务的部署、扩缩容、监控告警、成本控制、故障恢复。这就是运维工程的延伸。你不需要懂模型训练，你需要懂的是<em>怎么让模型在生产环境中稳定、高效、可观测地运行</em>。
-
-      <em>二、平台工程（Platform Engineering）。</em> 这是运维演化的最新形态——为开发团队构建内部开发者平台，让他们自助式地完成部署、监控、环境管理。AI 时代这个需求更大了，因为 AI 工具生成代码的速度远超人工部署的速度，平台必须跟上。
-
-      <em>三、安全与合规。</em> AI 生成的代码需要审计，AI 系统需要安全防护，数据管道需要合规——而这些都需要<em>理解基础设施的人</em>来做。
-
-      你已经在用 AI 写 Tauri + Vue 的桌面应用了。这说明你具备快速用 AI 构建完整产品的能力。这本身就是一种稀缺的"AI 原生工程师"能力。
-    </div>
-    <div class="speech-tldr">
-      <strong>简言之：</strong>MLOps/LLMOps、平台工程、AI安全——这三个方向正在爆发，且完美匹配"运维经验+开发能力+AI熟练度"的组合。
-    </div>
-  </div>
-
-  <div class="speech">
-    <div class="speech-header">
-      <div class="speaker-avatar color-mao">毛</div>
-      <div class="speaker-info">
-        <span class="speaker-name">毛泽东</span>
-        <span class="speaker-action">质疑</span>
-      </div>
-    </div>
-    <div class="speech-body">
-      李开复同志和德鲁克先生讲的都是<em>战术</em>——往哪个方向走、学什么技术。这些没有错，但不够。我要从<em>战略层面</em>给你分析。
-
-      你的焦虑本质上不是"不知道学什么"——你已经在学了，你已经在用了。你真正的焦虑是：<em>我学了这些，能管多久？</em> 今天学 MLOps，明年 AI 把 MLOps 也自动化了怎么办？今天垂直领域有壁垒，后年壁垒被 AI 攻破了怎么办？
-
-      <em>这种焦虑的根源不在你自己，在于你没有掌握对局势的分析方法。</em> 我送你三条：
-
-      <em>第一，调查研究是一切工作的基础。</em> 不要听人说什么方向好就往哪跑。去看招聘数据、去和行业里的人聊、去分析哪些岗位的需求在<em>加速增长</em>而不只是"存在"。你有八年行业经验，这种判断力是你最大的资产——别浪费在跟风上。
-
-      <em>第二，建立根据地，但不固守。</em> 选一个垂直方向扎下去——比如 LLMOps——把它做到<em>你所在区域或圈子里的前 10%</em>。但同时保持对下一个根据地的侦察能力。你用 AI 做 pass-gui 这种项目，就是很好的侦察——它让你保持对新技术栈的敏感度。
-
-      <em>第三，也是最重要的——不要单干。</em> 你一个人看到的信息、接触到的机会，是有限的。找到你的<em>同类</em>——同样在运维转型路上的人——形成一个互通信息、互相推荐机会、共同学习的小圈子。不需要多大，五到十个人足够。<em>一个人在焦虑中内耗，一群人在行动中互助。</em>
-    </div>
-    <div class="speech-tldr">
-      <strong>简言之：</strong>焦虑的根源不是能力不足而是缺乏对局势的分析方法——调查研究、建立根据地但不固守、找到同类组成互助圈子。
-    </div>
-  </div>
-
-  <div class="speech">
-    <div class="speech-header">
-      <div class="speaker-avatar color-crawford">克</div>
-      <div class="speaker-info">
-        <span class="speaker-name">马修·克劳福德</span>
-        <span class="speaker-action">反驳</span>
-      </div>
-    </div>
-    <div class="speech-body">
-      前面几位给的都是"怎么赢"的建议。我要问一个不同的问题：<em>你还喜欢你正在做的事吗？</em>
-
-      你做 pass-gui 这个项目——一个给 Unix pass 密码管理器做 GUI 的桌面应用——这不是公司派给你的 KPI 任务吧？这是你自己<em>想做</em>的东西。你选择了 Tauri + Rust 这个不那么主流的技术栈，说明你不只是在"完成任务"，你在<em>探索和创造</em>。这里面有手艺人的气质。
-
-      我给你的建议和其他人完全不同：<em>保护好这种气质，不要让职业焦虑把它杀死。</em>
-
-      具体来说：永远保留一个<em>纯粹为了兴趣而做的个人项目</em>。不为简历、不为市场、不为转型——只因为你想做。这个项目是你作为工程师的<em>锚</em>。当工作变成了审查 AI 输出、调参数、开会的循环，这个项目会提醒你：你之所以选择这个行业，是因为你喜欢<em>造东西</em>。
-
-      而且说实话——从长远看，这种"无用的"个人项目反而可能是你最有价值的资产。因为它训练的是 AI 最难替代的东西：<em>品味、直觉和对细节的执着</em>。
-    </div>
-    <div class="speech-tldr">
-      <strong>简言之：</strong>保护好你做 pass-gui 时的那种创造冲动——永远保留一个纯粹为兴趣而做的项目，它是你作为工程师的灵魂锚点。
-    </div>
-  </div>
-
-  <div class="speech">
-    <div class="speech-header">
-      <div class="speaker-avatar color-marx">马</div>
-      <div class="speaker-info">
-        <span class="speaker-name">卡尔·马克思</span>
-        <span class="speaker-action">综合</span>
-      </div>
-    </div>
-    <div class="speech-body">
-      我来帮你把前面所有建议放进一个结构里，让你看清<em>轻重缓急</em>。
-
-      你面临的不是一个选择题，而是一个<em>多层同时推进</em>的问题。但我必须对你诚实——前面四位的建议都是<em>在现有规则内最大化你的处境</em>。这很必要，也很紧迫。但不要忘记：规则本身可能是不公平的。你用开源工具、你贡献代码、你构建技能——这些行为在微观上帮助了你自己，在宏观上也在<em>参与一场关于技术所有权的静默博弈</em>。你每用一次开源模型而不是闭源 API，你就在用脚投票。这种个体选择的累积，才是改变结构的力量。
-    </div>
-    <div class="speech-tldr">
-      <strong>简言之：</strong>四层同时推进——生存上选方向深扎，网络上找同类互助，侦察上用项目保持敏感，意义上保护创造冲动——四层缺一不可，但请立即从生存层开始。
-    </div>
-  </div>
-
-  <div class="moderator-section">
-    <div class="moderator-label">主持人综述</div>
-    <p>五位嘉宾的建议汇聚成了一个清晰的结构。<em>你不需要"转型"——你需要的是"对准"。</em> 你的能力组合已经很强，问题只是还没有对准一个正在爆发的需求点。LLMOps / 平台工程是当前最明确的着力点。</p>
-    <p style="margin-top: 12px;"><em>但方向只解决焦虑的一半。</em> 另一半来自克劳福德和毛泽东的提醒：找到同路人（不要独自焦虑），保护创造冲动（不要让谋生杀死热爱）。</p>
-  </div>
-
-  <div class="chart-container">
-    <div class="chart-title">Harold 的四层行动结构</div>
-    <table class="action-table">
-      <thead><tr><th>层次</th><th>行动</th><th>时间框架</th><th>优先级</th></tr></thead>
-      <tbody>
-        <tr><td><strong>生存层</strong></td><td>选一个方向深扎（LLMOps/平台工程），做到区域前10%</td><td>6-18个月</td><td class="priority-high">最高</td></tr>
-        <tr><td><strong>网络层</strong></td><td>找到5-10个同路人，形成信息互助圈</td><td>持续进行</td><td class="priority-high">高</td></tr>
-        <tr><td><strong>侦察层</strong></td><td>用个人项目保持技术敏感度，观察下一个根据地</td><td>持续进行</td><td class="priority-mid">中</td></tr>
-        <tr><td><strong>意义层</strong></td><td>保护创造冲动，不让工作变成纯粹的谋生</td><td>长期</td><td class="priority-low">地基</td></tr>
-      </tbody>
-    </table>
-  </div>
-
-  <div class="chart-container">
-    <div class="chart-title">Harold 当前的独特优势</div>
-    <div class="network-row">
-      <div class="network-node" style="border-color: rgba(233,69,96,0.3);">8年运维<br><small style="color:#888;">基础设施直觉</small></div>
-      <div class="network-node" style="border-color: rgba(41,128,185,0.3);">Rust/Vue/TS<br><small style="color:#888;">开发能力</small></div>
-      <div class="network-node" style="border-color: rgba(39,174,96,0.3);">AI重度用户<br><small style="color:#888;">人机协作熟练</small></div>
-    </div>
-    <div class="network-connector">▼</div>
-    <div class="converge-result">市场上极稀缺的三重叠加<br><small style="color:#888;">瞄准：AI Infra / 平台工程 / AI 安全</small></div>
-  </div>
-
-  <!-- ===================== ROUND 6 ===================== -->
-  <div class="round-header">
-    <div class="round-num">第六轮（深入）</div>
-    <div class="round-title">具体行动的可操作性与陷阱</div>
-    <div class="round-question">
-      一个重度使用 AI 的八年运维工程师，要在 LLMOps / 平台工程方向做到区域前 10%，具体的、可操作的第一步是什么？以及——这条路上最容易踩的坑是什么？
-    </div>
-  </div>
-
-  <div class="speech">
-    <div class="speech-header">
-      <div class="speaker-avatar color-kaifu">李</div>
-      <div class="speaker-info">
-        <span class="speaker-name">李开复</span>
-        <span class="speaker-action">陈述</span>
-      </div>
-    </div>
-    <div class="speech-body">
-      我给你一条<em>90 天路线</em>，不是理论，是我观察到的成功转型者的共同路径。
-
-      <em>第一个月：用一个真实项目证明自己。</em> 不要先去考证、看课、刷文档。找一个你工作中或身边能接触到的大模型应用场景——哪怕是在公司内部部署一个开源 LLM 做知识库问答——<em>端到端地跑通它</em>：模型选型、推理服务部署（vLLM / Ollama）、API 网关、监控告警、成本估算。你有八年运维底子，这些环节对你来说不难，难的是你可能觉得"这不够高级"。<em>不要追求高级，追求完整。</em> 一个能展示的端到端项目胜过十个半成品。
-
-      <em>第二个月：把项目写成可展示的案例。</em> 写一篇技术博客、做一次内部分享、或者把它开源到 GitHub。关键是<em>让别人看到你做了什么</em>。运维人员最大的职业瓶颈不是能力不足，是<em>能力不可见</em>——你的工作天然是"系统不出事就没人注意你"。你必须主动打破这种不可见性。
-
-      <em>第三个月：带着项目和文章去社区。</em> 参加 LLM Meetup、云原生社区、或者直接在社交媒体上写你的实践心得。你会发现，<em>在这个领域有真实落地经验的人极少</em>——大多数人还停留在看教程阶段。你只要有一个完整的落地案例，就已经在前 20% 了。
-    </div>
-    <div class="speech-tldr">
-      <strong>简言之：</strong>90天路线——第一月端到端跑通一个 LLM 部署项目，第二月写成可展示案例打破"运维不可见性"，第三月带着案例进入社区建立存在感。
-    </div>
-  </div>
-
-  <div class="speech">
-    <div class="speech-header">
-      <div class="speaker-avatar color-mao">毛</div>
-      <div class="speaker-info">
-        <span class="speaker-name">毛泽东</span>
-        <span class="speaker-action">质疑</span>
-      </div>
-    </div>
-    <div class="speech-body">
-      李开复同志的 90 天计划很具体，但我要指出一个<em>隐藏的陷阱</em>。
-
-      你说"找一个场景端到端跑通"——问题是，<em>哪个场景？</em> 这里面有一个很多运维转型者都会踩的坑：<em>选了一个"有趣但不疼"的场景</em>。你在公司内部搭个 LLM 知识库问答，很酷，demo 效果很好，然后呢？老板问：这东西省了多少钱？减了多少人？提升了什么业务指标？你答不上来——因为这个场景本身就不是业务的痛点。
-
-      <em>调查研究是一切工作的基础。</em> 在动手之前，先搞清楚三件事：
-
-      <em>一、你所在公司（或目标公司）的 AI 落地，卡在什么环节？</em> 是模型选不好？还是部署上不了生产？还是上了生产但成本扛不住？还是出了幻觉没人能兜底？<em>找到那个最疼的环节</em>，你的项目就对准它。
-
-      <em>二、决定你收入的人关心什么？</em> 你的直属领导、你想去的公司的 CTO——他们的 KPI 是什么？是稳定性？是成本？是速度？你的能力展示必须<em>翻译成他们的语言</em>。运维人员经常犯的错是用技术语言自说自话，老板根本听不懂你在说什么。
-
-      <em>三、谁是你的竞争对手？</em> 做 LLMOps 的人，是从运维转过来的多，还是从 ML 工程师转过来的多？你和他们比，优势在哪？短板在哪？你八年运维的优势是<em>生产环境的直觉</em>——你知道什么东西会在半夜三点炸掉，ML 工程师不知道。<em>把你的优势打成你的标签。</em>
-    </div>
-    <div class="speech-tldr">
-      <strong>简言之：</strong>别急着动手——先调查痛点在哪、决策者关心什么、竞争对手是谁，对准最疼的场景才是真正的第一步。
-    </div>
-  </div>
-
-  <div class="speech">
-    <div class="speech-header">
-      <div class="speaker-avatar color-drucker">德</div>
-      <div class="speaker-info">
-        <span class="speaker-name">彼得·德鲁克</span>
-        <span class="speaker-action">补充</span>
-      </div>
-    </div>
-    <div class="speech-body">
-      毛泽东先生讲的"调查研究"用管理学语言来说就是<em>需求验证</em>，这确实应该在李开复的 90 天计划之前。但我要补充一个更实质的问题：<em>你的时间从哪来？</em>
-
-      你是一个在职的运维工程师。运维的特点是——<em>永远有告警要处理，永远有变更要值守</em>。我见过太多运维人员，计划做得漂亮，然后被日常工作吞没。三个月过去了，什么都没启动。
-
-      所以我的建议是关于<em>时间管理</em>的：
-
-      <em>第一，把学习嵌入工作，而不是和工作并列。</em> 不要"白天运维、晚上学 LLMOps"——你会倦怠。而是<em>在运维工作中制造 LLMOps 的机会</em>。你现在维护的系统里，有没有哪个环节可以引入 LLM？监控告警的智能摘要？故障排查的自动诊断？运维文档的 AI 检索？这样你做的每一件事既是本职工作，又是新方向的积累。<em>一份时间，两份收益。</em>
-
-      <em>第二，砍掉低价值活动。</em> 你现在每周花多少时间在不产生新能力的重复运维上？能自动化的自动化，能交接的交接，能用 AI 加速的加速。<em>你已经是 AI 重度用户了——把这个优势用到解放自己的时间上。</em>
-
-      <em>第三，设一个"不可侵犯"的时间块。</em> 每周固定 4-6 小时，雷打不动地用于新方向。不是"有空就学"，是<em>像对待生产事故一样对待这个时间块</em>——因为长期来看，不投资自己才是最严重的"事故"。
-    </div>
-    <div class="speech-tldr">
-      <strong>简言之：</strong>把学习嵌入工作而非并列、自动化掉低价值重复劳动、每周设不可侵犯的投资时间块——时间管理是转型成败的真正瓶颈。
-    </div>
-  </div>
-
-  <div class="speech">
-    <div class="speech-header">
-      <div class="speaker-avatar color-crawford">克</div>
-      <div class="speaker-info">
-        <span class="speaker-name">马修·克劳福德</span>
-        <span class="speaker-action">反驳</span>
-      </div>
-    </div>
-    <div class="speech-body">
-      我听到的全是<em>效率优化</em>——90 天计划、时间管理、对准需求。你们把 Harold 当成一台需要调优的机器了。
-
-      我要说一些可能不受欢迎的话。
-
-      Harold，你说你"不确定未来的方向"。你有没有想过，<em>这种不确定感本身是有价值的？</em> 它意味着你还没有停止思考，没有盲目跟风。很多人已经不焦虑了——不是因为他们找到了答案，而是因为他们<em>放弃了提问</em>，直接扎进了"市场需要什么我就学什么"的跑步机。
-
-      我在修摩托车的过程中学到一件事：<em>当你不知道问题出在哪里时，最糟糕的做法是马上动手拆东西。</em> 最好的做法是——骑一圈。感受一下哪里不对。让你的直觉告诉你问题在哪。
-
-      你做 pass-gui 这个项目，用的是 Tauri + Rust + Vue。你为什么选这个技术栈？为什么做密码管理器而不是别的？这些选择里藏着你真正的兴趣和价值观——<em>安全、系统底层、工具控、把事情做对</em>。这些特质不是市场分析能告诉你的，是你自己的。
-
-      所以我给你一条和其他人完全相反的建议：<em>在你急着执行 90 天计划之前，花一周时间，不学任何新东西，只回答一个问题——"在过去八年里，什么时候我觉得自己的工作最有价值？"</em> 不是收入最高的时候，不是最忙的时候，而是你真正觉得<em>"这事值得做"</em>的时候。
-
-      那个答案才是你的方向指南针。因为在 AI 加速一切的时代，你唯一的持久优势是<em>你愿意在一件事上投入别人不愿投入的耐心</em>——而那种耐心只能来自真正的兴趣。
-    </div>
-    <div class="speech-tldr">
-      <strong>简言之：</strong>在执行任何计划之前，先回答"什么时候我觉得工作最有价值"——真正的方向来自内在兴趣，而非市场分析。
-    </div>
-  </div>
-
-  <div class="speech">
-    <div class="speech-header">
-      <div class="speaker-avatar color-marx">马</div>
-      <div class="speaker-info">
-        <span class="speaker-name">卡尔·马克思</span>
-        <span class="speaker-action">综合</span>
-      </div>
-    </div>
-    <div class="speech-body">
-      好，让我把本轮的分歧和共识做一个最终结构化。
-
-      五个人给了你两种完全不同的行动哲学，但它们之间<em>不是二选一，而是有先后次序</em>：
-
-      <em>克劳福德的问题要先回答，其他人的方案在此基础上执行。</em>
-
-      为什么？因为如果你跳过内在审视直接冲进 90 天计划，你会遇到一个很常见的情况：<em>三个月后你学了一堆东西，拿到了一些成果，但焦虑没有减轻</em>——因为你心里始终不确定这条路是不是"你的"。然后你看到另一个"更好的方向"，又焦虑了。这是<em>无锚漂移</em>——你在战术上很勤奋，但在战略上没有定锚。
-
-      而克劳福德说的那个问题——"什么时候我觉得工作最有价值"——就是你的锚。
-
-      但反过来，光有锚没有行动也不行。毛泽东说得对：<em>实践出真知，你不可能坐在那里想出答案，你必须在行动中校准</em>。
-
-      所以最终的建议是：先花一周回答克劳福德之问找到内在锚点，再用两周做毛泽东式调查对准痛点，然后带着方向感执行 90 天计划——<em>有锚的行动才不会变成焦虑驱动的无效忙碌</em>。
-    </div>
-    <div class="speech-tldr">
-      <strong>简言之：</strong>先花一周回答克劳福德之问找到内在锚点，再用两周做毛泽东式调查对准痛点，然后带着方向感执行90天计划——有锚的行动才不会变成焦虑驱动的无效忙碌。
-    </div>
-  </div>
-
-  <div class="moderator-section">
-    <div class="moderator-label">主持人综述</div>
-    <p>本轮讨论将宏观议题完全落地为一张可执行的路线图。核心洞察是：</p>
-    <p style="margin-top: 12px;"><em>五位嘉宾表面上在争论"先做什么"，实际上揭示了一个重要的次序原则：意义先于策略，策略先于战术。</em> 多数人的错误是直接从战术层开始（学什么技术、考什么证），而跳过了策略层（对准什么痛点）和意义层（我为什么做这件事）。次序颠倒不会导致失败，但会导致<em>持续的焦虑和频繁的方向切换</em>。</p>
-    <p style="margin-top: 12px;">Harold，你现在有了一张图。第 0 步只需要一周，只需要你自己，不花一分钱。</p>
-  </div>
-
-  <div class="chart-container">
-    <div class="chart-title">Harold 的行动次序（修正版）</div>
-    <div class="timeline">
-      <div class="timeline-step" style="border-left-color: #8e44ad;">
-        <div class="step-num" style="background: rgba(142,68,173,0.2); color: #8e44ad;">0</div>
-        <div class="step-title">克劳福德之问（1周）</div>
-        <div class="step-desc">"过去8年，什么时候觉得工作最有价值？" → 找到内在锚点</div>
-      </div>
-      <div class="timeline-step" style="border-left-color: #d35400;">
-        <div class="step-num" style="background: rgba(211,84,0,0.2); color: #d35400;">1</div>
-        <div class="step-title">毛泽东式调查研究（2周）</div>
-        <div class="step-desc">用锚点校准方向 → 在 LLMOps / 平台工程 / AI安全中找到与锚点最共振的细分领域</div>
-      </div>
-      <div class="timeline-step" style="border-left-color: #27ae60;">
-        <div class="step-num" style="background: rgba(39,174,96,0.2); color: #27ae60;">2</div>
-        <div class="step-title">李开复式执行（90天）</div>
-        <div class="step-desc">月1：端到端跑通项目 · 月2：写成可展示案例 · 月3：进入社区建立存在感</div>
-      </div>
-      <div class="timeline-step" style="border-left-color: #e94560;">
-        <div class="step-num" style="background: rgba(233,69,96,0.2); color: #e94560;">∞</div>
-        <div class="step-title">持续：运动战 + 灵魂锚 + 互助圈</div>
-        <div class="step-desc">每季度评估方向 · 永远保留纯兴趣项目 · 保持 5-10 人互助圈的信息流通</div>
-      </div>
-    </div>
-  </div>
-
-<!-- ============================================================
-     第七轮
-     ============================================================ -->
-  <div class="round-header" id="round-7">
-  <div class="round-num">第七轮</div>
-  <div class="round-title">AI 重度用户是否在亲手挖掘自己的坟墓？</div>
-  <div class="round-question">Harold 是 AI 的重度使用者——他用 AI 写代码、用 AI 做项目、用 AI 提升效率。但这里有一个悖论：你越熟练地使用 AI，你就越在向市场证明"这件事可以用 AI 做"，从而加速自己岗位的可替代性。重度 AI 用户是否正在亲手挖掘自己的坟墓？还是说，这种悖论存在某种解法？</div>
-</div>
-
-  <div class="speech">
-    <div class="speech-header">
-      <div class="speaker-avatar color-mao">毛</div>
-      <div class="speaker-info">
-        <span class="speaker-name">毛泽东</span>
-        <span class="speaker-action">陈述</span>
-      </div>
-    </div>
-    <div class="speech-body">
-      这个问题提得好，但提法有问题。它预设了<em>工人和工具之间是零和博弈</em>——工具越强，工人越弱。这不是必然的。关键在于你<em>用 AI 做什么</em>。我打一个军事比喻。步枪发明以后，是不是每个会用步枪的士兵都在"证明冷兵器可以被淘汰"从而让自己也可以被淘汰？不是。<em>会用步枪的士兵淘汰了不会用步枪的士兵</em>。然后呢？战争没有因为步枪而消失，战争的形态变了——需要新的战术、新的组织、新的指挥体系。那些最先掌握步枪的士兵，反而成了新型军队的骨干。Harold 用 AI 写出了一个完整的 Tauri 桌面应用。这证明了什么？不是证明"运维工作可以被 AI 替代"，而是证明<em>一个运维工程师加上 AI，能做到原来需要一个小型开发团队才能做的事</em>。这不是在挖自己的坟墓，这是在<em>扩大自己的作战半径</em>。但——这里有一个<em>关键条件</em>：你扩大的作战半径必须<em>被你自己占据，而不是被你的老板拿走</em>。如果你用 AI 提了十倍效率，然后公司裁掉九个人让你一个人干十个人的活、发一个人的工资——那确实是在给自己挖坟。所以问题又回到了：<em>效率提升的成果归谁？</em> 这是所有制问题，不是技术问题。
-    </div>
-    <div class="speech-tldr">
-      <strong>简言之：</strong>AI 不淘汰使用 AI 的人，它淘汰不用 AI 的人——但效率提升的成果归谁，取决于权力结构而非技术本身。
-    </div>
-  </div>
-
-  <div class="speech">
-    <div class="speech-header">
-      <div class="speaker-avatar color-drucker">德</div>
-      <div class="speaker-info">
-        <span class="speaker-name">彼得·德鲁克</span>
-        <span class="speaker-action">反驳</span>
-      </div>
-    </div>
-    <div class="speech-body">
-      毛泽东先生的步枪比喻很精彩，但忽略了一个关键差异：<em>步枪不会自己开枪，而 AI 正在学会自己写代码。</em> 步枪时代，士兵的不可替代性在于他的判断——何时开枪、向谁开枪。AI 时代，连判断本身都在被自动化。所以这个悖论不能用简单的"工具论"来化解。 但我有一个不同的化解方式。我在研究知识工作者几十年后得出一个结论：<em>真正不可替代的从来不是技能，而是"贡献"（contribution）。</em> 技能是你能做什么，贡献是你<em>为组织创造了什么不可逆的价值</em>。 Harold 如果只是用 AI 更快地完成运维任务，那他确实在"证明这事 AI 能做"。但如果他用 AI 做到了<em>原来不可能做的事</em>——比如一个人构建了一套内部 LLM 运维平台、建立了一套 AI 辅助故障诊断体系——那他创造的不是"效率"，而是<em>组织能力</em>。这种贡献嵌入了组织的运作方式中，比任何个人技能都更难替代。 所以解法是：<em>不要用 AI 来做同样的事但更快，要用 AI 来做原来做不到的事。</em> 前者是自动化自己，后者是放大自己。
-    </div>
-    <div class="speech-tldr">
-      <strong>简言之：</strong>用 AI 做同样的事但更快 = 自动化自己；用 AI 做原来做不到的事 = 放大自己——解法在于从"效率"转向"贡献"。
-    </div>
-  </div>
-
-  <div class="speech">
-    <div class="speech-header">
-      <div class="speaker-avatar color-kaifu">李</div>
-      <div class="speaker-info">
-        <span class="speaker-name">李开复</span>
-        <span class="speaker-action">补充</span>
-      </div>
-    </div>
-    <div class="speech-body">
-      德鲁克的"效率 vs 贡献"这个区分非常关键。我用产业数据来验证它。 我观察到，AI 重度用户正在分化为两类人：<em>第一类：AI 加速者。</em> 他们用 AI 把原来三天的活一天干完，然后发现自己更忙了——因为公司给了他们三倍的任务量。他们的人均产出上升了，但<em>人均价值没变</em>。他们就像跑步机上的仓鼠，跑得越快，轮子转得越快。这类人确实在亲手挖坟——他们向管理层证明了"一个人可以干三个人的活"，然后管理层裁掉了另外两个人。<em>第二类：AI 杠杆者。</em> 他们用 AI 来做<em>跨界的事</em>。一个运维用 AI 写出了前端应用，一个后端用 AI 搭出了数据分析管道，一个产品经理用 AI 做出了原型。他们的作战半径真实地扩大了，而且扩大后的能力组合<em>市场上买不到</em>——因为没有一个岗位名称叫"运维+开发+AI+产品直觉"。 Harold，从 pass-gui 这个项目看，你已经是第二类了。你不是在用 AI 更快地写运维脚本，你是在用 AI <em>做一个完整的桌面产品</em>。这种跨界能力的叠加，恰恰是 AI 无法自动替代的——因为 AI 能写代码，但不能<em>决定写什么代码</em>。
-    </div>
-    <div class="speech-tldr">
-      <strong>简言之：</strong>AI 重度用户正分化为"加速者"（跑步机仓鼠，会被榨干）和"杠杆者"（跨界叠加，不可替代）——Harold 已经是后者，要自觉地强化这条路。
-    </div>
-  </div>
-
-  <div class="speech">
-    <div class="speech-header">
-      <div class="speaker-avatar color-crawford">克</div>
-      <div class="speaker-info">
-        <span class="speaker-name">马修·克劳福德</span>
-        <span class="speaker-action">反驳</span>
-      </div>
-    </div>
-    <div class="speech-body">
-      你们都在解答"怎么不被替代"，但我要质疑这个问题本身的<em>框架</em>。 "我会不会被替代"——这是一个<em>恐惧驱动</em>的问题。所有恐惧驱动的问题都会把你引向防御性策略：建壁垒、找护城河、证明不可替代性。但防御的人不会创造新东西，他们只会越来越紧张地守着旧东西。 我在《世界之外的世界》（The World Beyond Your Head）中论证过：<em>注意力被恐惧占据的人，无法真正地与世界互动。</em> 他们看到的一切都是威胁评估——"这个技术会不会替代我？""那个方向是不是更安全？"——而不是"这个问题很有趣，我想深入理解它"。 所以我的回答是：<em>这个悖论是假的</em>。它只在你把自己定义为一个"岗位持有者"时才成立。如果你把自己定义为一个<em>对特定问题感兴趣的人</em>——比如"怎么让密码管理更安全更优雅"、"怎么让系统在半夜三点不炸"——那 AI 就不是你的竞争者，而是你的<em>材料</em>。就像木匠不会焦虑电动锯是否会替代他——他用电动锯做出更好的家具，因为他关心的是<em>家具</em>，不是<em>锯</em>。 Harold 做 pass-gui 的时候，有没有焦虑"AI 会不会替代我"？我猜没有。因为他那时候不是在"保住工作"，他是在<em>解决一个他觉得值得解决的问题</em>。那种状态才是正解。
-    </div>
-    <div class="speech-tldr">
-      <strong>简言之：</strong>悖论是假的——它只在你把自己定义为"岗位持有者"时成立；如果你定义为"问题解决者"，AI 就是材料而非竞争者。
-    </div>
-  </div>
-
-  <div class="speech">
-    <div class="speech-header">
-      <div class="speaker-avatar color-marx">马</div>
-      <div class="speaker-info">
-        <span class="speaker-name">卡尔·马克思</span>
-        <span class="speaker-action">综合</span>
-      </div>
-    </div>
-    <div class="speech-body">
-      让我把本轮的逻辑链条拉出来。五个人实际上在描述同一个现象的不同切面，而且他们之间有一条<em>逻辑递进关系</em>：毛泽东说：悖论的答案取决于<em>效率成果归谁</em>（所有制）。德鲁克说：悖论的解法在于<em>从效率转向贡献</em>（行为模式）。李开复说：实证上看，<em>加速者困在跑步机上，杠杆者扩大了作战半径</em>（产业分化）。克劳福德说：更根本地，<em>悖论是一个错误的问题框架</em>（认识论）。这四个回答之间不矛盾，它们形成了一个<em>剥洋葱结构</em>。 有一点值得特别强调。克劳福德说 Harold 做 pass-gui 时不焦虑——这个观察极有洞察力。<em>焦虑出现在你把自己当作劳动力市场上的商品时，消失在你把自己当作一个有具体兴趣的人时。</em> 这不是心灵鸡汤，这是一个关于<em>注意力分配的实证性命题</em>：恐惧驱动的人把注意力放在"市场需要什么"上，好奇驱动的人把注意力放在"问题本身"上。前者永远在追赶，后者偶尔会跑到前面去——因为真正的创新从来不是"市场需求分析"的产物。
-    </div>
-    <div class="speech-tldr">
-      <strong>简言之：</strong>四层回答层层递进——克劳福德解构了问题框架，德鲁克和李开复区分了行为模式，毛泽东揭示了成果归属的政治性，而结构性约束是个体无法突破的天花板。
-    </div>
-  </div>
-
-  <div class="moderator-section">
-    <div class="moderator-label">主持人综述</div>
-    <p>本轮讨论达到了一个重要的<em>元认知层面</em>——不再是"怎么做"，而是"怎么想"。核心发现是：</p>
-    <p style="margin-top: 12px;">AI 重度用户的命运不取决于他们用了多少 AI，而取决于他们以什么心态使用 AI——加速者（恐惧驱动、效率导向）终将被困在跑步机上；杠杆者（好奇驱动、创造导向）则将 AI 转化为扩大作战半径的工具。</p>
-  </div>
-
-  <div class="chart-container">
-    <div class="chart-title">"AI 重度用户是否在挖自己的坟墓？"——四层回答</div>
-  <div class="onion-layers" style="border-color: rgba(142,68,173,0.3); background: rgba(142,68,173,0.05);">
-    <div class="onion-label" style="color: #8e44ad;">第四层（克劳福德）：问题本身是错的</div>
-    <div class="onion-desc">岗位持有者 → 恐惧驱动 → 防御策略 → 越守越紧<br>问题解决者 → 好奇驱动 → 创造策略 → 越用越强</div>
-    <div class="onion-layers" style="border-color: rgba(41,128,185,0.3); background: rgba(41,128,185,0.05);">
-      <div class="onion-label" style="color: #2980b9;">第三层（德鲁克/李开复）：行为模式决定结局</div>
-      <div class="onion-desc">AI 加速者（做同样的事更快）→ 跑步机仓鼠<br>AI 杠杆者（做原来不可能的事）→ 跨界创造者</div>
-      <div class="onion-layers" style="border-color: rgba(211,84,0,0.3); background: rgba(211,84,0,0.05);">
-        <div class="onion-label" style="color: #d35400;">第二层（毛泽东）：成果归属决定命运</div>
-        <div class="onion-desc">成果归你 → 议价权上升<br>成果归资本 → 被榨取得更彻底</div>
-        <div class="onion-layers" style="border-color: rgba(192,57,43,0.3); background: rgba(192,57,43,0.05);">
-          <div class="onion-label" style="color: #c0392b;">第一层（马克思）：结构性约束</div>
-          <div class="onion-desc">个体策略的天花板 = 生产资料的所有制结构</div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <!-- Harold positioning box -->
-  <div style="margin-top: 16px; padding: 12px 16px; border-radius: 8px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); font-size: 13px; color: #a0a0b0;">
-    <div style="font-weight: 600; color: #f0f0f0; margin-bottom: 8px;">Harold 的定位</div>
-    ✓ 已经是杠杆者（pass-gui 证明）<br>
-    ✓ 做 pass-gui 时处于"问题解决者"状态<br>
-    △ 需要警惕：工作中是否退回了"加速者"模式<br>
-    △ 需要争取：效率提升的成果归属权
-  </div>
-  </div>
-
-<!-- ============================================================
-     全局总结
-     ============================================================ -->
-  <div class="summary-section">
-  <div class="round-header">
-    <div class="round-num">全局总结</div>
-    <div class="round-title">从产业问题到存在追问</div>
-  </div>
-
-  <p style="font-size: 15px; line-height: 1.9; color: #c8c8d0; margin: 24px 0;">我们从一个看似简单的产业问题——"AI 编程对普通 IT 工作者的影响"——出发，经过七轮深入交锋，逐层剥开了<em>经济、认知、权力、行动、存在</em>五个维度，最终触及了关于人的主体性和意义感的根本追问。</p>
-
-  <div class="contributor-list">
-    <div class="contributor-card">
-      <div class="speaker-avatar color-marx" style="flex-shrink: 0;">马</div>
-      <div>
-        <div style="font-size: 14px; font-weight: bold; color: #f0f0f0; margin-bottom: 4px;">卡尔·马克思</div>
-        <div style="font-size: 13px; color: #a0a0b0; line-height: 1.6;">揭示了结构性约束：所有制决定了个体策略的天花板</div>
-      </div>
-    </div>
-    <div class="contributor-card">
-      <div class="speaker-avatar color-drucker" style="flex-shrink: 0;">德</div>
-      <div>
-        <div style="font-size: 14px; font-weight: bold; color: #f0f0f0; margin-bottom: 4px;">彼得·德鲁克</div>
-        <div style="font-size: 13px; color: #a0a0b0; line-height: 1.6;">提供了行动框架：从效率转向贡献，从技能转向有效性</div>
-      </div>
-    </div>
-    <div class="contributor-card">
-      <div class="speaker-avatar color-kaifu" style="flex-shrink: 0;">李</div>
-      <div>
-        <div style="font-size: 14px; font-weight: bold; color: #f0f0f0; margin-bottom: 4px;">李开复</div>
-        <div style="font-size: 13px; color: #a0a0b0; line-height: 1.6;">锚定了产业现实：具体的方向、路径和分化趋势</div>
-      </div>
-    </div>
-    <div class="contributor-card">
-      <div class="speaker-avatar color-mao" style="flex-shrink: 0;">毛</div>
-      <div>
-        <div style="font-size: 14px; font-weight: bold; color: #f0f0f0; margin-bottom: 4px;">毛泽东</div>
-        <div style="font-size: 13px; color: #a0a0b0; line-height: 1.6;">注入了战略思维：调查研究、根据地战略、组织起来</div>
-      </div>
-    </div>
-    <div class="contributor-card">
-      <div class="speaker-avatar color-crawford" style="flex-shrink: 0;">克</div>
-      <div>
-        <div style="font-size: 14px; font-weight: bold; color: #f0f0f0; margin-bottom: 4px;">马修·克劳福德</div>
-        <div style="font-size: 13px; color: #a0a0b0; line-height: 1.6;">守住了人的底线：意义、手艺、好奇心——这些不可量化但不可或缺的东西</div>
-      </div>
-    </div>
-  </div>
-
-  <div class="round-question" style="margin: 32px 0;">
-    意义先于策略，策略先于战术。多数人的焦虑来自次序颠倒——在不知道"为什么"的情况下拼命解决"怎么做"。
-  </div>
-
-  <!-- Knowledge Network Chart -->
-  <div class="chart-container">
-    <div class="chart-title">AI 编程对 IT 工作者影响：知识网络全局图</div>
-
-    <!-- Top node -->
-    <div class="network-row">
-      <div class="network-node" style="border-color: rgba(233,69,96,0.4); font-weight: 600;">AI 编程崛起</div>
-    </div>
-    <div class="network-connector">▼</div>
-
-    <!-- Three branches -->
-    <div class="network-row">
-      <div class="network-node" style="border-color: rgba(192,57,43,0.3);">经济层<br><small style="color:#888;">谁得谁失？</small></div>
-      <div class="network-node" style="border-color: rgba(41,128,185,0.3);">认知层<br><small style="color:#888;">能力何去？</small></div>
-      <div class="network-node" style="border-color: rgba(142,68,173,0.3);">存在层<br><small style="color:#888;">意义何在？</small></div>
-    </div>
-    <div class="network-connector">▼</div>
-
-    <!-- Power structure layer -->
-    <div class="network-row">
-      <div class="network-node" style="border-color: rgba(211,84,0,0.4); font-weight: 600;">权力结构层（毛泽东）<br><small style="color:#888;">主要矛盾：AI 所有权 · 出路：组织起来</small></div>
-    </div>
-    <div class="network-connector">▼</div>
-
-    <!-- Action layer -->
-    <div class="network-row">
-      <div class="network-node" style="border-color: rgba(233,69,96,0.4); background: rgba(233,69,96,0.05); max-width: 400px;">
-        <div style="font-weight: 600; margin-bottom: 8px;">个人行动层（Harold 路线图）</div>
-        <div style="font-size: 12px; color: #a0a0b0; line-height: 1.6;">
-          杠杆者 &gt; 加速者<br>
-          问题解决者 &gt; 岗位持有者<br>
-          好奇驱动 &gt; 恐惧驱动
-        </div>
-      </div>
-    </div>
-    <div class="network-connector">▼</div>
-
-    <!-- Core tension -->
-    <div class="network-row">
-      <div class="network-node" style="border-color: rgba(255,255,255,0.15); background: rgba(255,255,255,0.03); max-width: 500px;">
-        <div style="font-weight: 600; margin-bottom: 4px;">贯穿全局的核心张力</div>
-        <div style="font-size: 12px; color: #888;">个体能动性 ◄── 张力 ──► 结构性约束</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Open Questions -->
-  <div style="margin-top: 48px;">
-    <div class="round-header">
-      <div class="round-num">未解决</div>
-      <div class="round-title">开放问题</div>
-    </div>
-    <ol class="open-questions">
-      <li><strong>好奇心的公平性：</strong>如果好奇心和创造冲动是 AI 时代最核心的护城河，而这些品质的分布并不均匀，我们是否在制造一种新型不平等——"有好奇心的人"与"没有好奇心的人"之间的鸿沟？</li>
-      <li><strong>默会知识的传承断代：</strong>如果整整一代 IT 工作者不再亲手写底层代码，当 AI 出现系统性故障时，谁来修？技术文明的韧性是否正在被悄悄侵蚀？</li>
-      <li><strong>组织的具体形态：</strong>毛泽东说"组织起来"，德鲁克说"专业社群"，克劳福德说"新型行会"——在现实中，IT 工作者的集体组织应该长什么样？工会？开源社区？行业协会？还是某种尚未出现的新形态？</li>
-      <li><strong>效率成果的分配：</strong>AI 带来的效率提升，目前几乎全部被资本方获取。是否存在一种制度设计，使得使用 AI 的劳动者也能分享这部分收益？</li>
-      <li><strong>意义的可迁移性：</strong>当编程作为手艺"死去"之后，IT 工作者的意义感能否迁移到新的载体上？还是说，每一代技术工人都注定要经历一次"手艺丧失"的哀悼？</li>
-    </ol>
-  </div>
-
-  <div class="page-footer">
-    Generated by 圆桌研讨会框架 · 2026年3月29日
-  </div>
-
-  </div><!-- close .summary-section -->
-</div><!-- close .content -->
-
-
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-  const progressBar = document.querySelector('.progress-bar');
-  const progressCurrent = document.querySelector('.progress-current');
-  const progressDots = document.querySelectorAll('.progress-dot');
-  const tocPanel = document.querySelector('.toc-panel');
-  const tocToggle = document.querySelector('.progress-expand');
-  const tocItems = document.querySelectorAll('.toc-item');
-  const rounds = document.querySelectorAll('.round-header');
-
-  // TOC toggle
-  tocToggle.addEventListener('click', (e) => {
-    e.stopPropagation();
-    tocPanel.classList.toggle('open');
-    tocToggle.textContent = tocPanel.classList.contains('open') ? '▲ 收起' : '▼ 目录';
-  });
-
-  // Close TOC when clicking outside
-  document.addEventListener('click', (e) => {
-    if (!tocPanel.contains(e.target) && !tocToggle.contains(e.target)) {
-      tocPanel.classList.remove('open');
-      tocToggle.textContent = '▼ 目录';
-    }
-  });
-
-  // TOC item click → smooth scroll + close panel
-  tocItems.forEach((item, index) => {
-    item.addEventListener('click', () => {
-      if (rounds[index]) {
-        rounds[index].scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
-      tocPanel.classList.remove('open');
-      tocToggle.textContent = '▼ 目录';
-    });
-  });
-
-  // Intersection Observer for scroll tracking
-  let currentRound = 0;
-  const observerOptions = {
-    rootMargin: '-80px 0px -70% 0px',
-    threshold: 0
-  };
-
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        const index = Array.from(rounds).indexOf(entry.target);
-        if (index !== -1) {
-          currentRound = index;
-          updateProgress(index);
-        }
-      }
-    });
-  }, observerOptions);
-
-  rounds.forEach(round => observer.observe(round));
-
-  function updateProgress(index) {
-    const roundNum = rounds[index].querySelector('.round-num');
-    const roundTitle = rounds[index].querySelector('.round-title');
-    if (roundNum && roundTitle) {
-      progressCurrent.innerHTML =
-        '<span>' + roundNum.textContent + '</span> · ' + roundTitle.textContent;
-    }
-
-    progressDots.forEach((dot, i) => {
-      dot.classList.remove('active', 'passed');
-      if (i < index) dot.classList.add('passed');
-      if (i === index) dot.classList.add('active');
-    });
-
-    tocItems.forEach((item, i) => {
-      item.classList.toggle('active', i === index);
-    });
-  }
-
-  if (rounds.length > 0) updateProgress(0);
-
-  const headerHeight = progressBar ? progressBar.offsetHeight + 16 : 60;
-  document.documentElement.style.scrollPaddingTop = headerHeight + 'px';
-});
-
-</script>
 </body>
 </html>
