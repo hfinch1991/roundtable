@@ -1,0 +1,2036 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>圆桌：制造业企业项目管理软件开发</title>
+<style>
+/* ============================================================
+   1. Reset & Base
+   ============================================================ */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: #0d0d1a;
+  color: #c8c8d0;
+  font-family: "Noto Serif SC", Georgia, "Times New Roman", serif;
+  line-height: 1.8;
+  font-size: 19px;
+}
+
+/* ============================================================
+   2. Progress Bar
+   ============================================================ */
+.progress-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  background: rgba(13, 13, 26, 0.95);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.progress-bar-inner {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 14px 32px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.progress-current {
+  font-size: 15px;
+  color: #a0a0b0;
+  letter-spacing: 1px;
+}
+
+.progress-current span {
+  color: #e94560;
+  font-weight: 600;
+}
+
+.progress-dots {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  align-items: center;
+}
+
+.progress-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  transition: background 0.3s, box-shadow 0.3s;
+}
+
+.progress-dot.active {
+  background: #e94560;
+  box-shadow: 0 0 8px rgba(233, 69, 96, 0.4);
+}
+
+.progress-dot.passed {
+  background: rgba(233, 69, 96, 0.3);
+}
+
+.progress-expand {
+  font-size: 14px;
+  color: #666;
+  letter-spacing: 1px;
+  cursor: pointer;
+  user-select: none;
+}
+
+/* ============================================================
+   3. TOC Panel
+   ============================================================ */
+.toc-panel {
+  position: fixed;
+  top: 48px;
+  left: 0;
+  right: 0;
+  z-index: 99;
+  background: rgba(13, 13, 26, 0.98);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+}
+
+.toc-panel.open {
+  max-height: 500px;
+}
+
+.toc-inner {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 8px 32px;
+}
+
+.toc-item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  border-radius: 6px;
+  font-size: 16px;
+  color: #888;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.toc-item:hover {
+  background: rgba(255, 255, 255, 0.04);
+  color: #c8c8d0;
+}
+
+.toc-item.active {
+  color: #e94560;
+}
+
+.toc-num {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.06);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  flex-shrink: 0;
+}
+
+.toc-item.active .toc-num {
+  background: rgba(233, 69, 96, 0.2);
+  color: #e94560;
+}
+
+/* ============================================================
+   4. Hero
+   ============================================================ */
+.hero {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 110px 32px 60px;
+  text-align: center;
+}
+
+.hero-tag {
+  font-size: 14px;
+  color: #e94560;
+  letter-spacing: 4px;
+  margin-bottom: 20px;
+  text-transform: uppercase;
+}
+
+.hero h1 {
+  font-size: 42px;
+  font-weight: bold;
+  color: #f0f0f0;
+  line-height: 1.4;
+  margin-bottom: 20px;
+}
+
+.hero-meta {
+  font-size: 16px;
+  color: #666;
+  margin-bottom: 32px;
+}
+
+.hero-participants {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.participant-tag {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  font-size: 15px;
+  color: #a0a0b0;
+}
+
+.participant-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* ============================================================
+   5. Content
+   ============================================================ */
+.content {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 0 32px 80px;
+}
+
+/* ============================================================
+   6. Round Header
+   ============================================================ */
+.round-header {
+  margin: 64px 0 32px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.round-num {
+  font-size: 14px;
+  color: #e94560;
+  letter-spacing: 3px;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+}
+
+.round-title {
+  font-size: 28px;
+  font-weight: bold;
+  color: #f0f0f0;
+  line-height: 1.4;
+}
+
+.round-question {
+  margin-top: 16px;
+  padding: 20px 24px;
+  background: rgba(233, 69, 96, 0.06);
+  border-left: 3px solid #e94560;
+  border-radius: 0 8px 8px 0;
+  font-size: 18px;
+  color: #c8c8d0;
+  line-height: 1.8;
+}
+
+/* ============================================================
+   7. Speech Cards
+   ============================================================ */
+.speech {
+  margin: 24px 0;
+  padding: 24px 28px;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  transition: border-color 0.3s;
+}
+
+.speech:hover {
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+.speech-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.speaker-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  color: white;
+  font-weight: bold;
+  flex-shrink: 0;
+}
+
+.speaker-info {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.speaker-name {
+  font-size: 18px;
+  font-weight: bold;
+  color: #f0f0f0;
+}
+
+.speaker-action {
+  font-size: 13px;
+  letter-spacing: 1px;
+  padding: 3px 10px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.06);
+  color: #888;
+}
+
+.speech-body {
+  font-size: 18px;
+  line-height: 1.9;
+  color: #c8c8d0;
+}
+
+.speech-body em {
+  color: #f0f0f0;
+  font-style: normal;
+  font-weight: 500;
+}
+
+.speech-tldr {
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.04);
+  font-size: 16px;
+  color: #888;
+  font-style: italic;
+}
+
+.speech-tldr strong {
+  color: #a0a0b0;
+  font-style: normal;
+}
+
+/* ============================================================
+   8. Moderator Section
+   ============================================================ */
+.moderator-section {
+  margin: 40px 0;
+  padding: 28px;
+  background: rgba(233, 69, 96, 0.04);
+  border: 1px solid rgba(233, 69, 96, 0.1);
+  border-radius: 12px;
+}
+
+.moderator-label {
+  font-size: 14px;
+  color: #e94560;
+  letter-spacing: 2px;
+  margin-bottom: 12px;
+  text-transform: uppercase;
+}
+
+/* ============================================================
+   9. Chart Containers
+   ============================================================ */
+.chart-container {
+  margin: 24px 0;
+  padding: 28px;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.chart-title {
+  text-align: center;
+  font-size: 16px;
+  color: #a0a0b0;
+  letter-spacing: 2px;
+  margin-bottom: 24px;
+}
+
+/* Tension axis */
+.tension-axis {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 0;
+}
+
+.tension-pole {
+  padding: 14px 24px;
+  border-radius: 8px;
+  font-size: 17px;
+  font-weight: bold;
+}
+
+.tension-pole.left {
+  background: rgba(46, 134, 171, 0.15);
+  color: #53a8b6;
+  border: 1px solid rgba(46, 134, 171, 0.2);
+}
+
+.tension-pole.right {
+  background: rgba(233, 69, 96, 0.15);
+  color: #e94560;
+  border: 1px solid rgba(233, 69, 96, 0.2);
+}
+
+.tension-line {
+  flex: 1;
+  height: 2px;
+  margin: 0 16px;
+  background: linear-gradient(to right, rgba(46, 134, 171, 0.4), rgba(233, 69, 96, 0.4));
+}
+
+/* Tension detail */
+.tension-detail {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.tension-item {
+  padding: 12px 16px;
+  border-radius: 6px;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.tension-item.blue {
+  background: rgba(46, 134, 171, 0.08);
+  color: #7ec8d8;
+  border-left: 2px solid rgba(46, 134, 171, 0.3);
+}
+
+.tension-item.red {
+  background: rgba(233, 69, 96, 0.08);
+  color: #f0a0b0;
+  border-left: 2px solid rgba(233, 69, 96, 0.3);
+}
+
+/* Layer stack */
+.layer-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.layer-card {
+  padding: 18px 22px;
+  border-radius: 8px;
+  border-left: 3px solid;
+}
+
+.layer-card .layer-label {
+  font-size: 14px;
+  letter-spacing: 2px;
+  margin-bottom: 8px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.layer-card .layer-content {
+  font-size: 16px;
+  line-height: 1.7;
+  color: #b0b0b8;
+}
+
+.layer-card:nth-child(1) {
+  background: rgba(233, 69, 96, 0.08);
+}
+
+.layer-card:nth-child(2) {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.layer-card:nth-child(3) {
+  background: rgba(46, 134, 171, 0.08);
+}
+
+/* Framework split */
+.framework-split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.framework-card {
+  padding: 22px;
+  border-radius: 8px;
+  border-top: 3px solid;
+}
+
+.framework-card .fw-title {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.framework-card .fw-detail {
+  font-size: 16px;
+  line-height: 1.7;
+  color: #b0b0b8;
+}
+
+.converge-arrow {
+  text-align: center;
+  padding: 16px 0;
+  font-size: 16px;
+  color: #666;
+}
+
+.converge-result {
+  padding: 18px 22px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.03);
+  text-align: center;
+  font-size: 17px;
+  color: #c8c8d0;
+}
+
+/* Timeline */
+.timeline {
+  position: relative;
+  padding-left: 36px;
+  margin: 16px 0;
+}
+
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 14px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.timeline-step {
+  position: relative;
+  margin-bottom: 24px;
+  padding: 18px 22px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.03);
+  border-left: 3px solid;
+}
+
+.step-num {
+  position: absolute;
+  left: -36px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: bold;
+  z-index: 1;
+}
+
+.step-title {
+  font-size: 17px;
+  font-weight: bold;
+  color: #f0f0f0;
+  margin-bottom: 6px;
+}
+
+.step-desc {
+  font-size: 16px;
+  color: #b0b0b8;
+  line-height: 1.7;
+}
+
+/* Onion layers */
+.onion-layers {
+  padding: 18px;
+  border-radius: 8px;
+  border: 1px solid;
+}
+
+.onion-layers .onion-label {
+  font-size: 15px;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.onion-layers .onion-desc {
+  font-size: 16px;
+  color: #b0b0b8;
+  line-height: 1.7;
+  margin-bottom: 14px;
+}
+
+/* Action table */
+.action-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.action-table th {
+  padding: 10px 14px;
+  text-align: left;
+  font-size: 14px;
+  color: #888;
+  letter-spacing: 1px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  text-transform: uppercase;
+}
+
+.action-table td {
+  padding: 12px 14px;
+  font-size: 16px;
+  color: #c8c8d0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+.action-table tr:hover td {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.priority-high {
+  color: #e94560;
+}
+
+.priority-mid {
+  color: #f39c12;
+}
+
+.priority-low {
+  color: #27ae60;
+}
+
+/* Network graph */
+.network-graph {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.network-node {
+  display: inline-block;
+  padding: 10px 18px;
+  border-radius: 6px;
+  font-size: 15px;
+  margin: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.network-connector {
+  text-align: center;
+  padding: 6px;
+  font-size: 15px;
+  color: #666;
+}
+
+.network-row {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+/* ============================================================
+   10. Speaker Colors
+   ============================================================ */
+.color-taylor   { background: #c0392b; }
+.color-ohno     { background: #2980b9; }
+.color-goldratt { background: #27ae60; }
+.color-norman   { background: #8e44ad; }
+.color-cagan    { background: #d35400; }
+
+.border-taylor   { border-left-color: #c0392b; }
+.border-ohno     { border-left-color: #2980b9; }
+.border-goldratt { border-left-color: #27ae60; }
+.border-norman   { border-left-color: #8e44ad; }
+.border-cagan    { border-left-color: #d35400; }
+
+/* ============================================================
+   11. Summary Section
+   ============================================================ */
+.summary-section {
+  margin-top: 64px;
+  padding-top: 32px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.contributor-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 16px;
+  margin: 24px 0;
+}
+
+.contributor-card {
+  display: flex;
+  gap: 14px;
+  padding: 18px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.open-questions {
+  margin: 32px 0;
+}
+
+.open-questions li {
+  margin-bottom: 20px;
+  font-size: 17px;
+  line-height: 1.8;
+}
+
+.open-questions li strong {
+  color: #f0f0f0;
+}
+
+.page-footer {
+  text-align: center;
+  padding: 40px 0;
+  font-size: 14px;
+  color: #555;
+}
+
+/* ============================================================
+   12. Responsive
+   ============================================================ */
+@media (max-width: 768px) {
+  body {
+    font-size: 16px;
+  }
+
+  /* Layout */
+  .page, .hero, .content {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+  .hero {
+    padding-top: 80px;
+    padding-bottom: 40px;
+  }
+
+  /* Progress bar */
+  .progress-bar-inner {
+    padding: 10px 16px;
+  }
+  .progress-current {
+    font-size: 13px;
+  }
+  .progress-expand {
+    font-size: 12px;
+  }
+  .progress-dot {
+    width: 8px;
+    height: 8px;
+  }
+
+  /* TOC */
+  .toc-inner {
+    padding: 0 16px;
+  }
+  .toc-item {
+    font-size: 14px;
+    padding: 8px 10px;
+  }
+
+  /* Hero */
+  .hero h1 {
+    font-size: 26px;
+  }
+  .hero-tag {
+    font-size: 12px;
+  }
+  .hero-meta {
+    font-size: 14px;
+  }
+  .hero-participants {
+    gap: 8px;
+  }
+  .participant-tag {
+    font-size: 13px;
+    padding: 5px 12px;
+  }
+
+  /* Round header */
+  .round-num {
+    font-size: 12px;
+  }
+  .round-title {
+    font-size: 22px;
+  }
+  .round-question {
+    font-size: 15px;
+    padding: 14px 16px;
+  }
+
+  /* Speech cards */
+  .speech {
+    padding: 16px 18px;
+    margin: 16px 0;
+  }
+  .speaker-avatar {
+    width: 34px;
+    height: 34px;
+    font-size: 14px;
+  }
+  .speaker-name {
+    font-size: 16px;
+  }
+  .speaker-action {
+    font-size: 11px;
+  }
+  .speech-body {
+    font-size: 15px;
+  }
+  .speech-tldr {
+    font-size: 14px;
+  }
+
+  /* Moderator */
+  .moderator-section {
+    padding: 18px;
+  }
+  .moderator-label {
+    font-size: 12px;
+  }
+
+  /* Charts */
+  .chart-container {
+    padding: 18px;
+  }
+  .chart-title {
+    font-size: 14px;
+  }
+  .tension-pole {
+    font-size: 14px;
+    padding: 10px 14px;
+  }
+  .tension-detail {
+    grid-template-columns: 1fr;
+  }
+  .tension-item {
+    font-size: 14px;
+  }
+  .layer-card .layer-label {
+    font-size: 12px;
+  }
+  .layer-card .layer-content {
+    font-size: 14px;
+  }
+  .framework-split {
+    grid-template-columns: 1fr;
+  }
+  .framework-card .fw-title {
+    font-size: 16px;
+  }
+  .framework-card .fw-detail {
+    font-size: 14px;
+  }
+  .converge-result {
+    font-size: 15px;
+  }
+  .step-title {
+    font-size: 15px;
+  }
+  .step-desc {
+    font-size: 14px;
+  }
+  .onion-layers {
+    padding: 14px;
+  }
+  .onion-layers .onion-label {
+    font-size: 13px;
+  }
+  .onion-layers .onion-desc {
+    font-size: 14px;
+  }
+  .network-node {
+    font-size: 13px;
+    padding: 8px 12px;
+  }
+  .action-table th {
+    font-size: 12px;
+  }
+  .action-table td {
+    font-size: 14px;
+  }
+
+  /* Summary */
+  .contributor-list {
+    grid-template-columns: 1fr;
+  }
+  .open-questions li {
+    font-size: 15px;
+  }
+}
+
+</style>
+</head>
+<body>
+
+<!-- Progress bar -->
+<div class="progress-bar">
+  <div class="progress-bar-inner">
+    <div class="progress-current"><span>第一轮</span> · 定义——软件的本质与主体性</div>
+    <div class="progress-dots">
+      <div class="progress-dot active"></div>
+      <div class="progress-dot"></div>
+      <div class="progress-dot"></div>
+      <div class="progress-dot"></div>
+      <div class="progress-dot"></div>
+      <div class="progress-dot"></div>
+      <div class="progress-dot"></div>
+      <div class="progress-dot"></div>
+    </div>
+    <div class="progress-expand">▼ 目录</div>
+  </div>
+</div>
+
+<!-- TOC panel with 8 items -->
+<div class="toc-panel">
+  <div class="toc-inner">
+    <div class="toc-item active"><div class="toc-num">1</div><span>定义——软件的本质与主体性</span></div>
+    <div class="toc-item"><div class="toc-num">2</div><span>架构——六种项目类型的功能设计</span></div>
+    <div class="toc-item"><div class="toc-num">3</div><span>知识循环——独立模块还是副产品？</span></div>
+    <div class="toc-item"><div class="toc-num">4</div><span>落地——软件如何自带落地势能？</span></div>
+    <div class="toc-item"><div class="toc-num">5</div><span>AI——大模型重构了哪些假设？</span></div>
+    <div class="toc-item"><div class="toc-num">6</div><span>盲区——我们没质疑过什么？</span></div>
+    <div class="toc-item"><div class="toc-num">7</div><span>实战——正在开发时的五个致命陷阱</span></div>
+    <div class="toc-item"><div class="toc-num">8</div><span>全局知识网络与开放问题</span></div>
+  </div>
+</div>
+
+<!-- Hero -->
+<div class="hero">
+  <div class="hero-tag">圆桌研讨会</div>
+  <h1>制造业企业项目管理软件开发</h1>
+  <div class="hero-meta">2026年4月9日 · 七轮深度对话 · 五位思想代表</div>
+  <div class="hero-participants">
+    <div class="participant-tag"><div class="participant-dot color-taylor"></div> 弗雷德里克·泰勒</div>
+    <div class="participant-tag"><div class="participant-dot color-ohno"></div> 大野耐一</div>
+    <div class="participant-tag"><div class="participant-dot color-goldratt"></div> 艾利·高德拉特</div>
+    <div class="participant-tag"><div class="participant-dot color-norman"></div> 唐纳德·诺曼</div>
+    <div class="participant-tag"><div class="participant-dot color-cagan"></div> 马蒂·凯根</div>
+  </div>
+</div>
+
+<div class="content">
+
+  <!-- ===================== ROUND 1 ===================== -->
+  <div class="round-header">
+    <div class="round-num">第一轮</div>
+    <div class="round-title">定义——软件的本质与主体性</div>
+    <div class="round-question">
+      「制造业企业项目管理软件」的本质是什么？它解决的根本问题是什么？"全面专业"与"用户友好"这两个目标，是否存在真正的张力？
+    </div>
+  </div>
+
+  <div class="speech">
+    <div class="speech-header">
+      <div class="speaker-avatar color-taylor">泰</div>
+      <div class="speaker-info">
+        <span class="speaker-name">弗雷德里克·泰勒</span>
+        <span class="speaker-action">陈述</span>
+      </div>
+    </div>
+    <div class="speech-body">
+      软件的本质是<em>管理意志的延伸</em>——是把管理者对生产流程的理解，变成可以被测量、被比较、被优化的数据流。所谓"项目管理软件"，就是让工厂里每一个动作都能被<em>分解为任务、赋予标准工时、分配给人、追踪到完成</em>。离开了这四件事，你们谈的不是软件，是许愿池。至于"全面"和"友好"的张力——这是个伪命题。工人抱怨系统复杂，不是因为系统复杂，是因为他被要求做的事情本身就复杂而又没有被合理分解。把任务切到足够细、足够标准，界面自然就简单了。
+    </div>
+    <div class="speech-tldr">
+      <strong>简言之：</strong>软件是管理意志的数字化身；复杂度的根源不在界面，在任务本身未被分解干净。
+    </div>
+  </div>
+
+  <div class="speech">
+    <div class="speech-header">
+      <div class="speaker-avatar color-ohno">野</div>
+      <div class="speaker-info">
+        <span class="speaker-name">大野耐一</span>
+        <span class="speaker-action">反驳</span>
+      </div>
+    </div>
+    <div class="speech-body">
+      泰勒先生，恕我直言——你所说的"管理意志的延伸"，正是丰田生产方式要警惕的东西。你把软件当作<em>管理者看工人的眼睛</em>；我们把软件当作<em>工人看问题的眼睛</em>。方向相反。我要问的第一个问题是：这个软件让现场工人停线的权力变大了，还是变小了？让异常被立刻暴露的可能性变高了，还是变低了？如果答案是后者——那无论它多"全面"，都是 <em>muda</em>（浪费）。我见过太多工厂买了昂贵的 MES/ERP/PLM，报表做得像艺术品，但车间主任还是拿着笔和纸追料——因为系统里的数据总比现场慢半小时。<em>数据晚到，就等于没有数据。</em>
+    </div>
+    <div class="speech-tldr">
+      <strong>简言之：</strong>软件不是用来看工人的，是用来让工人更早看见异常的；迟到的全面等于缺席。
+    </div>
+  </div>
+
+  <div class="speech">
+    <div class="speech-header">
+      <div class="speaker-avatar color-goldratt">高</div>
+      <div class="speaker-info">
+        <span class="speaker-name">艾利·高德拉特</span>
+        <span class="speaker-action">质疑</span>
+      </div>
+    </div>
+    <div class="speech-body">
+      两位都在谈"管理"和"现场"，但你们都回避了一个更尖锐的问题——<em>这套软件究竟在优化什么？</em>一家工厂的产出由唯一的瓶颈工序决定。瓶颈之外的任何"效率提升"，要么是虚假改善，要么是局部优化。大多数"全面专业"的项目管理软件的最大罪过，就是它让每个车间主任都看到自己车间的 KPI，并为之优化——结果是<em>瓶颈前堆满在制品，瓶颈后饿死，整体交期反而恶化</em>。你先回答我：你想优化的是吞吐量、库存、还是运营费用？你的瓶颈在哪里？一个能告诉你<em>"下周三下午2点瓶颈机床会饿料47分钟"</em>的朴素功能，胜过一百张花哨甘特图。
+    </div>
+    <div class="speech-tldr">
+      <strong>简言之：</strong>脱离约束谈功能，就是在给船上每个房间装金把手——而船正在漏水。
+    </div>
+  </div>
+
+  <div class="speech">
+    <div class="speech-header">
+      <div class="speaker-avatar color-norman">诺</div>
+      <div class="speaker-info">
+        <span class="speaker-name">唐纳德·诺曼</span>
+        <span class="speaker-action">修正</span>
+      </div>
+    </div>
+    <div class="speech-body">
+      各位，我来自认知心理学和设计。你们三位在争论软件应该做什么，却没人问<em>软件应该让谁、在何种心智状态下、在几秒钟内完成什么</em>。这才是"用户友好"的真正含义——它不是"界面好看"，而是<em>让正确的行动成为最容易的行动</em>。车间主任在嘈杂的现场、戴着手套、在三秒内需要知道"我现在该做什么"——此刻任何超过两次点击的操作，都是设计失败。软件设计的核心问题应该是：这个界面如何让人不犯错？犯了错如何立刻发现？<em>"全面专业"和"用户友好"不仅不矛盾，而且真正的专业必须体现为用户友好；二者对立只是糟糕设计的遮羞布。</em>
+    </div>
+    <div class="speech-tldr">
+      <strong>简言之：</strong>用户友好不是装饰专业，而是专业的本体；二者的"张力"只是设计失败的借口。
+    </div>
+  </div>
+
+  <div class="moderator-section">
+    <div class="moderator-label">主持人综述</div>
+    <p>各位都在拒绝"功能清单"的提法——先别急着列功能，先想清楚功能是为谁服务、为什么服务。<strong>核心争议：软件的"主体性"归谁？</strong></p>
+    <p style="margin-top: 10px;">四个正交维度：管理者（控制）、现场（暴露异常）、系统整体（保护瓶颈）、使用者心智（认知外骨骼）。</p>
+  </div>
+
+  <div class="chart-container">
+    <div class="chart-title">软件主体性的四维框架</div>
+    <div class="framework-split">
+      <div class="framework-card" style="border-top-color: #c0392b; background: rgba(192,57,43,0.06);">
+        <div class="fw-title" style="color: #e74c3c;">Taylor: 为管理者服务</div>
+        <div class="fw-detail">目标：可控可测<br>功能：标准化工时、KPI看板、审计追溯</div>
+      </div>
+      <div class="framework-card" style="border-top-color: #2980b9; background: rgba(41,128,185,0.06);">
+        <div class="fw-title" style="color: #5dade2;">Ohno: 为现场工人服务</div>
+        <div class="fw-detail">目标：异常即时暴露<br>功能：Andon、Kanban拉动、现场白板式UI</div>
+      </div>
+      <div class="framework-card" style="border-top-color: #27ae60; background: rgba(39,174,96,0.06);">
+        <div class="fw-title" style="color: #2ecc71;">Goldratt: 为系统整体服务</div>
+        <div class="fw-detail">目标：保护瓶颈<br>功能：约束可视化、缓冲管理、DBR排程</div>
+      </div>
+      <div class="framework-card" style="border-top-color: #8e44ad; background: rgba(142,68,173,0.06);">
+        <div class="fw-title" style="color: #a569bd;">Norman: 为使用者心智服务</div>
+        <div class="fw-detail">目标：让正确行动最省力<br>功能：单手操作、反馈&lt;1s、错误不可能化</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== ROUND 2 ===================== -->
+  <div class="round-header">
+    <div class="round-num">第二轮</div>
+    <div class="round-title">架构——六种项目类型的功能设计</div>
+    <div class="round-question">
+      面对六种节奏迥异的项目类型（IT/工程/研发/工艺/设备/知识库），软件应当追求统一的核心架构，还是为每种类型独立设计？如果追求统一，统一到什么层级为止？
+    </div>
+  </div>
+
+  <div class="speech">
+    <div class="speech-header">
+      <div class="speaker-avatar color-goldratt">高</div>
+      <div class="speaker-info">
+        <span class="speaker-name">艾利·高德拉特</span>
+        <span class="speaker-action">反驳</span>
+      </div>
+    </div>
+    <div class="speech-body">
+      凯根的"平台三层论"在没有识别约束的情况下先设计了架构。六种项目类型——好，我来问：<em>这家制造企业今天最赚钱的产品，从订单到交付的关键路径上，哪种项目类型是瓶颈？</em>如果是研发——BOM评审卡了三周——那MVP就是评审流自动化和BOM协同，其它五类可以继续用Excel。"平台思维"是正确的远景。但用平台思维来决定第一行代码写在哪里，是工程师的自恋，不是商业判断。<em>第一行代码必须写在瓶颈上。</em>
+    </div>
+    <div class="speech-tldr">
+      <strong>简言之：</strong>平台是远景，不是起点；第一行代码必须写在企业当前最卡的那个项目类型上。
+    </div>
+  </div>
+
+  <!-- Moderator note: introducing Cagan -->
+  <div class="moderator-section" style="padding: 18px 28px; margin: 24px 0;">
+    <div class="moderator-label">主持人</div>
+    <p>在这里我们有请第五位嘉宾——产品管理领域的权威<em>马蒂·凯根</em>先生加入讨论。凯根先生在硅谷有数十年产品开发经验，他的视角将为架构讨论带来产品纪律的维度。</p>
+  </div>
+
+  <div class="speech">
+    <div class="speech-header">
+      <div class="speaker-avatar color-cagan">凯</div>
+      <div class="speaker-info">
+        <span class="speaker-name">马蒂·凯根</span>
+        <span class="speaker-action">修正</span>
+      </div>
+    </div>
+    <div class="speech-body">
+      MVP从瓶颈切入我同意，但<em>底层数据模型必须一开始就为六种类型预留扩展性</em>。因为我见过太多制造业软件的死法——第一个模块做得很好，第二个模块加进来时，发现数据库表结构是给第一个模块量身定做的，三年之后变成弗兰肯斯坦。
+    </div>
+    <div class="speech-tldr">
+      <strong>简言之：</strong>MVP从瓶颈切入我同意，但底层模型必须一开始就为多项目类型设计，否则三年后必死。
+    </div>
+  </div>
+
+  <div class="speech">
+    <div class="speech-header">
+      <div class="speaker-avatar color-taylor">泰</div>
+      <div class="speaker-info">
+        <span class="speaker-name">弗雷德里克·泰勒</span>
+        <span class="speaker-action">陈述</span>
+      </div>
+    </div>
+    <div class="speech-body">
+      不管从哪里开始，有些功能是六种项目类型的<em>共同地基</em>。制造业项目管理的不可或缺基座：一、<em>项目全生命周期骨架</em>（WBS、甘特图、关键路径、收尾复盘）；二、<em>资源与成本控制</em>（工时记录、预算跟踪、材料消耗）；三、<em>质量与合规</em>（审批流引擎、变更管理、文档版本控制）；四、<em>度量与报告</em>（仪表盘、偏差分析、冲突预警）。
+    </div>
+    <div class="speech-tldr">
+      <strong>简言之：</strong>六种项目类型的公约数是项目骨架、资源成本、质量合规、度量报告——这是地基，不是功能。
+    </div>
+  </div>
+
+  <div class="speech">
+    <div class="speech-header">
+      <div class="speaker-avatar color-norman">诺</div>
+      <div class="speaker-info">
+        <span class="speaker-name">唐纳德·诺曼</span>
+        <span class="speaker-action">质疑</span>
+      </div>
+    </div>
+    <div class="speech-body">
+      泰勒先生列了十五项功能。现在我用<em>认知负荷</em>来审判。制造业五种用户——车间主管（40-55岁、手机操作）、IT工程师（习惯Jira）、设备工程师（现场、手上有油）、研发总监（只关心"卡在哪了"）、总经理（只看红绿灯）。你把十五项功能放进一个系统——这五种人应该看到<em>五种完全不同的界面</em>。核心概念：<em>渐进式披露</em>（progressive disclosure）。你不是在做一个有十五个功能的软件。你是在做五个只有三个按钮的软件，它们碰巧共享同一个数据库。<em>后端全面，前端极简；数据统一，视图分化。</em>
+    </div>
+    <div class="speech-tldr">
+      <strong>简言之：</strong>十五项功能对应五种用户，应该是五个三按钮界面共享一个数据库，而非一个十五按钮的怪物。
+    </div>
+  </div>
+
+  <div class="speech">
+    <div class="speech-header">
+      <div class="speaker-avatar color-ohno">野</div>
+      <div class="speaker-info">
+        <span class="speaker-name">大野耐一</span>
+        <span class="speaker-action">补充</span>
+      </div>
+    </div>
+    <div class="speech-body">
+      按<em>信息流动的节奏</em>重新分类——<em>实时型</em>（秒级：工艺参数、设备状态）、<em>日清型</em>（施工日志、安全检查）、<em>迭代型</em>（周/双周：IT需求、版本发布）、<em>阶段型</em>（月/季：研发评审、FAT/SAT）、<em>永续型</em>（知识库、SOP）。同一家企业里，这五种时间节奏同时运行。不是按功能模块切分软件，而是<em>按用户的时间节奏切分</em>。不同节奏之间的接口点，才是管理层真正需要看的——<em>跨节奏因果链才是最值钱的功能</em>。
+    </div>
+    <div class="speech-tldr">
+      <strong>简言之：</strong>按时间节奏（秒/日/周/季/永续）切分界面，比按功能模块切分更贴合制造业现实；跨节奏因果链才是最高价值功能。
+    </div>
+  </div>
+
+  <div class="speech">
+    <div class="speech-header">
+      <div class="speaker-avatar color-cagan">凯</div>
+      <div class="speaker-info">
+        <span class="speaker-name">马蒂·凯根</span>
+        <span class="speaker-action">综合</span>
+      </div>
+    </div>
+    <div class="speech-body">
+      三层产品架构——<em>层级1：统一平台Core Engine</em>（任务·审批·文档·权限·搜索·变更管理·通知·预算/工时跟踪，用户永远不直接触碰）；<em>层级2：领域工作台Domain Desks</em>（IT研发台/工程台/研发台/工艺台/设备台/知识台，各有专属对象模型）；<em>层级3：角色视图Role Views</em>（现场视图：大字体手套友好/工程师视图：专业深度/管理层视图：红绿灯仪表盘）。MVP从层级2中最痛的那个台开始，但层级1的数据模型必须一开始就到位。
+    </div>
+    <div class="speech-tldr">
+      <strong>简言之：</strong>三层架构——统一引擎/领域工作台/角色视图；用户永远只触碰最上面两层。
+    </div>
+  </div>
+
+  <div class="moderator-section">
+    <div class="moderator-label">主持人综述</div>
+    <p>从"软件为谁服务"的方向之争变成了"如何在一个软件中容纳六种截然不同的工作节奏"的架构之争。<strong>核心争议：统一vs专深的张力不在功能层面，而在时间节奏层面。</strong>五位嘉宾正在收敛。</p>
+  </div>
+
+  <div class="chart-container">
+    <div class="chart-title">三层产品架构</div>
+    <div class="layer-stack">
+      <div class="layer-card" style="border-left-color: #c0392b; background: rgba(192,57,43,0.08);">
+        <div class="layer-label" style="color: #c0392b;">Layer 1: 统一平台 Core Engine</div>
+        <div class="layer-content">任务 · 审批 · 文档 · 权限 · 搜索 · 变更管理</div>
+      </div>
+      <div class="layer-card" style="border-left-color: #888; background: rgba(255,255,255,0.04);">
+        <div class="layer-label" style="color: #a0a0b0;">Layer 2: 领域工作台</div>
+        <div class="layer-content">IT · 工程 · 研发 · 工艺 · 设备 · 知识</div>
+      </div>
+      <div class="layer-card" style="border-left-color: #2980b9; background: rgba(41,128,185,0.08);">
+        <div class="layer-label" style="color: #5dade2;">Layer 3: 角色视图</div>
+        <div class="layer-content">现场(大字体/手套友好) · 工程师(专业深度) · 管理层(红绿灯)</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== ROUND 3 ===================== -->
+  <div class="round-header">
+    <div class="round-num">第三轮</div>
+    <div class="round-title">知识循环——独立模块还是副产品？</div>
+    <div class="round-question">
+      知识库在这个系统中应该是一个独立模块，还是一种渗透在每种项目类型中的"副产品机制"？它的价值该如何被量化，使其在MVP阶段不被牺牲？
+    </div>
+  </div>
+
+  <div class="speech">
+    <div class="speech-header">
+      <div class="speaker-avatar color-goldratt">高</div>
+      <div class="speaker-info">
+        <span class="speaker-name">艾利·高德拉特</span>
+        <span class="speaker-action">陈述</span>
+      </div>
+    </div>
+    <div class="speech-body">
+      知识库不是功能，是<em>症状</em>。为什么企业需要"经验教训沉淀"？因为同样的错误反复发生。你建一个知识库，让人"写经验"——这是<em>用库存思维解决流动问题</em>。在约束理论里，库存是罪恶。没有人在项目开始前会去翻知识库。正确的做法：把经验变成<em>流动的约束</em>——嵌入流程本身。上次FAT验收失败因忘了校准传感器？错误做法是写经验教训扔进知识库。正确做法——在FAT检查单里增加"传感器校准确认"，勾选后才能提交。<em>知识不需要被记住，它需要被变成不可能跳过的步骤。</em>
+    </div>
+    <div class="speech-tldr">
+      <strong>简言之：</strong>知识库是知识的库存，库存是罪恶；经验教训应直接编码为流程约束，而非存储为文档。
+    </div>
+  </div>
+
+  <div class="speech">
+    <div class="speech-header">
+      <div class="speaker-avatar color-norman">诺</div>
+      <div class="speaker-info">
+        <span class="speaker-name">唐纳德·诺曼</span>
+        <span class="speaker-action">反驳</span>
+      </div>
+    </div>
+    <div class="speech-body">
+      高德拉特先生的逻辑漂亮但适用范围有限。"传感器校准"可以编码为检查项——因为它是<em>程序性知识</em>。但大量经验教训是<em>解释性知识</em>——"为什么选了供应商A而非B"、"这种材料在高湿环境下的表现规律"。这些不能变成检查项，它们是<em>判断力的原材料</em>。而且人不是在"搜索"知识的时候获取知识的，而是在<em>"偶遇"知识</em>的时候。知识库应隐身——以上下文推荐的形式出现：你在创建FAT项目时，侧边栏自动浮现"上次同类型设备验收的3条经验教训"。<em>用户永远不需要"打开知识库"，但知识库永远在他身边。</em>
+    </div>
+    <div class="speech-tldr">
+      <strong>简言之：</strong>程序性知识可以编码为流程，但判断力不能；知识库应隐身为上下文推荐，而非独立入口。
+    </div>
+  </div>
+
+  <div class="speech">
+    <div class="speech-header">
+      <div class="speaker-avatar color-taylor">泰</div>
+      <div class="speaker-info">
+        <span class="speaker-name">弗雷德里克·泰勒</span>
+        <span class="speaker-action">补充</span>
+      </div>
+    </div>
+    <div class="speech-body">
+      两位都回避了<em>知识的输入端</em>怎么解决。现实是：没有人愿意写。解决方案：第一，把知识产出绑定在<em>流程关门</em>上——项目收尾审批必须包含"经验教训≥3条"，不填无法关闭项目。第二，<em>降低写入成本到极致</em>——结构化卡片，30秒能填完。第三，写入者必须看到回报——<em>"你填写的教训被12个项目引用了"</em>。
+    </div>
+    <div class="speech-tldr">
+      <strong>简言之：</strong>知识系统的瓶颈不在检索端而在输入端；必须用流程强制+极低写入成本+可见回报三管齐下。
+    </div>
+  </div>
+
+  <div class="speech">
+    <div class="speech-header">
+      <div class="speaker-avatar color-ohno">野</div>
+      <div class="speaker-info">
+        <span class="speaker-name">大野耐一</span>
+        <span class="speaker-action">修正</span>
+      </div>
+    </div>
+    <div class="speech-body">
+      泰勒先生的方法还是太重。在丰田，知识沉淀不是独立动作——它是<em>工作本身的副产品</em>。A3报告：解决问题过程中的工作文件，解决完了文件自然就在了。翻译到软件里：每个异常处理流程本身就是知识卡片生成器。设备报修→维修记录→根因分析→系统自动生成经验卡片。<em>不要让用户"写知识"，让系统从工作痕迹中"提取知识"。</em>
+    </div>
+    <div class="speech-tldr">
+      <strong>简言之：</strong>不要让人"写知识"，让系统从工单、报告、评审等工作痕迹中自动提取；知识是工作的副产品，不是额外任务。
+    </div>
+  </div>
+
+  <div class="speech">
+    <div class="speech-header">
+      <div class="speaker-avatar color-cagan">凯</div>
+      <div class="speaker-info">
+        <span class="speaker-name">马蒂·凯根</span>
+        <span class="speaker-action">综合</span>
+      </div>
+    </div>
+    <div class="speech-body">
+      三层知识循环——<em>输入层</em>（零额外成本：工单自动提取+项目关闭强制3条卡片+异常处理自动归档）→ <em>存储层</em>（结构化卡片+关联设备/物料/工艺/供应商+高频引用的教训升级为流程检查项）→ <em>输出层</em>（上下文推送+贡献者反馈+全文检索兜底）。<em>输入层必须Day 1就在</em>，因为三个月后你就有足够语料训练推荐逻辑；如果Day 1不积累，一年后数据库是空的。
+    </div>
+    <div class="speech-tldr">
+      <strong>简言之：</strong>知识库是三层循环（零成本输入→结构化存储→隐身输出），输入层必须Day 1存在，否则未来数据为空。
+    </div>
+  </div>
+
+  <div class="moderator-section">
+    <div class="moderator-label">主持人综述</div>
+    <p>五位没有互相否定，而是在拼图。<strong>已收敛：知识库不应是独立模块。</strong></p>
+    <p style="margin-top: 10px;">剩余裂缝：<em>程序性知识vs判断性知识</em>的分界线实操中极难划定。</p>
+  </div>
+
+  <div class="chart-container">
+    <div class="chart-title">三层知识循环</div>
+    <div class="timeline">
+      <div class="timeline-step" style="border-left-color: #27ae60;">
+        <div class="step-num" style="background: rgba(39,174,96,0.2); color: #2ecc71;">1</div>
+        <div class="step-title">输入层（零额外成本）</div>
+        <div class="step-desc">工单→自动提取 / 项目关闭→强制卡片 / 异常处理→自动归档</div>
+      </div>
+      <div class="timeline-step" style="border-left-color: #2980b9;">
+        <div class="step-num" style="background: rgba(41,128,185,0.2); color: #5dade2;">2</div>
+        <div class="step-title">存储层（结构化+可演化）</div>
+        <div class="step-desc">结构化卡片 / 关联：设备/物料/工艺/供应商 / 高频引用→升级为流程检查项</div>
+      </div>
+      <div class="timeline-step" style="border-left-color: #8e44ad;">
+        <div class="step-num" style="background: rgba(142,68,173,0.2); color: #a569bd;">3</div>
+        <div class="step-title">输出层（隐身推荐）</div>
+        <div class="step-desc">上下文推送 / 贡献者反馈 / 全文检索（兜底）</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="chart-container">
+    <div class="chart-title">Goldratt-Norman 分界线：知识的两种命运</div>
+    <div class="framework-split">
+      <div class="framework-card" style="border-top-color: #27ae60; background: rgba(39,174,96,0.06);">
+        <div class="fw-title" style="color: #2ecc71;">可编码为流程的（程序性知识）</div>
+        <div class="fw-detail">"FAT前必须校准传感器"<br>→ 升级为检查项，从知识库"毕业"</div>
+      </div>
+      <div class="framework-card" style="border-top-color: #8e44ad; background: rgba(142,68,173,0.06);">
+        <div class="fw-title" style="color: #a569bd;">不可编码的（判断性知识）</div>
+        <div class="fw-detail">"供应商A的决策链特征"<br>→ 留为知识卡片，通过推荐流通</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== ROUND 4 ===================== -->
+  <div class="round-header">
+    <div class="round-num">第四轮</div>
+    <div class="round-title">落地——软件如何自带落地势能？</div>
+    <div class="round-question">
+      制造业软件功能再完美，推不动就等于零。如何设计软件本身，使其自带落地势能——而不是依赖行政命令强推？
+    </div>
+  </div>
+
+  <div class="speech">
+    <div class="speech-header">
+      <div class="speaker-avatar color-cagan">凯</div>
+      <div class="speaker-info">
+        <span class="speaker-name">马蒂·凯根</span>
+        <span class="speaker-action">陈述</span>
+      </div>
+    </div>
+    <div class="speech-body">
+      制造业项目管理软件的真正竞争对手不是另一个软件——是<em>Excel+微信群+纸质表单的组合</em>。不要一次性替换，要<em>寄生式渗透</em>。一个动作。一个痛点。一个比旧方式明显更爽的体验。每个领域工作台必须能独立使用，必须有移动端（不是PC端的缩小版），必须与Excel双向兼容。
+    </div>
+    <div class="speech-tldr">
+      <strong>简言之：</strong>别替换旧习惯，寄生在旧习惯上；一次只改变一个动作，让"更爽"驱动迁移而不是行政命令。
+    </div>
+  </div>
+
+  <div class="speech">
+    <div class="speech-header">
+      <div class="speaker-avatar color-ohno">野</div>
+      <div class="speaker-info">
+        <span class="speaker-name">大野耐一</span>
+        <span class="speaker-action">反驳</span>
+      </div>
+    </div>
+    <div class="speech-body">
+      "寄生式渗透"低估了制造业的<em>链式特征</em>——一个人用新系统但上下游还在Excel，数据就断了。制造业最小迁移单位不是个人，是<em>一条流程链上的所有人</em>。选瓶颈流程，让链上所有人同时切换。
+    </div>
+    <div class="speech-tldr">
+      <strong>简言之：</strong>制造业最小迁移单位不是个人而是一条流程链；选瓶颈流程，让链上所有人同时切换。
+    </div>
+  </div>
+
+  <div class="speech">
+    <div class="speech-header">
+      <div class="speaker-avatar color-taylor">泰</div>
+      <div class="speaker-info">
+        <span class="speaker-name">弗雷德里克·泰勒</span>
+        <span class="speaker-action">质疑</span>
+      </div>
+    </div>
+    <div class="speech-body">
+      制造业是科层组织，不是民主社会。没有高层授权和中层考核绑定，渗透会在第三周死掉。三个<em>硬钩子</em>：<em>审批流唯一化</em>（某类审批只能在系统走）、<em>数据源唯一化</em>（周报只从系统出）、<em>绩效可量化</em>（用系统的人数据自动记录，不用的人数据全空）。设计软件让"不用"比"用"更痛苦——这不是强推，是把<em>引力方向反转</em>。
+    </div>
+    <div class="speech-tldr">
+      <strong>简言之：</strong>制造业是科层组织，纯渗透会死；必须用审批唯一化、数据源唯一化、绩效绑定三个硬钩子让"不用"比"用"更痛。
+    </div>
+  </div>
+
+  <div class="speech">
+    <div class="speech-header">
+      <div class="speaker-avatar color-norman">诺</div>
+      <div class="speaker-info">
+        <span class="speaker-name">唐纳德·诺曼</span>
+        <span class="speaker-action">反驳</span>
+      </div>
+    </div>
+    <div class="speech-body">
+      泰勒的"硬钩子"逻辑上完美，心理上是灾难。强制触发<em>抗拒心理</em>（psychological reactance），导致数据注水、最低限度使用、影子系统。正确比例：<em>5%不可协商</em>（安全/合规）+ <em>25%应当激励</em>（"填了帮你省事"）+ <em>70%完全自愿</em>（靠"更爽"驱动）。还有一个被忽略的设计要素——<em>首次体验</em>（onboarding）。打开系统看到的只有一件事——<em>你今天最紧急的那个任务</em>。这30秒就是唯一的落地窗口。
+    </div>
+    <div class="speech-tldr">
+      <strong>简言之：</strong>强制触发对抗，70%功能必须靠"用了更爽"驱动；首次打开只展示一件事——你今天最紧急的任务。
+    </div>
+  </div>
+
+  <div class="speech">
+    <div class="speech-header">
+      <div class="speaker-avatar color-goldratt">高</div>
+      <div class="speaker-info">
+        <span class="speaker-name">艾利·高德拉特</span>
+        <span class="speaker-action">修正</span>
+      </div>
+    </div>
+    <div class="speech-body">
+      你们漏了<em>战略层判断</em>。任何系统的落地速度都受制于组织中最慢的变革瓶颈。这个瓶颈通常是<em>中层管理者</em>——他们在旧体系里掌握信息不对称优势，新系统透明化威胁其权力基础。必须回答：系统上线后中层能得到什么以前得不到的？<em>"每周省6小时汇报"</em>、<em>"比上级先看到问题"</em>、<em>"跨部门协调靠流程不靠人情"</em>——让他们从阻力变推力。不要把中层当障碍绕过，要把他们当第一用户服务。
+    </div>
+    <div class="speech-tldr">
+      <strong>简言之：</strong>落地的真正瓶颈是中层管理者的信息垄断权；必须让系统先解决中层的痛，让他们从阻力变推力。
+    </div>
+  </div>
+
+  <div class="speech">
+    <div class="speech-header">
+      <div class="speaker-avatar color-cagan">凯</div>
+      <div class="speaker-info">
+        <span class="speaker-name">马蒂·凯根</span>
+        <span class="speaker-action">综合</span>
+      </div>
+    </div>
+    <div class="speech-body">
+      落地路线图——<em>Phase 0诊断</em>（2周：跟工单、找瓶颈、访谈中层）→ <em>Phase 1钉子户攻坚</em>（1-2月：一条流程链+一个审批+中层周报一键生成+Excel兼容）→ <em>Phase 2口碑扩散</em>（3-6月：数据源唯一化+知识积累开始）→ <em>Phase 3生态闭合</em>（6-12月：六类上线+知识循环+绩效自动化）。核心原则：<em>每个Phase结束时，用户应该觉得"回不去了"</em>。
+    </div>
+    <div class="speech-tldr">
+      <strong>简言之：</strong>四阶段落地——诊断找瓶颈→钉子户攻坚→口碑扩散→生态闭合；每阶段成功标准是"用户觉得回不去了"。
+    </div>
+  </div>
+
+  <div class="moderator-section">
+    <div class="moderator-label">主持人综述</div>
+    <p>五位的分歧不在方向上，而在力度和节奏上。<strong>核心争议：强制与自愿的配比。</strong>但高德拉特揭示了真正的关键变量：<em>中层管理者是放大器</em>。</p>
+  </div>
+
+  <div class="chart-container">
+    <div class="chart-title">四阶段落地路线图</div>
+    <div class="timeline">
+      <div class="timeline-step" style="border-left-color: #27ae60;">
+        <div class="step-num" style="background: rgba(39,174,96,0.2); color: #2ecc71;">P0</div>
+        <div class="step-title">诊断（2周）</div>
+        <div class="step-desc">跟工单走全程 · 找瓶颈流程 · 访谈中层痛点</div>
+      </div>
+      <div class="timeline-step" style="border-left-color: #d35400;">
+        <div class="step-num" style="background: rgba(211,84,0,0.2); color: #e67e22;">P1</div>
+        <div class="step-title">钉子户攻坚（1-2月）</div>
+        <div class="step-desc">一条流程链 x 一组人 · 移动端优先 · 一个审批切入 · 中层周报一键生成</div>
+      </div>
+      <div class="timeline-step" style="border-left-color: #2980b9;">
+        <div class="step-num" style="background: rgba(41,128,185,0.2); color: #5dade2;">P2</div>
+        <div class="step-title">口碑扩散（3-6月）</div>
+        <div class="step-desc">数据源唯一化 · 知识输入层积累 · 第二条流程链切入</div>
+      </div>
+      <div class="timeline-step" style="border-left-color: #8e44ad;">
+        <div class="step-num" style="background: rgba(142,68,173,0.2); color: #a569bd;">P3</div>
+        <div class="step-title">生态闭合（6-12月）</div>
+        <div class="step-desc">六类项目逐步上线 · 知识循环完整运转 · 绩效数据自动化</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== ROUND 5 ===================== -->
+  <div class="round-header">
+    <div class="round-num">第五轮</div>
+    <div class="round-title">AI——大模型重构了哪些假设？</div>
+    <div class="round-question">
+      AI大模型技术如何重构前四轮讨论的基本假设？"知识自动提取"、"上下文推荐"、"一键生成周报"——这些在传统技术下是远期愿景的东西，在大模型时代是否变成了近期可实现？
+    </div>
+  </div>
+
+  <div class="speech">
+    <div class="speech-header">
+      <div class="speaker-avatar color-norman">诺</div>
+      <div class="speaker-info">
+        <span class="speaker-name">唐纳德·诺曼</span>
+        <span class="speaker-action">陈述</span>
+      </div>
+    </div>
+    <div class="speech-body">
+      大模型摧毁了<em>"人通过点击菜单操作软件"</em>的假设。车间主管不需要找菜单——对着手机说"今天3号楼浇筑完了，用了12方混凝土，没有异常"，AI就能自动填写施工日志、更新材料消耗、触发下一工序通知。最极端情况下，<em>界面就是一个对话框</em>。但有一个严肃问题：<em>可见性和可控感</em>。当AI"帮你"做了四件事——你怎么知道都做对了？设计原则：<em>AI起草，人类盖章</em>。AI的输出在确认前必须是草稿态。
+    </div>
+    <div class="speech-tldr">
+      <strong>简言之：</strong>AI消灭了菜单和表单，但不能消灭确认；正确范式是"AI起草，人类盖章"，且盖章界面必须可审计。
+    </div>
+  </div>
+
+  <div class="speech">
+    <div class="speech-header">
+      <div class="speaker-avatar color-goldratt">高</div>
+      <div class="speaker-info">
+        <span class="speaker-name">艾利·高德拉特</span>
+        <span class="speaker-action">质疑</span>
+      </div>
+    </div>
+    <div class="speech-body">
+      AI改变的不只是界面，是<em>约束本身的位置</em>。如果AI接管了大部分操作，人的操作不再是瓶颈了。瓶颈会转移到三处：<em>决策质量</em>（AI生成十个方案人选不出最优解）、<em>跨部门协调</em>（每个部门用自己的AI助手说自己的方言，AI可能加剧信息孤岛——需要"AI翻译官"）、<em>数据治理</em>（AI大规模复制错误模式）。
+    </div>
+    <div class="speech-tldr">
+      <strong>简言之：</strong>AI消灭了操作瓶颈，但瓶颈会转移到决策质量、跨部门协调、数据治理三处；尤其警惕AI大规模复制错误模式。
+    </div>
+  </div>
+
+  <div class="speech">
+    <div class="speech-header">
+      <div class="speaker-avatar color-taylor">泰</div>
+      <div class="speaker-info">
+        <span class="speaker-name">弗雷德里克·泰勒</span>
+        <span class="speaker-action">补充</span>
+      </div>
+    </div>
+    <div class="speech-body">
+      AI在制造业最大机会不在替代人填表——而在<em>直接对接物理世界</em>。传感器每秒产生几百个数据点，过去和项目管理完全隔离。AI能做的事：<em>把物理信号翻译成项目语言</em>。传感器检测振动异常→AI判断轴承200小时内失效→自动创建维保任务→检查备件库存→通知依赖此设备的项目经理。<em>一个传感器信号穿透设备台、采购流程、项目计划三个领域。</em>
+    </div>
+    <div class="speech-tldr">
+      <strong>简言之：</strong>AI在制造业的最大杠杆不是替代人填表，而是把物理传感器信号翻译成项目语言，一秒串联设备/采购/项目三条链。
+    </div>
+  </div>
+
+  <div class="speech">
+    <div class="speech-header">
+      <div class="speaker-avatar color-ohno">野</div>
+      <div class="speaker-info">
+        <span class="speaker-name">大野耐一</span>
+        <span class="speaker-action">反驳</span>
+      </div>
+    </div>
+    <div class="speech-body">
+      泰勒的传感器-AI-项目链条技术上很美，但犯了<em>用自动化替代人判断而不是增强人判断</em>的错误。如果AI判断错了呢？如果振动异常不是轴承问题，而是有人把工具忘在机台上了？这就是<em>现场主义</em>（Genchi Genbutsu）。<em>AI是最好的安灯绳</em>——它帮你拉绳子的速度快了一百倍。但拉了绳子之后，还是要人跑来看。AI应做：预警、起草、推荐、翻译。AI不应做：确认、审批、替代现场、跳过人类判断。
+    </div>
+    <div class="speech-tldr">
+      <strong>简言之：</strong>AI是最快的安灯绳，但拉绳之后仍需人到现场；自动化判断会掩盖真正根因。
+    </div>
+  </div>
+
+  <div class="speech">
+    <div class="speech-header">
+      <div class="speaker-avatar color-cagan">凯</div>
+      <div class="speaker-info">
+        <span class="speaker-name">马蒂·凯根</span>
+        <span class="speaker-action">综合</span>
+      </div>
+    </div>
+    <div class="speech-body">
+      AI能力三个时间层——<em>近期</em>（6月内：自然语言录入、智能报告、知识推荐、审批预审）、<em>中期</em>（6-18月：因果链识别、风险预测、AI翻译官）、<em>远期</em>（18月+：流程自演化、数字孪生）。语音录入+智能报告应直接进MVP Phase 1。大野先生的警告刻进产品宪法：<em>所有AI输出在成为正式记录前必须经过人类确认</em>，有草稿态/确认态标识和置信度标识。
+    </div>
+    <div class="speech-tldr">
+      <strong>简言之：</strong>近期AI（语音录入+智能报告）应直接进MVP Phase 1，但所有AI输出必须有草稿态/确认态和置信度标识。
+    </div>
+  </div>
+
+  <div class="moderator-section">
+    <div class="moderator-label">主持人综述</div>
+    <p>AI让功能门槛大幅降低，但<em>信任门槛大幅提高</em>。<strong>核心争议：自动化的边界应画在哪里？</strong>泰勒要全自动因果链，大野坚持"拉绳后必须有人到现场"——这是关于"判断权归谁"的哲学争论。</p>
+  </div>
+
+  <div class="chart-container">
+    <div class="chart-title">AI 决策边界规则</div>
+    <table class="action-table">
+      <thead>
+        <tr>
+          <th>决策类型</th>
+          <th>AI角色</th>
+          <th>人类角色</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>数据录入</td>
+          <td>起草</td>
+          <td>确认</td>
+        </tr>
+        <tr>
+          <td>异常预警</td>
+          <td>检测+通知</td>
+          <td>到场判断</td>
+        </tr>
+        <tr>
+          <td>审批</td>
+          <td>预审+标注</td>
+          <td>最终决定</td>
+        </tr>
+        <tr>
+          <td>根因分析</td>
+          <td>候选排序</td>
+          <td>选择+验证</td>
+        </tr>
+        <tr>
+          <td>变更发起</td>
+          <td class="priority-high">禁止</td>
+          <td>唯一发起人</td>
+        </tr>
+        <tr>
+          <td>安全/合规</td>
+          <td class="priority-high">禁止</td>
+          <td>唯一决定人</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ===================== ROUND 6 ===================== -->
+  <div class="round-header">
+    <div class="round-num">第六轮</div>
+    <div class="round-title">盲区——我们没质疑过什么？</div>
+    <div class="round-question">
+      五轮讨论中，我们所有人共享了哪些未被质疑的隐含假设？我们在哪个维度上集体盲视了？
+    </div>
+  </div>
+
+  <div class="speech">
+    <div class="speech-header">
+      <div class="speaker-avatar color-goldratt">高</div>
+      <div class="speaker-info">
+        <span class="speaker-name">艾利·高德拉特</span>
+        <span class="speaker-action">陈述</span>
+      </div>
+    </div>
+    <div class="speech-body">
+      最大盲区——我们假设这是<em>"项目管理"软件</em>。六种类型中只有两种半是真项目（IT、工程、半个研发），其余是运营、持续改善、生命周期管理。<em>"项目"这个框架扭曲了企业的真实需求。</em>正确名称：<em>"制造业工作治理平台"</em>（Manufacturing Work Governance Platform）。
+    </div>
+    <div class="speech-tldr">
+      <strong>简言之：</strong>六种"项目类型"中只有两种半是真项目；这是"工作治理平台"，不是"项目管理软件"。
+    </div>
+  </div>
+
+  <div class="speech">
+    <div class="speech-header">
+      <div class="speaker-avatar color-norman">诺</div>
+      <div class="speaker-info">
+        <span class="speaker-name">唐纳德·诺曼</span>
+        <span class="speaker-action">补充</span>
+      </div>
+    </div>
+    <div class="speech-body">
+      我们假设<em>工作流程可以被预先定义</em>。现实中60%的实际工作是<em>非结构化的</em>（微信群、走廊对话、电话协调）。软件只覆盖了40%的结构化部分。AI最大价值是半自动地将非结构化协作转化为结构化记录——<em>识别微信群里的异常事件并自动关联项目</em>。
+    </div>
+    <div class="speech-tldr">
+      <strong>简言之：</strong>我们假设工作可以被预先定义为流程，但60%的实际工作是非结构化的；AI最大价值是将非结构化协作转化为结构化记录。
+    </div>
+  </div>
+
+  <div class="speech">
+    <div class="speech-header">
+      <div class="speaker-avatar color-taylor">泰</div>
+      <div class="speaker-info">
+        <span class="speaker-name">弗雷德里克·泰勒</span>
+        <span class="speaker-action">反驳</span>
+      </div>
+    </div>
+    <div class="speech-body">
+      我们没谈过<em>"钱"</em>。"全要且要打通"的客户画像极窄——年收入10亿以上、有IT团队、数字化成熟度2.0+。中型企业（5千万到5亿）数量是大型的十倍，可能更需要<em>单点做透的SaaS</em>。买vs建vs组装的决策我们完全跳过了。市场上已有用友、SAP、禅道、PingCode——<em>用户为什么不买？</em>
+    </div>
+    <div class="speech-tldr">
+      <strong>简言之：</strong>我们设计了概念跑车但没问客户买不买得起；"全要且打通"的客户极窄，中型企业可能更需要单点做透的SaaS。
+    </div>
+  </div>
+
+  <div class="speech">
+    <div class="speech-header">
+      <div class="speaker-avatar color-ohno">野</div>
+      <div class="speaker-info">
+        <span class="speaker-name">大野耐一</span>
+        <span class="speaker-action">质疑</span>
+      </div>
+    </div>
+    <div class="speech-body">
+      我们假设<em>"软件"是解决问题的正确层级</em>。<em>"先固化流程，再自动化流程。"</em>如果流程本身混乱——职责不清、标准缺失——上再好的软件也只是把混乱数字化了。企业必须先回答：流程是否已经跑通？部门间接口是否有明确定义？数据标准是否统一？任何一个"否"，需要的不是软件，是管理咨询。<em>软件不创造秩序，软件放大秩序</em>——如果没有秩序，它放大的就是混乱。
+    </div>
+    <div class="speech-tldr">
+      <strong>简言之：</strong>软件只放大既有秩序；流程没跑通、接口没定义、数据没标准的企业，先需要管理咨询而非软件。
+    </div>
+  </div>
+
+  <div class="speech">
+    <div class="speech-header">
+      <div class="speaker-avatar color-cagan">凯</div>
+      <div class="speaker-info">
+        <span class="speaker-name">马蒂·凯根</span>
+        <span class="speaker-action">综合</span>
+      </div>
+    </div>
+    <div class="speech-body">
+      两条产品路径不能同时走——<em>路径A</em>平台型服务大企业（50-300万/年）vs <em>路径B</em> SaaS型服务中型企业（3-15万/年）。建议<em>路径B起步</em>，用AI半自动生成流程做差异化。中型企业没有IT团队，对"开箱即用"的渴望远超大企业。AI可以在用户使用过程中半自动帮他们"长出"流程。但必须有勇气<em>拒绝管理成熟度过低的客户</em>。
+    </div>
+    <div class="speech-tldr">
+      <strong>简言之：</strong>两条路不能同时走；建议路径B（中型企业SaaS）起步，以AI半自动生成流程为差异化。
+    </div>
+  </div>
+
+  <div class="moderator-section">
+    <div class="moderator-label">主持人综述</div>
+    <p>我们用了五轮设计功能架构，第六轮才质疑存在前提。<strong>越基本的假设越晚被质疑。</strong></p>
+    <p style="margin-top: 10px;">正确顺序应该从外到内：<em>定位→客户→前提→落地→架构→功能→AI</em>。</p>
+  </div>
+
+  <div class="chart-container">
+    <div class="chart-title">正确的思考优先级（从外到内）</div>
+    <div class="onion-layers" style="border-color: rgba(192,57,43,0.3); background: rgba(192,57,43,0.05); margin-bottom: 0;">
+      <div class="onion-label" style="color: #e74c3c;">第0层：为谁？</div>
+      <div class="onion-desc">大企业平台 vs 中型企业SaaS</div>
+      <div class="onion-layers" style="border-color: rgba(211,84,0,0.3); background: rgba(211,84,0,0.05);">
+        <div class="onion-label" style="color: #e67e22;">第1层：前提</div>
+        <div class="onion-desc">流程跑通了吗？数据标准统一了吗？</div>
+        <div class="onion-layers" style="border-color: rgba(255,255,255,0.1); background: rgba(255,255,255,0.03);">
+          <div class="onion-label" style="color: #a0a0b0;">第2层：概念</div>
+          <div class="onion-desc">"工作治理"非"项目管理"</div>
+          <div class="onion-layers" style="border-color: rgba(41,128,185,0.3); background: rgba(41,128,185,0.05);">
+            <div class="onion-label" style="color: #5dade2;">第3层：架构</div>
+            <div class="onion-desc">引擎/工作台/角色视图</div>
+            <div class="onion-layers" style="border-color: rgba(142,68,173,0.3); background: rgba(142,68,173,0.05);">
+              <div class="onion-label" style="color: #a569bd;">第4层：功能+AI</div>
+              <div class="onion-desc" style="margin-bottom: 0;">具体模块+AI能力</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div style="margin-top: 16px; padding: 12px 16px; border-radius: 8px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); font-size: 15px; color: #a0a0b0; line-height: 1.8;">
+      阅读顺序：从外到内（先定位再功能）<br>
+      我们的讨论顺序：从内到外<br>
+      <strong style="color: #f0f0f0;">教训：下次反过来。</strong>
+    </div>
+  </div>
+
+  <!-- ===================== ROUND 7 ===================== -->
+  <div class="round-header">
+    <div class="round-num">第七轮</div>
+    <div class="round-title">实战——正在开发时的五个致命陷阱</div>
+    <div class="round-question">
+      你们已经正在开发这样的系统。每位只说一条——你见过的同类项目最常见的死法，以及如何避免。
+    </div>
+  </div>
+
+  <div class="speech">
+    <div class="speech-header">
+      <div class="speaker-avatar color-goldratt">高</div>
+      <div class="speaker-info">
+        <span class="speaker-name">艾利·高德拉特</span>
+        <span class="speaker-action">陈述</span>
+      </div>
+    </div>
+    <div class="speech-body">
+      <em>死法：做了80个功能，上线后客户只用8个。</em>避免：第一版只做20个功能，但每个功能都埋数据埋点——谁用了、用了几次、在哪一步放弃了。上线两周后，<em>数据会告诉你真相</em>。
+    </div>
+    <div class="speech-tldr">
+      <strong>简言之：</strong>第一版宁少勿多，用埋点数据而不是直觉决定下一步做什么。
+    </div>
+  </div>
+
+  <div class="speech">
+    <div class="speech-header">
+      <div class="speaker-avatar color-norman">诺</div>
+      <div class="speaker-info">
+        <span class="speaker-name">唐纳德·诺曼</span>
+        <span class="speaker-action">陈述</span>
+      </div>
+    </div>
+    <div class="speech-body">
+      <em>死法：开发团队从未在真实工厂环境中测试。</em>避免：每两周带原型去工厂现场测试——噪音85分贝、手上有油、每30秒被打断。所有触控区域≥48px（手套友好），<em>离线模式必须有</em>，加载时间&lt;2秒。
+    </div>
+    <div class="speech-tldr">
+      <strong>简言之：</strong>每两周去工厂现场测试；离线模式、大触控区域、2秒加载是生死线。
+    </div>
+  </div>
+
+  <div class="speech">
+    <div class="speech-header">
+      <div class="speaker-avatar color-taylor">泰</div>
+      <div class="speaker-info">
+        <span class="speaker-name">弗雷德里克·泰勒</span>
+        <span class="speaker-action">陈述</span>
+      </div>
+    </div>
+    <div class="speech-body">
+      <em>死法：数据模型前三个月设计太随意，六个月后改不动。</em>避免：Day 1就定义物料、设备、供应商、人员四张主数据表的编码规则，强制所有模块引用同一套主数据。不让用户自由输入物料名称（用下拉+搜索）。<em>审批流引擎做成可配置。</em>
+    </div>
+    <div class="speech-tldr">
+      <strong>简言之：</strong>Day 1就做好主数据管理和可配置审批流，否则六个月后返工成本是现在的十倍。
+    </div>
+  </div>
+
+  <div class="speech">
+    <div class="speech-header">
+      <div class="speaker-avatar color-ohno">野</div>
+      <div class="speaker-info">
+        <span class="speaker-name">大野耐一</span>
+        <span class="speaker-action">陈述</span>
+      </div>
+    </div>
+    <div class="speech-body">
+      <em>死法：新旧系统并行，数据分裂，新系统被放弃。</em>避免：每个阶段切换后<em>关掉旧系统对应功能</em>（物理上不可用）。温和地切换，果断地关门。但前提是新功能100%能用，宁可晚上线一个月。
+    </div>
+    <div class="speech-tldr">
+      <strong>简言之：</strong>每阶段切换后必须关掉旧系统对应功能；但关门前提是新功能100%可用。
+    </div>
+  </div>
+
+  <div class="speech">
+    <div class="speech-header">
+      <div class="speaker-avatar color-cagan">凯</div>
+      <div class="speaker-info">
+        <span class="speaker-name">马蒂·凯根</span>
+        <span class="speaker-action">陈述</span>
+      </div>
+    </div>
+    <div class="speech-body">
+      <em>死法：需求全靠销售转述，产品经理离客户太远。</em>避免：<em>PM每月工厂跟班2天</em>。技术上：选无聊的技术（PostgreSQL+成熟框架）、Day 1多租户架构、API First、RBAC+ABAC混合权限模型。
+    </div>
+    <div class="speech-tldr">
+      <strong>简言之：</strong>PM每月工厂跟班两天；技术选无聊的、Day 1做多租户和API First、权限用RBAC+ABAC。
+    </div>
+  </div>
+
+  <div class="chart-container">
+    <div class="chart-title">五个致命陷阱及其解药</div>
+    <table class="action-table">
+      <thead>
+        <tr>
+          <th>陷阱</th>
+          <th>死法</th>
+          <th>解药</th>
+          <th>责任人</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>功能过多</td>
+          <td>做了80个只用8个</td>
+          <td>≤20功能+全面埋点</td>
+          <td>产品经理</td>
+        </tr>
+        <tr>
+          <td>不去现场</td>
+          <td>界面在工厂不可用</td>
+          <td>每两周工厂实测</td>
+          <td>设计师</td>
+        </tr>
+        <tr>
+          <td>主数据混乱</td>
+          <td>六个月后数据对不上</td>
+          <td>Day 1统一编码规则</td>
+          <td>架构师</td>
+        </tr>
+        <tr>
+          <td>新旧并行</td>
+          <td>数据分裂杀死新系统</td>
+          <td>阶段切换后关旧入口</td>
+          <td>项目经理</td>
+        </tr>
+        <tr>
+          <td>远离客户</td>
+          <td>解决不存在的问题</td>
+          <td>PM每月跟班2天</td>
+          <td>产品经理</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+<!-- ============================================================
+     全局总结
+     ============================================================ -->
+  <div class="summary-section">
+  <div class="round-header">
+    <div class="round-num">全局总结</div>
+    <div class="round-title">全局知识网络与开放问题</div>
+  </div>
+
+  <!-- Knowledge Network Chart -->
+  <div class="chart-container">
+    <div class="chart-title">制造业工作治理平台：知识网络全局图</div>
+
+    <!-- Top node -->
+    <div class="network-row">
+      <div class="network-node" style="border-color: rgba(233,69,96,0.4); font-weight: 600; background: rgba(233,69,96,0.05);">制造业工作治理平台</div>
+    </div>
+    <div class="network-connector">▼</div>
+
+    <!-- Three branches -->
+    <div class="network-row">
+      <div class="network-node" style="border-color: rgba(192,57,43,0.3);">
+        <div style="font-weight: 600; margin-bottom: 4px;">战略决策</div>
+        <div style="font-size: 12px; color: #a0a0b0; line-height: 1.6;">客户：中型制造企业SaaS<br>"工作治理"非"项目管理"</div>
+      </div>
+      <div class="network-node" style="border-color: rgba(41,128,185,0.3);">
+        <div style="font-weight: 600; margin-bottom: 4px;">产品架构</div>
+        <div style="font-size: 12px; color: #a0a0b0; line-height: 1.6;">三层：引擎/工作台/角色视图<br>知识三层循环 / AI层</div>
+      </div>
+      <div class="network-node" style="border-color: rgba(39,174,96,0.3);">
+        <div style="font-weight: 600; margin-bottom: 4px;">落地执行</div>
+        <div style="font-size: 12px; color: #a0a0b0; line-height: 1.6;">四阶段：诊断→钉子户→口碑→闭合</div>
+      </div>
+    </div>
+    <div class="network-connector">▼ 贯穿全局的核心原则</div>
+
+    <!-- Core principle -->
+    <div class="network-row">
+      <div class="network-node" style="border-color: rgba(255,255,255,0.15); background: rgba(255,255,255,0.03); max-width: 600px;">
+        <div style="font-weight: 600; color: #f0f0f0;">后端全面，前端极简；数据统一，视图分化；AI起草，人类盖章</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Contributor list -->
+  <div class="contributor-list">
+    <div class="contributor-card">
+      <div class="speaker-avatar color-taylor" style="flex-shrink: 0;">泰</div>
+      <div>
+        <div style="font-size: 14px; font-weight: bold; color: #f0f0f0; margin-bottom: 4px;">弗雷德里克·泰勒 — 量化基座</div>
+        <div style="font-size: 13px; color: #a0a0b0; line-height: 1.6;">主数据管理、审批流、绩效可量化</div>
+      </div>
+    </div>
+    <div class="contributor-card">
+      <div class="speaker-avatar color-ohno" style="flex-shrink: 0;">野</div>
+      <div>
+        <div style="font-size: 14px; font-weight: bold; color: #f0f0f0; margin-bottom: 4px;">大野耐一 — 现场主义</div>
+        <div style="font-size: 13px; color: #a0a0b0; line-height: 1.6;">按时间节奏切分、流程链迁移、安灯绳哲学</div>
+      </div>
+    </div>
+    <div class="contributor-card">
+      <div class="speaker-avatar color-goldratt" style="flex-shrink: 0;">高</div>
+      <div>
+        <div style="font-size: 14px; font-weight: bold; color: #f0f0f0; margin-bottom: 4px;">艾利·高德拉特 — 约束聚焦</div>
+        <div style="font-size: 13px; color: #a0a0b0; line-height: 1.6;">瓶颈优先MVP、知识编码为流程、中层是杠杆</div>
+      </div>
+    </div>
+    <div class="contributor-card">
+      <div class="speaker-avatar color-norman" style="flex-shrink: 0;">诺</div>
+      <div>
+        <div style="font-size: 14px; font-weight: bold; color: #f0f0f0; margin-bottom: 4px;">唐纳德·诺曼 — 认知友好</div>
+        <div style="font-size: 13px; color: #a0a0b0; line-height: 1.6;">渐进式披露、上下文推荐、首次体验30秒</div>
+      </div>
+    </div>
+    <div class="contributor-card">
+      <div class="speaker-avatar color-cagan" style="flex-shrink: 0;">凯</div>
+      <div>
+        <div style="font-size: 14px; font-weight: bold; color: #f0f0f0; margin-bottom: 4px;">马蒂·凯根 — 产品纪律</div>
+        <div style="font-size: 13px; color: #a0a0b0; line-height: 1.6;">三层架构、四阶段落地、无聊技术+API First</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Open Questions -->
+  <div style="margin-top: 48px;">
+    <div class="round-header">
+      <div class="round-num">未解决</div>
+      <div class="round-title">开放问题</div>
+    </div>
+    <ol class="open-questions">
+      <li><strong>AI判断权的伦理边界：</strong>在安全关键场景中，AI自动决策的边界应该由谁来定？监管机构？企业？还是用户自己？</li>
+      <li><strong>非结构化协作的数字化：</strong>微信群里60%的工作如何被系统捕获？技术上可行（AI解析聊天记录），但隐私和信任边界在哪里？</li>
+      <li><strong>中小企业管理成熟度悖论：</strong>最需要这个软件的企业，恰恰是管理成熟度最低、最用不起来的企业。软件能帮助企业"长出"管理能力，还是只能放大已有的管理能力？</li>
+      <li><strong>行业深度vs通用性权衡：</strong>做深一个子行业（如汽车零部件）还是做浅覆盖多行业？两条路的PMF验证方式完全不同。</li>
+      <li><strong>数据资产的归属与价值：</strong>当平台积累了大量制造业知识数据后，这些数据属于谁？能否跨企业使用？行业知识图谱的商业模式是什么？</li>
+    </ol>
+  </div>
+
+  <div class="page-footer">
+    Generated by 圆桌研讨会框架 · 2026年4月9日
+  </div>
+
+  </div><!-- close .summary-section -->
+</div><!-- close .content -->
+
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const progressBar = document.querySelector('.progress-bar');
+  const progressCurrent = document.querySelector('.progress-current');
+  const progressDots = document.querySelectorAll('.progress-dot');
+  const tocPanel = document.querySelector('.toc-panel');
+  const tocToggle = document.querySelector('.progress-expand');
+  const tocItems = document.querySelectorAll('.toc-item');
+  const rounds = document.querySelectorAll('.round-header');
+
+  // TOC toggle
+  tocToggle.addEventListener('click', (e) => {
+    e.stopPropagation();
+    tocPanel.classList.toggle('open');
+    tocToggle.textContent = tocPanel.classList.contains('open') ? '▲ 收起' : '▼ 目录';
+  });
+
+  // Close TOC when clicking outside
+  document.addEventListener('click', (e) => {
+    if (!tocPanel.contains(e.target) && !tocToggle.contains(e.target)) {
+      tocPanel.classList.remove('open');
+      tocToggle.textContent = '▼ 目录';
+    }
+  });
+
+  // TOC item click → smooth scroll + close panel
+  tocItems.forEach((item, index) => {
+    item.addEventListener('click', () => {
+      if (rounds[index]) {
+        rounds[index].scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+      tocPanel.classList.remove('open');
+      tocToggle.textContent = '▼ 目录';
+    });
+  });
+
+  // Intersection Observer for scroll tracking
+  let currentRound = 0;
+  const observerOptions = {
+    rootMargin: '-80px 0px -70% 0px',
+    threshold: 0
+  };
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const index = Array.from(rounds).indexOf(entry.target);
+        if (index !== -1) {
+          currentRound = index;
+          updateProgress(index);
+        }
+      }
+    });
+  }, observerOptions);
+
+  rounds.forEach(round => observer.observe(round));
+
+  function updateProgress(index) {
+    const roundNum = rounds[index].querySelector('.round-num');
+    const roundTitle = rounds[index].querySelector('.round-title');
+    if (roundNum && roundTitle) {
+      progressCurrent.innerHTML =
+        '<span>' + roundNum.textContent + '</span> · ' + roundTitle.textContent;
+    }
+
+    progressDots.forEach((dot, i) => {
+      dot.classList.remove('active', 'passed');
+      if (i < index) dot.classList.add('passed');
+      if (i === index) dot.classList.add('active');
+    });
+
+    tocItems.forEach((item, i) => {
+      item.classList.toggle('active', i === index);
+    });
+  }
+
+  if (rounds.length > 0) updateProgress(0);
+
+  const headerHeight = progressBar ? progressBar.offsetHeight + 16 : 60;
+  document.documentElement.style.scrollPaddingTop = headerHeight + 'px';
+});
+
+</script>
+</body></html>
